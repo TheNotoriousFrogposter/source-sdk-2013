@@ -1641,7 +1641,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 
 			CBaseMultiplayerPlayer *pMultiPlayerPlayer = dynamic_cast< CBaseMultiplayerPlayer * >( pPlayer );
 
-			if ( pMultiPlayerPlayer && pMultiPlayerPlayer->ShouldRunRateLimitedCommand( pcmd ) )
+			if ( pMultiPlayerPlayer )
 			{
 				int iMenu = atoi( args[1] );
 				int iItem = atoi( args[2] );
