@@ -77,6 +77,9 @@ ConVar tf_movement_lost_footing_restick( "tf_movement_lost_footing_restick", "50
 ConVar tf_movement_lost_footing_friction( "tf_movement_lost_footing_friction", "0.1", FCVAR_REPLICATED | FCVAR_CHEAT,
                                           "Ground friction for players who have lost their footing" );
 
+ConVar  sv_autobunnyhopping( "sv_autobunnyhopping", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Players automatically re-jump while holding jump button" );
+ConVar  sv_enablebunnyhopping( "sv_enablebunnyhopping", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow player speed to exceed maximum running speed " );
+
 extern ConVar cl_forwardspeed;
 extern ConVar cl_backspeed;
 extern ConVar cl_sidespeed;
@@ -1238,7 +1241,16 @@ bool CTFGameMovement::CheckJumpButton()
 
 	// Cannot jump again until the jump button has been released.
 	if ( mv->m_nOldButtons & IN_JUMP )
-		return false;
+	{
+		if ( m_pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
+			return false;
+
+		if ( !bOnGround )
+			return false;
+
+		if ( !sv_autobunnyhopping.GetBool() )
+			return false;
+	}
 
 	// In air, so ignore jumps 
 	// (unless you are a scout or ghost or parachute
@@ -1264,7 +1276,10 @@ bool CTFGameMovement::CheckJumpButton()
 		return true;
 	}
 
-	PreventBunnyJumping();
+	if ( !sv_enablebunnyhopping.GetBool() )
+	{
+		PreventBunnyJumping();
+	}
 
 	// Start jump animation and player sound (specific TF animation and flags).
 	m_pTFPlayer->DoAnimationEvent( PLAYERANIMEVENT_JUMP );
