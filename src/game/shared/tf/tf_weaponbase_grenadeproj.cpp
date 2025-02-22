@@ -43,6 +43,8 @@ extern void SendProxy_Angles( const SendProp *pProp, const void *pStruct, const 
 
 #endif
 
+extern ConVar ff_use_new_grenade;
+
 IMPLEMENT_NETWORKCLASS_ALIASED( TFWeaponBaseGrenadeProj, DT_TFWeaponBaseGrenadeProj )
 
 LINK_ENTITY_TO_CLASS( tf_weaponbase_grenade_proj, CTFWeaponBaseGrenadeProj );
@@ -137,6 +139,8 @@ void CTFWeaponBaseGrenadeProj::BounceOff( IPhysicsObject *pPhysics )
 float CTFWeaponBaseGrenadeProj::GetDamageRadius() 
 { 
 	float flRadius = m_DmgRadius;
+	if ( !ff_use_new_grenade.GetBool() )
+		flRadius *= (159 / 146 );
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( m_hLauncher, flRadius, mult_explosion_radius );
 	return flRadius; 
 }	
@@ -298,6 +302,7 @@ void CTFWeaponBaseGrenadeProj::Spawn( void )
 // Purpose: 
 //-----------------------------------------------------------------------------
 #define TF_GRENADE_JUMP_RADIUS	146
+
 void CTFWeaponBaseGrenadeProj::Explode( trace_t *pTrace, int bitsDamageType )
 {
 	if ( ShouldNotDetonate() )
@@ -388,7 +393,7 @@ void CTFWeaponBaseGrenadeProj::Explode( trace_t *pTrace, int bitsDamageType )
 
 	float flRadius = GetDamageRadius();
 
-	CTFRadiusDamageInfo radiusinfo( &info, vecOrigin, flRadius, NULL, TF_GRENADE_JUMP_RADIUS );
+	CTFRadiusDamageInfo radiusinfo( &info, vecOrigin, flRadius, NULL, ff_use_new_grenade.GetBool() ? TF_GRENADE_JUMP_RADIUS : 159 );
 	TFGameRules()->RadiusDamage( radiusinfo );
 
 	// Don't decal players with scorch.

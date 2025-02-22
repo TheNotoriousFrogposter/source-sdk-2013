@@ -182,6 +182,9 @@ ConVar tf_allow_taunt_switch( "tf_allow_taunt_switch", "0", FCVAR_REPLICATED, "0
 
 ConVar tf_allow_all_team_partner_taunt( "tf_allow_all_team_partner_taunt", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
+extern ConVar ff_use_new_dead_ringer;
+extern ConVar ff_use_new_tide_turner;
+
 // AFTERBURN
 const float tf_afterburn_max_duration = 10.f;
 const float tf_afterburn_duration_ratio_second_degree = 0.4f;
@@ -6066,7 +6069,7 @@ void CTFPlayerShared::CalcChargeCrit( bool bForceCrit )
 	// Keying on TideTurner
 	int iDemoChargeDamagePenalty = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( m_pOuter, iDemoChargeDamagePenalty, lose_demo_charge_on_damage_when_charging );
-	if ( iDemoChargeDamagePenalty && GetDemomanChargeMeter() <= 75 )
+	if ( iDemoChargeDamagePenalty && GetDemomanChargeMeter() <= 75 && ff_use_new_tide_turner.GetBool() )
 	{
 		SetNextMeleeCrit( MELEE_MINICRIT );
 	}
@@ -7035,6 +7038,9 @@ void CTFPlayerShared::OnRemoveStealthed( void )
 	// End feign death if we leave stealth for some reason.
 	if ( InCond( TF_COND_FEIGN_DEATH ) )
 	{
+		if ( m_flCloakMeter > 40.0f && !ff_use_new_dead_ringer.GetBool() )
+			m_flCloakMeter = 40.0f;
+
 		RemoveCond( TF_COND_FEIGN_DEATH );
 	}
 
@@ -7106,12 +7112,16 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 
 	// STAGING_SPY
 	// Add a speed boost while feigned and afterburn immunity while running away
-	AddCond( TF_COND_SPEED_BOOST, tf_feign_death_speed_duration.GetFloat() );
-	AddCond( TF_COND_AFTERBURN_IMMUNE, tf_feign_death_speed_duration.GetFloat() );
+	if ( ff_use_new_dead_ringer.GetBool() )
+	{
+		AddCond( TF_COND_SPEED_BOOST, tf_feign_death_speed_duration.GetFloat() );
+		AddCond( TF_COND_AFTERBURN_IMMUNE, tf_feign_death_speed_duration.GetFloat() );
+	}
 
 	SetFeignDeathReady( false );
 
-	m_flFeignDeathEnd = gpGlobals->curtime + tf_feign_death_speed_duration.GetFloat();
+	float feign_duration = ff_use_new_dead_ringer.GetBool() ? tf_feign_death_speed_duration.GetFloat() : 6.f;
+	m_flFeignDeathEnd = gpGlobals->curtime + feign_duration;
 }
 
 //-----------------------------------------------------------------------------
@@ -9611,6 +9621,11 @@ bool CTFPlayerShared::AddToSpyCloakMeter( float val, bool bForce )
 		else
 		{
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWpn, val, ReducedCloakFromAmmo );
+		}
+
+		if ( pWpn->HasFeignDeath() && !ff_use_new_dead_ringer.GetBool() )
+		{
+			val = Min( val, 35.0f );
 		}
 	}
 

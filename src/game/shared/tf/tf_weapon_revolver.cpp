@@ -40,6 +40,7 @@ BEGIN_DATADESC( CTFRevolver )
 END_DATADESC()
 #endif
 
+extern ConVar ff_use_new_ambassador;
 
 //=============================================================================
 //
@@ -104,7 +105,7 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 		return true;
 
 	// Magic.
-	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) )
+	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) && ff_use_new_ambassador.GetBool() )
 		return false;
 
 	// can only fire a crit shot if this is a headshot, unless we're critboosted

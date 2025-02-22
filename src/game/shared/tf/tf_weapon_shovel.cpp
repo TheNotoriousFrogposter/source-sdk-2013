@@ -31,6 +31,8 @@ END_PREDICTION_DATA()
 LINK_ENTITY_TO_CLASS( tf_weapon_shovel, CTFShovel );
 PRECACHE_WEAPON_REGISTER( tf_weapon_shovel );
 
+ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff" );
+
 //=============================================================================
 //
 // Weapon Shovel functions.
@@ -104,7 +106,7 @@ float CTFShovel::GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* p
 {
 	float flDamage = BaseClass::GetMeleeDamage( pTarget, piDamageType, piCustomDamage );
 
-	if ( !HasDamageBoost() )
+	if ( ff_use_split_equalizer.GetBool() ? !HasDamageBoost() : ( !HasDamageBoost() && !HasSpeedBoost() ) )
 		return flDamage;
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
@@ -122,7 +124,7 @@ float CTFShovel::GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* p
 //-----------------------------------------------------------------------------
 float CTFShovel::GetSpeedMod( void )
 {
-	if ( m_bHolstering || !HasSpeedBoost() )
+	if ( m_bHolstering || ff_use_split_equalizer.GetBool() ? !HasSpeedBoost() : ( !HasSpeedBoost() && !HasDamageBoost() ) )
 		return 1.f;
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
@@ -150,7 +152,7 @@ bool CTFShovel::Deploy( void )
 	bool ret = BaseClass::Deploy();
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
-	if ( pOwner && HasSpeedBoost() )
+	if ( pOwner && ff_use_split_equalizer.GetBool() ? HasSpeedBoost() : ( HasDamageBoost() || HasSpeedBoost() ) )
 	{
 		SetContextThink( &CTFShovel::MoveSpeedThink, gpGlobals->curtime + 0.25f, "SHOVEL_SPEED_THINK" );
 	}
@@ -193,7 +195,7 @@ void CTFShovel::MoveSpeedThink( void )
 //-----------------------------------------------------------------------------
 float CTFShovel::GetForceScale( void )
 {
-	if ( HasDamageBoost() )
+	if ( ff_use_split_equalizer.GetBool() ? HasDamageBoost() : ( HasDamageBoost() || HasSpeedBoost() ) )
 	{
 		return BaseClass::GetForceScale() * 2.f;
 	}

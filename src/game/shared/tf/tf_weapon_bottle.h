@@ -91,6 +91,7 @@ public:
 
 	virtual void		Precache( void ) OVERRIDE;
 	virtual int			GetWeaponID( void ) const OVERRIDE { return TF_WEAPON_STICKBOMB; }
+	virtual float		GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* piCustomDamage );
 	virtual void		Smack( void ) OVERRIDE;
 	virtual void		WeaponReset( void ) OVERRIDE;
 	virtual void		WeaponRegenerate( void ) OVERRIDE;

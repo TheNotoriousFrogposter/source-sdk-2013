@@ -105,6 +105,9 @@ PRECACHE_WEAPON_REGISTER( tf_weapon_stickbomb );
 #define TF_BREAKABLE_MELEE_BODY_NOTBROKEN 0
 #define TF_BREAKABLE_MELEE_BODY_BROKEN 1
 
+#define TF_WEAPON_STICKBOMB_DAMAGE 35
+extern ConVar ff_use_new_caber;
+
 //=============================================================================
 //
 // Weapon Breakable Melee functions.
@@ -216,6 +219,11 @@ void CTFStickBomb::Precache( void )
 	PrecacheModel( TF_WEAPON_STICKBOMB_BROKEN_MODEL );
 }
 
+float CTFStickBomb::GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* piCustomDamage )
+{
+	return ff_use_new_caber.GetBool() ? BaseClass::GetMeleeDamage( pTarget, piDamageType, piCustomDamage ) : TF_WEAPON_STICKBOMB_DAMAGE;
+}
+
 void CTFStickBomb::Smack( void )
 {
 	CTFWeaponBaseMelee::Smack();
@@ -258,7 +266,7 @@ void CTFStickBomb::Smack( void )
 			if ( IsCurrentAttackACrit() )
 				dmgType |= DMG_CRITICAL;
 
-			CTakeDamageInfo info( pTFPlayer, pTFPlayer, this, explosion, explosion, 75.0f, dmgType, TF_DMG_CUSTOM_STICKBOMB_EXPLOSION, &explosion );
+			CTakeDamageInfo info( pTFPlayer, pTFPlayer, this, explosion, explosion, ff_use_new_caber.GetBool() ? 75.0f : 100.0f, dmgType, TF_DMG_CUSTOM_STICKBOMB_EXPLOSION, &explosion );
 			CTFRadiusDamageInfo radiusinfo( &info, explosion, 100.f );
 			TFGameRules()->RadiusDamage( radiusinfo );
 		}

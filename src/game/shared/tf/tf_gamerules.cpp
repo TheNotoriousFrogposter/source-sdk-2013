@@ -822,9 +822,23 @@ ConVar tf_medieval( "tf_medieval", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable
 
 ConVar tf_medieval_autorp( "tf_medieval_autorp", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Medieval Mode auto-roleplaying.\n", true, 0, true, 1 );
 
-ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
-ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
+ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
+ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_NOTIFY | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
 
+ConVar ff_enforcer_disguise_damage_bonus ( "ff_enforcer_disguise_damage_bonus", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 gives damage bonus when undisguised, 1 gives damage bonus when disguised." );
+ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "TF_COND_MEGAHEAL prevents capping or defending control points." );
+ConVar ff_minigun_penalty( "ff_minigun_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
+ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% resistance against initial hit, 65%-20% resistance + speed boost for the next 3 seconds" );
+ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Changes the Ullapool Caber's explosion behavior to the newer format." );
+ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance or not. 2 uses 2013 version of the Loose Cannon" );
+ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion sizes (146Hu)instead of older ones (159Hu) for Demoman, grenade direct hit damage depends on where the grenade struck the enemy." );
+ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
+ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 3 seconds and no recharging from ammo pack if disabled." );
+ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
+ConVar ff_use_new_ambassador ( "ff_use_new_ambassador", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Headshot crit has 1200 hammer unit range limit." );
+ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
+ConVar ff_use_new_gunslinger ( "ff_use_new_gunslinger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use modern mini sentry." );
+ConVar ff_use_new_tide_turner ( "ff_use_new_tide_turner", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Mini crit at the end of the charge instead of a crit." );
 
 #ifndef GAME_DLL
 extern ConVar cl_burninggibs;
@@ -5780,9 +5794,15 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 		{
 			case TF_WEAPON_PIPEBOMBLAUNCHER :
 			case TF_WEAPON_GRENADELAUNCHER :
-			case TF_WEAPON_CANNON :
-			case TF_WEAPON_STICKBOMB :
 				flAdjustedDamage *= 0.75f;
+				break;
+			case TF_WEAPON_CANNON :
+				if ( ff_use_new_cannon.GetInt() <= 1 )
+				flAdjustedDamage *= 0.75f;
+				break;
+			case TF_WEAPON_STICKBOMB :
+				if (ff_use_new_caber.GetBool())
+					flAdjustedDamage *= 0.75f;
 				break;
 		}
 	}
@@ -6165,7 +6185,10 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				{
 					info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 					eBonusEffect = kBonusEffect_DoubleDonk;
-					flDamage = Max( flDamage, info.GetMaxDamage() ); // Double donk victims score max damage
+					if ( ff_use_new_cannon.GetInt() <= 1 )
+					{
+						flDamage = Max( flDamage, info.GetMaxDamage() ); // Double donk victims score max damage
+					}
 					EconEntity_OnOwnerKillEaterEvent( pGrenadeLauncher, pTFAttacker, pVictim, kKillEaterEvent_DoubleDonks );
 				}
 			}
@@ -6583,8 +6606,13 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			case TF_WEAPON_PIPEBOMBLAUNCHER :	// Stickies
 			case TF_WEAPON_GRENADELAUNCHER :
 			case TF_WEAPON_CANNON :
-			case TF_WEAPON_STICKBOMB:
 				if ( !( bitsDamage & DMG_NOCLOSEDISTANCEMOD ) )
+				{
+					flRandomDamage *= 0.2f;
+				}
+				break;
+			case TF_WEAPON_STICKBOMB :
+				if ( !( bitsDamage & DMG_NOCLOSEDISTANCEMOD ) && ff_use_new_caber.GetBool() )
 				{
 					flRandomDamage *= 0.2f;
 				}
@@ -7352,10 +7380,10 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			if ( pVictim->m_Shared.InCond( TF_COND_FEIGN_DEATH ) || pVictim->m_Shared.IsFeignDeathReady() )
 			{
 				// Damage reduction is proportional to cloak remaining (60%->20%)
-				float flDamageReduction = RemapValClamped( pVictim->m_Shared.GetSpyCloakMeter(), 50.0f, 0.0f, tf_feign_death_damage_scale.GetFloat(), tf_stealth_damage_reduction.GetFloat() );
+				float flDamageReduction = ff_use_new_dead_ringer.GetBool() ? RemapValClamped( pVictim->m_Shared.GetSpyCloakMeter(), 50.0f, 0.0f, tf_feign_death_damage_scale.GetFloat(), tf_stealth_damage_reduction.GetFloat() ): 0.1f;
 
 				// On Activate Reduce Remaining Cloak by 50%
-				if ( pVictim->m_Shared.IsFeignDeathReady() )
+				if ( pVictim->m_Shared.IsFeignDeathReady() && ff_use_new_dead_ringer.GetBool() )
 				{
 					flDamageReduction = tf_feign_death_activate_damage_scale.GetFloat();
 				}
@@ -16798,7 +16826,7 @@ bool CTFGameRules::PlayerMayCapturePoint( CBasePlayer *pPlayer, int iPointIndex,
 		}
 		return false;
 	}
-	if ( ( pTFPlayer->m_Shared.IsInvulnerable() || pTFPlayer->m_Shared.InCond( TF_COND_MEGAHEAL ) ) && !IsMannVsMachineMode() )
+	if ( ( pTFPlayer->m_Shared.IsInvulnerable() || ( ff_megaheal_prevent_capping.GetBool() && pTFPlayer->m_Shared.InCond( TF_COND_MEGAHEAL ) ) ) && !IsMannVsMachineMode() )
 	{
 		if ( pszReason )
 		{

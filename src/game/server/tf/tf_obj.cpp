@@ -109,6 +109,8 @@ ConVar tf_obj_damage_tank_achievement_amount( "tf_obj_damage_tank_achievement_am
 extern short g_sModelIndexFireball;
 extern ConVar tf_cheapobjects;
 
+extern ConVar ff_use_new_gunslinger;
+
 // Minimum distance between 2 objects to ensure player movement between them
 #define MINIMUM_OBJECT_SAFE_DISTANCE		100
 
@@ -1390,7 +1392,7 @@ bool CBaseObject::StartBuilding( CBaseEntity *pBuilder )
 	else if ( IsMiniBuilding() )
 	{
 		int iHealth = GetMaxHealthForCurrentLevel();
-		if ( !IsDisposableBuilding() )
+		if ( !IsDisposableBuilding() && ff_use_new_gunslinger.GetBool() )
 		{
 			iHealth /= 2.0f;
 		}
@@ -2121,7 +2123,8 @@ bool CBaseObject::Construct( float flHealth )
 		// Minibuildings build health at a reduced rate
 		// Staging_engy
 		{
-			SetHealth( Min( (float)GetMaxHealth(), m_flHealth + (IsMiniBuilding() ? (flHealth * 0.5f) : flHealth) ) );
+			float mini_mult = ff_use_new_gunslinger.GetBool() ? 0.5f : 0.f;
+			SetHealth( Min( (float)GetMaxHealth(), m_flHealth + (IsMiniBuilding() ? (flHealth * mini_mult) : flHealth) ) );
 		}
 
 		// Return true if we're constructed now
@@ -2192,7 +2195,7 @@ float CBaseObject::GetConstructionMultiplier( void )
 		{
 			m_ConstructorList.RemoveAt( iThis );
 		}
-		else
+		else if ( !IsMiniBuilding() || ff_use_new_gunslinger.GetBool() )
 		{
 			// STAGING_ENGY
 			// each Player adds a fixed amount of speed boost
@@ -2258,7 +2261,7 @@ void CBaseObject::CreateObjectGibs( void )
 	int nMetalPerGib = nTotalMetal / m_aGibs.Count();
 	int nLeftOver = nTotalMetal % m_aGibs.Count();
 
-	if ( IsMiniBuilding() )
+	if ( IsMiniBuilding() && ff_use_new_gunslinger.GetBool() )
 	{
 		// STAGING_ENGY
 		nMetalPerGib = 0;

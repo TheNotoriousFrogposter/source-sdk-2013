@@ -94,6 +94,10 @@ extern ConVar cl_crosshair_file;
 extern ConVar cl_flipviewmodels;
 #endif
 
+extern ConVar ff_use_new_spycicle;
+extern ConVar ff_use_new_katana;
+extern ConVar ff_new_weapon_switch_speed;
+
 //=============================================================================
 //
 // Global functions.
@@ -1137,7 +1141,7 @@ bool CTFWeaponBase::CanHolster( void ) const
 	CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
 	if ( pPlayer && ( pPlayer->GetActiveWeapon() != this || gpGlobals->curtime >= pPlayer->m_Shared.m_flFirstPrimaryAttack ) )
 	{
-		if ( IsHonorBound() && pPlayer->m_Shared.m_iKillCountSinceLastDeploy == 0 && pPlayer->GetHealth() <= 50 )
+		if ( IsHonorBound() && pPlayer->m_Shared.m_iKillCountSinceLastDeploy == 0 && ( pPlayer->GetHealth() <= 50 || !ff_use_new_katana.GetBool() ) )
 		{
 #ifdef CLIENT_DLL
 			pPlayer->EmitSound( "Player.DenyWeaponSelection" );
@@ -1221,6 +1225,8 @@ bool CTFWeaponBase::Deploy( void )
 			return false;
 
 		float flWeaponSwitchTime = 0.5f;
+		if ( !ff_new_weapon_switch_speed.GetBool() )
+			flWeaponSwitchTime = 0.67f;
 
 		// Overrides the anim length for calculating ready time.
 		float flDeployTimeMultiplier = 1.0f;
@@ -5419,7 +5425,14 @@ void CTFWeaponBase::ApplyOnInjuredAttributes( CTFPlayer *pVictim, CTFPlayer *pAt
 		CALL_ATTRIB_HOOK_INT( iBecomeFireproofOnHitByFire, become_fireproof_on_hit_by_fire );
 		if ( iBecomeFireproofOnHitByFire > 0 && ( ( info.GetDamageType() & DMG_BURN ) || ( info.GetDamageType() & DMG_IGNITE ) ) )
 		{
-			pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 1.f );
+			if ( ff_use_new_spycicle.GetBool() )
+			{
+				pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 1.f );
+			}
+			else
+			{
+				pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 3.f );
+			}
 
 			if ( pVictim->m_Shared.InCond( TF_COND_BURNING ) )
 			{

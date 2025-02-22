@@ -292,6 +292,11 @@ extern ConVar tf_tournament_classchange_allowed;
 extern ConVar tf_tournament_classchange_ready_allowed;
 extern ConVar tf_rocketpack_impact_push_min;
 extern ConVar tf_rocketpack_impact_push_max;
+
+extern ConVar ff_use_new_spycicle;
+extern ConVar ff_use_new_dead_ringer;
+extern ConVar ff_use_new_katana;
+
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
 extern ConVar bot_mimic;
@@ -5121,6 +5126,9 @@ bool CTFPlayer::AddToSpyKnife( float value, bool force )
 {
 	CTFKnife *pWpn = (CTFKnife *)Weapon_OwnsThisID( TF_WEAPON_KNIFE );
 	if ( !pWpn )
+		return false;
+	
+	if ( !ff_use_new_spycicle.GetBool() )
 		return false;
 
 	return pWpn->DecreaseRegenerationTime( value, force );
@@ -11557,7 +11565,7 @@ void CTFPlayer::OnKilledOther_Effects( CBaseEntity *pVictim, const CTakeDamageIn
 		// due to bizarre floating point rounding or something equally silly.
 		int iTargetHealth = ( int )( ( ( float )iRestoreHealthToPercentageOnKill / 100.0f ) * ( float )iRestoreMax ) + 1;
 
-		int iBaseMaxHealth = GetMaxHealth() * 1.5,
+		int iBaseMaxHealth = ff_use_new_katana.GetBool() ? ( GetMaxHealth() * 1.5 ) : GetMaxHealth(),
 			iNewHealth = Min( GetHealth() + iTargetHealth, iBaseMaxHealth ),
 			iDeltaHealth = Max(iNewHealth - GetHealth(), 0);
 
@@ -15710,14 +15718,18 @@ void CTFPlayer::SpyDeadRingerDeath( const CTakeDamageInfo& info )
 	if ( !CanGoInvisible( true ) || ( m_Shared.GetSpyCloakMeter() < 100.0f ) )
 		return;
 
-	m_Shared.SetSpyCloakMeter( 50.0f );
+	if ( ff_use_new_dead_ringer.GetBool() )
+	{
+		m_Shared.SetSpyCloakMeter( 50.0f );
+	}
 
 	m_bGoingFeignDeath = true; 
 
 	FeignDeath( info, true );
 
 	// Go feign death.
-	m_Shared.AddCond( TF_COND_FEIGN_DEATH, tf_feign_death_duration.GetFloat() );
+	float feign_duration = ff_use_new_dead_ringer.GetBool() ? tf_feign_death_duration.GetFloat() : 6.f;
+	m_Shared.AddCond( TF_COND_FEIGN_DEATH, feign_duration );
 	m_bGoingFeignDeath = false;
 }
 

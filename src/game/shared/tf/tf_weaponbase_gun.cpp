@@ -57,6 +57,7 @@ DEFINE_THINKFUNC( ZoomIn ),
 END_DATADESC()
 #endif
 
+extern ConVar ff_enforcer_disguise_damage_bonus;
 //=============================================================================
 //
 // TFWeaponBase Gun functions.
@@ -911,7 +912,9 @@ float CTFWeaponBaseGun::GetProjectileDamage( void )
 
 	// Some weapons mod dmg when not disguised
 	bool bDisguised = pPlayer && pPlayer->m_Shared.InCond( TF_COND_DISGUISED );
-	if ( bDisguised )
+	bool bUndisguised = pPlayer && !pPlayer->m_Shared.InCond( TF_COND_DISGUISED );
+	
+	if ( ff_enforcer_disguise_damage_bonus.GetBool() ? bDisguised : bUndisguised )
 	{
 		CALL_ATTRIB_HOOK_FLOAT( flDamage, mult_dmg_disguised );
 	}

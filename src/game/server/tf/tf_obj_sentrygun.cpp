@@ -34,6 +34,8 @@ extern bool IsInCommentaryMode();
 
 extern ConVar tf_nav_in_combat_range;
 
+extern ConVar ff_use_new_gunslinger;
+
 // Ground placed version
 #define SENTRY_MODEL_PLACEMENT			"models/buildables/sentry1_blueprint.mdl"
 #define SENTRY_MODEL_LEVEL_1			"models/buildables/sentry1.mdl"
@@ -621,6 +623,11 @@ bool CObjectSentrygun::OnWrenchHit( CTFPlayer *pPlayer, CTFWrench *pWrench, Vect
 		if ( m_nShieldLevel == SHIELD_NORMAL )
 		{
 			flRepairAmount *= SHIELD_NORMAL_VALUE;
+		}
+
+		if ( IsMiniBuilding() && !ff_use_new_gunslinger.GetBool() )
+		{
+			flRepairAmount = 0.f;
 		}
 		
 		if ( Command_Repair( pPlayer, flRepairAmount, 1.f ) )
