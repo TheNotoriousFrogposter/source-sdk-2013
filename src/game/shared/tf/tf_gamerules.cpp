@@ -852,7 +852,7 @@ ConVar ff_use_new_wrangler ( "ff_use_new_wrangler", "1", FCVAR_NOTIFY | FCVAR_RE
 ConVar ff_use_new_atomizer ( "ff_use_new_atomizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - triple jump deals 10 damage self damage, 1 - require the atomizer to be deployed, triple jump not available for 0.7s after deploying atomizer." );
 ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no damage if disabled." );
 ConVar ff_use_new_sydney_sleeper ( "ff_use_new_sydney_sleeper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - jarate explosion on a fully charged bodyshot or a headshot, 1 - headshot does minicrit and reduce jarate cooldown by 1 second" );
-ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no damage if disabled." );
+ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Five additional air jumps instead of mini-crit, manual activation, no charging by running." );
 ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives ubercharge, 300 burn damage to fill the meter." );
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a sandwich to the ground." );
 ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff." );
