@@ -31,7 +31,7 @@ END_PREDICTION_DATA()
 LINK_ENTITY_TO_CLASS( tf_weapon_shovel, CTFShovel );
 PRECACHE_WEAPON_REGISTER( tf_weapon_shovel );
 
-ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff" );
+extern ConVar ff_use_split_equalizer;
 
 //=============================================================================
 //

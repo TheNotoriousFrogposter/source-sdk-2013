@@ -32,6 +32,9 @@ BEGIN_DATADESC( CTFWearableDemoShield )
 END_DATADESC()
 // -- Data Desc
 
+extern ConVar ff_new_shield_charge;
+extern ConVar ff_use_new_tide_turner;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -197,7 +200,28 @@ void CTFWearableDemoShield::ShieldBash( CTFPlayer *pPlayer, float flCurrentCharg
 		ApplyMultiDamage();
 
 		// Calculate charge crit if we did any bash damage
-		pOwner->m_Shared.CalcChargeCrit();
+		if ( ff_new_shield_charge.GetBool() )
+		{
+			pOwner->m_Shared.CalcChargeCrit();
+		}
+		else
+		{
+			// Keying on TideTurner
+
+			int iDemoChargeDamagePenalty = 0;
+
+			CALL_ATTRIB_HOOK_INT_ON_OTHER( pOwner, iDemoChargeDamagePenalty, lose_demo_charge_on_damage_when_charging );
+			if ( iDemoChargeDamagePenalty && ff_use_new_tide_turner.GetBool() )
+			{
+				pOwner->m_Shared.SetNextMeleeCrit( MELEE_MINICRIT );
+			}
+			else
+			{
+				pOwner->m_Shared.SetNextMeleeCrit( MELEE_CRIT );
+			}
+
+			SetContextThink( &CTFPlayer::RemoveMeleeCrit, gpGlobals->curtime + 0.3f, "RemoveMeleeCrit" );
+		}
 	}
 
 	UTIL_ScreenShake( pOwner->WorldSpaceCenter(), 25.0, 150.0, 1.0, 750, SHAKE_START );
@@ -211,16 +235,42 @@ void CTFWearableDemoShield::ShieldBash( CTFPlayer *pPlayer, float flCurrentCharg
 float CTFWearableDemoShield::CalculateChargeDamage( float flCurrentChargeMeter )
 {
 	float flImpactDamage = RemapValClamped( flCurrentChargeMeter, 90.0f, 40.0f, 15.0f, 50.0f );
+	
+	if( !ff_new_shield_charge.GetBool() )
+	{
+		if ( flCurrentChargeMeter <= 40.0f )
+		{
+			flImpactDamage = 50.0f;
+		}
+		else
+		{
+			flImpactDamage = 0.f;
+		}
+	}
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
 	if ( !pOwner )
 		return flImpactDamage;
+	
+	int iFullImpactDamage = 0;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, iFullImpactDamage, no_charge_impact_range );
+	if ( iFullImpactDamage == 1 )
+	{
+		flImpactDamage = 50.0f;
+	}
 
 	// Cap at 5 decapitations for dmg bonus
 	int iDecaps = Min( pOwner->m_Shared.GetDecapitations(), 5 );
 	if ( iDecaps > 0 )
 	{
-		flImpactDamage *= (1.0f + iDecaps * 0.1f );
+		if( ff_new_shield_charge.GetBool() )
+		{
+			flImpactDamage *= (1.0f + iDecaps * 0.1f );
+		}
+		else
+		{
+			flImpactDamage *= (1.0f + iDecaps * 0.2f );
+		}
 	}
 
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, flImpactDamage, charge_impact_damage );

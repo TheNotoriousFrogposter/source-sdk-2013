@@ -6,6 +6,7 @@
 #include "cbase.h"
 #include "tf_projectile_energy_ring.h"
 #include "tf_weapon_raygun.h"
+#include "tf_weapon_compound_bow.h"
 
 #ifdef CLIENT_DLL
 #include "c_basetempentity.h"
@@ -67,6 +68,7 @@ PRECACHE_REGISTER_FN(PrecacheRing);
 ConVar tf_bison_tick_time( "tf_bison_tick_time", "0.025", FCVAR_CHEAT );
 #endif
 
+extern ConVar ff_use_new_raygun;
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -78,6 +80,7 @@ CTFProjectile_EnergyRing::CTFProjectile_EnergyRing()
 #ifdef GAME_DLL
 	m_flLastHitTime = 0.f;
 #endif
+	m_flInitTime = 0.f;
 }
 
 //-----------------------------------------------------------------------------
@@ -188,6 +191,12 @@ void CTFProjectile_EnergyRing::Spawn()
 	SetRenderMode( kRenderNone	);
 	SetSolidFlags( FSOLID_TRIGGER | FSOLID_NOT_SOLID );
 	SetCollisionGroup( TFCOLLISION_GROUP_ROCKETS );
+	if ( !ff_use_new_raygun.GetBool() )
+	{
+		CollisionProp()->UseTriggerBounds( true, 24, true );
+	}
+
+	m_flInitTime = gpGlobals->curtime;
 }
 
 //-----------------------------------------------------------------------------
@@ -256,15 +265,45 @@ void CTFProjectile_EnergyRing::ProjectileTouch( CBaseEntity *pOther )
 
 	if ( bCombatEntity )
 	{
+		if ( !ff_use_new_raygun.GetBool() )
+		{
+			if ( pOther->InSameTeam( this ) )
+			{
+				CTFPlayer *pPlayer = ToTFPlayer( pOther );
+				if( pPlayer )
+				{
+					CTFCompoundBow *pBow = static_cast<CTFCompoundBow *>( pPlayer->GetActiveTFWeapon() );
+					if ( pBow )
+					{
+						// Light the bow on fire.
+						pBow->SetArrowAlight( true );
+					}
+				}
+			}
+		}
+
 		// Bison projectiles shouldn't collide with friendly things
-		if ( ShouldPenetrate() && ( pOther->InSameTeam( this ) || ( gpGlobals->curtime - m_flLastHitTime ) < tf_bison_tick_time.GetFloat() ) )
+		if ( ( ShouldPenetrate() || !ff_use_new_raygun.GetBool() ) && ( pOther->InSameTeam( this ) || ( gpGlobals->curtime - m_flLastHitTime ) < tf_bison_tick_time.GetFloat() ) )
 			return;
 
 		m_flLastHitTime = gpGlobals->curtime;
 
-		const int nDamage = GetDamage();
+		float lifeTimeScale = 1.f;
 
-		CTakeDamageInfo info( this, pOwner, GetLauncher(), nDamage, GetDamageType(), TF_DMG_CUSTOM_PLASMA );
+		if ( !ff_use_new_raygun.GetBool() )
+		{
+			lifeTimeScale = RemapValClamped( gpGlobals->curtime - m_flInitTime, 0.175f, 0.35f, 1.0f, 0.6f );
+		}
+		
+		const int nDamage = GetDamage() * lifeTimeScale;
+		
+		int iDmgType = GetDamageType();
+		if ( ff_use_new_raygun.GetBool() )
+		{
+			iDmgType |= DMG_USEDISTANCEMOD;
+		}
+
+		CTakeDamageInfo info( this, pOwner, GetLauncher(), nDamage, iDmgType, TF_DMG_CUSTOM_PLASMA );
 		info.SetReportedPosition( pOwner->GetAbsOrigin() );
 		info.SetDamagePosition( pTrace->endpos );
 

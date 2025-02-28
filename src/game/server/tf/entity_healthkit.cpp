@@ -33,6 +33,8 @@ LINK_ENTITY_TO_CLASS( item_healthammokit, CHealthAmmoKit );
 
 IMPLEMENT_AUTO_LIST( IHealthKitAutoList );
 
+extern ConVar ff_lunchbox_self_healing;
+
 //=============================================================================
 //
 // CTF HealthKit functions.
@@ -77,7 +79,7 @@ bool CHealthKit::MyTouch( CBasePlayer *pPlayer )
 		bool bPerformPickup = false;
 
 		// In the case of sandvich's owner, only restore ammo
-		if ( GetOwnerEntity() == pPlayer && bIsAnyHeavyWithSandvichEquippedPickingUp )
+		if ( GetOwnerEntity() == pPlayer && bIsAnyHeavyWithSandvichEquippedPickingUp && !ff_lunchbox_self_healing.GetBool() )
 		{
 			if ( pPlayer->GiveAmmo( 1, TF_AMMO_GRENADES1, false ) )
 			{
@@ -141,7 +143,7 @@ bool CHealthKit::MyTouch( CBasePlayer *pPlayer )
 				EmitSound( user, entindex(), TF_HEALTHKIT_PICKUP_SOUND );
 
 				CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
-				if ( pOwner && ( pOwner != pTFPlayer ) )
+				if ( pOwner && ( pOwner != pTFPlayer || ff_lunchbox_self_healing.GetBool() ) )
 				{
 					if ( pOwner->GetTeamNumber() == pTFPlayer->GetTeamNumber() )
 					{
@@ -179,7 +181,7 @@ bool CHealthKit::MyTouch( CBasePlayer *pPlayer )
 
 				CTF_GameStats.Event_PlayerHealthkitPickup( pTFPlayer );
 			}
-			else if ( !m_bThrownSingleInstance )
+			else if ( !m_bThrownSingleInstance || ff_lunchbox_self_healing.GetBool() )
 			{
 				if ( bIsAnyHeavyWithSandvichEquippedPickingUp )
 				{

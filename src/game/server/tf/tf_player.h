@@ -555,7 +555,7 @@ public:
 	void InputRoundSpawn( inputdata_t &inputdata );
 
 	bool InAirDueToExplosion( void ) { return (!(GetFlags() & FL_ONGROUND) && (GetWaterLevel() == WL_NotInWater) && ( (m_iBlastJumpState != 0) ) || m_Shared.InCond( TF_COND_ROCKETPACK ) ); }
-	bool InAirDueToKnockback( void ) { return (!(GetFlags() & FL_ONGROUND) && (GetWaterLevel() == WL_NotInWater) && ( (m_iBlastJumpState != 0) || m_Shared.InCond( TF_COND_KNOCKED_INTO_AIR ) || m_Shared.InCond( TF_COND_GRAPPLINGHOOK ) || m_Shared.InCond( TF_COND_GRAPPLINGHOOK_SAFEFALL ) ) ); }
+	bool InAirDueToKnockback( void ) { return (!(GetFlags() & FL_ONGROUND) && (GetWaterLevel() == WL_NotInWater) && ( (m_iBlastJumpState != 0) || m_Shared.InCond( TF_COND_KNOCKED_INTO_AIR ) || m_Shared.InCond( TF_COND_GRAPPLINGHOOK ) || m_Shared.InCond( TF_COND_GRAPPLINGHOOK_SAFEFALL )  || m_Shared.InCond( TF_COND_ROCKETPACK ) ) ); }
 
 	bool IsCoaching() const { return m_bIsCoaching; }
 	void SetIsCoaching( bool bIsCoaching );

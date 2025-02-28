@@ -296,6 +296,8 @@ extern ConVar tf_rocketpack_impact_push_max;
 extern ConVar ff_use_new_spycicle;
 extern ConVar ff_use_new_dead_ringer;
 extern ConVar ff_use_new_katana;
+extern ConVar ff_use_new_sydney_sleeper;
+extern ConVar ff_use_new_phlog;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
@@ -2895,7 +2897,6 @@ void CTFPlayer::PrecachePlayerModels( void )
 			PrecacheModel( pszModel );
 		}
 
-/*
 		if ( !IsX360() )
 		{
 			// Precache the hardware facial morphed models as well.
@@ -2905,7 +2906,6 @@ void CTFPlayer::PrecachePlayerModels( void )
 				PrecacheModel( pszHWMModel );
 			}
 		}
-*/
 	}
 	
 	// Always precache the silly gibs.
@@ -9143,35 +9143,40 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			CTFBonesaw *pBoneSaw = static_cast< CTFBonesaw* >( pAttackerWeapon );
 			if ( pBoneSaw->GetBonesawType() == BONESAW_UBER_SAVEDONDEATH )
 			{
-				// Spawn their spleen
-				CPhysicsProp *pRandomInternalOrgan = dynamic_cast< CPhysicsProp* >( CreateEntityByName( "prop_physics_override" ) );
-				if ( pRandomInternalOrgan )
+				float flPreserveUber = 0.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pAttackerWeapon, flPreserveUber, ubercharge_preserved_on_spawn_max );
+				if ( flPreserveUber > 0.f )
 				{
-					pRandomInternalOrgan->SetCollisionGroup( COLLISION_GROUP_DEBRIS );
-					pRandomInternalOrgan->AddFlag( FL_GRENADE );
-					char buf[512];
-					Q_snprintf( buf, sizeof( buf ), "%.10f %.10f %.10f", GetAbsOrigin().x, GetAbsOrigin().y, GetAbsOrigin().z );
-					pRandomInternalOrgan->KeyValue( "origin", buf );
-					Q_snprintf( buf, sizeof( buf ), "%.10f %.10f %.10f", GetAbsAngles().x, GetAbsAngles().y, GetAbsAngles().z );
-					pRandomInternalOrgan->KeyValue( "angles", buf );
-					pRandomInternalOrgan->KeyValue( "model", "models/player/gibs/random_organ.mdl" );
-					pRandomInternalOrgan->KeyValue( "fademindist", "-1" );
-					pRandomInternalOrgan->KeyValue( "fademaxdist", "0" );
-					pRandomInternalOrgan->KeyValue( "fadescale", "1" );
-					pRandomInternalOrgan->KeyValue( "inertiaScale", "1.0" );
-					pRandomInternalOrgan->KeyValue( "physdamagescale", "0.1" );
-					DispatchSpawn( pRandomInternalOrgan );
-					pRandomInternalOrgan->m_takedamage = DAMAGE_YES;	// Take damage, otherwise this can block trains
-					pRandomInternalOrgan->SetHealth( 100 );
-					pRandomInternalOrgan->Activate();
+					// Spawn their spleen
+					CPhysicsProp *pRandomInternalOrgan = dynamic_cast< CPhysicsProp* >( CreateEntityByName( "prop_physics_override" ) );
+					if ( pRandomInternalOrgan )
+					{
+						pRandomInternalOrgan->SetCollisionGroup( COLLISION_GROUP_DEBRIS );
+						pRandomInternalOrgan->AddFlag( FL_GRENADE );
+						char buf[512];
+						Q_snprintf( buf, sizeof( buf ), "%.10f %.10f %.10f", GetAbsOrigin().x, GetAbsOrigin().y, GetAbsOrigin().z );
+						pRandomInternalOrgan->KeyValue( "origin", buf );
+						Q_snprintf( buf, sizeof( buf ), "%.10f %.10f %.10f", GetAbsAngles().x, GetAbsAngles().y, GetAbsAngles().z );
+						pRandomInternalOrgan->KeyValue( "angles", buf );
+						pRandomInternalOrgan->KeyValue( "model", "models/player/gibs/random_organ.mdl" );
+						pRandomInternalOrgan->KeyValue( "fademindist", "-1" );
+						pRandomInternalOrgan->KeyValue( "fademaxdist", "0" );
+						pRandomInternalOrgan->KeyValue( "fadescale", "1" );
+						pRandomInternalOrgan->KeyValue( "inertiaScale", "1.0" );
+						pRandomInternalOrgan->KeyValue( "physdamagescale", "0.1" );
+						DispatchSpawn( pRandomInternalOrgan );
+						pRandomInternalOrgan->m_takedamage = DAMAGE_YES;	// Take damage, otherwise this can block trains
+						pRandomInternalOrgan->SetHealth( 100 );
+						pRandomInternalOrgan->Activate();
 
-					Vector vecImpulse = RandomVector( -1.f, 1.f );
-					vecImpulse.z = 1.f;
-					VectorNormalize( vecImpulse );
-					Vector vecVelocity = vecImpulse * 250.0;
-					pRandomInternalOrgan->ApplyAbsVelocityImpulse( vecVelocity );
+						Vector vecImpulse = RandomVector( -1.f, 1.f );
+						vecImpulse.z = 1.f;
+						VectorNormalize( vecImpulse );
+						Vector vecVelocity = vecImpulse * 250.0;
+						pRandomInternalOrgan->ApplyAbsVelocityImpulse( vecVelocity );
 
-					pRandomInternalOrgan->ThinkSet( &CBaseEntity::SUB_Remove, gpGlobals->curtime + 5.f, "DieContext" );
+						pRandomInternalOrgan->ThinkSet( &CBaseEntity::SUB_Remove, gpGlobals->curtime + 5.f, "DieContext" );
+					}
 				}
 			}
 		}
@@ -9760,7 +9765,19 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		// Buff 5: our pyro attacker get rage when we're damaged by fire
 		if ( ( info.GetDamageType() & DMG_BURN ) != 0 || ( info.GetDamageType() & DMG_PLASMA ) != 0 )
 		{
-			float flInverseRageGainScale = TFGameRules()->IsMannVsMachineMode() ? 12.f : 3.f;
+			float flInverseRageGainScale = 0.f;
+			if ( TFGameRules()->IsMannVsMachineMode() )
+			{
+				flInverseRageGainScale = 12.f;
+			}
+			else if ( ff_use_new_phlog.GetBool() )
+			{
+				flInverseRageGainScale = 3.f;
+			}
+			else
+			{
+				flInverseRageGainScale = 2.25f;
+			}
 			HandleRageGain( pTFAttacker, kRageBuffFlag_OnBurnDamageDealt, info.GetDamage() * flRageScale, flInverseRageGainScale );
 		}
 	}
@@ -10739,7 +10756,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 							(int)GetAbsOrigin().y,
 							(int)GetAbsOrigin().z );
 
-						if ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD )
+						if ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD && ff_use_new_sydney_sleeper.GetBool() )
 						{
 							auto pWeaponBaseSecondary = dynamic_cast< CTFWeaponBase* >( pTFAttacker->GetEntityForLoadoutSlot( LOADOUT_POSITION_SECONDARY ) );
 							if ( pWeaponBaseSecondary && pWeaponBaseSecondary->HasEffectBarRegeneration() )
@@ -10751,9 +10768,14 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 								}
 							}
 
-// 							// Do an AE when it's a headshot
+ 							// Do an AE when it's a headshot
 // 							JarExplode( entindex(), pTFAttacker, pTFWeapon, pTFWeapon, info.GetDamagePosition(), pTFAttacker->GetTeamNumber(), tf_space_thrust_scout.GetFloat(), TF_COND_URINE, flJarateTime, "peejar_impact", TF_WEAPON_PEEJAR_EXPLODE_SOUND );
 // 							NDebugOverlay::Sphere( info.GetDamagePosition(), tf_space_thrust_scout.GetFloat(), 255, 20, 20, true, 5.f );
+						}
+						// explosive jarate shot for a fully charged shot or headshot
+						if ( pSniper->IsFullyCharged() || IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD && !ff_use_new_sydney_sleeper.GetBool() )
+						{
+							JarExplode( entindex(), pTFAttacker, pTFWeapon, pTFWeapon, info.GetDamagePosition(), pTFAttacker->GetTeamNumber(), 100.f, TF_COND_URINE, flJarateTime, "peejar_impact", TF_WEAPON_PEEJAR_EXPLODE_SOUND  );
 						}
 					}
 				}
@@ -14116,31 +14138,31 @@ int CTFPlayer::GiveAmmo( int iCount, int iAmmoIndex, bool bSuppressSound, EAmmoS
 	// ammo.
 	if ( iAmmoIndex != TF_AMMO_METAL )
 	{
-		//int iAmmoBecomesHealth = 0;
-		//CALL_ATTRIB_HOOK_INT( iAmmoBecomesHealth, ammo_becomes_health );
-		//if ( iAmmoBecomesHealth == 1 )
-		//{
-		//	// Ammo from ground pickups is converted to health.
-		//	if ( eAmmoSource == kAmmoSource_Pickup )
-		//	{
-		//		int iTakenHealth = TakeHealth( iCount, DMG_GENERIC );
-		//		if ( iTakenHealth > 0 )
-		//		{
-		//			if ( !bSuppressSound )
-		//			{
-		//				EmitSound( "BaseCombatCharacter.AmmoPickup" );
-		//			}
-		//			m_Shared.HealthKitPickupEffects( iCount );
-		//		}
-		//		return iTakenHealth;
-		//	}
+		int iAmmoBecomesHealth = 0;
+		CALL_ATTRIB_HOOK_INT( iAmmoBecomesHealth, ammo_becomes_health );
+		if ( iAmmoBecomesHealth == 1 )
+		{
+			// Ammo from ground pickups is converted to health.
+			if ( eAmmoSource == kAmmoSource_Pickup )
+			{
+				int iTakenHealth = TakeHealth( iCount, DMG_GENERIC );
+				if ( iTakenHealth > 0 )
+				{
+					if ( !bSuppressSound )
+					{
+						EmitSound( "BaseCombatCharacter.AmmoPickup" );
+					}
+					m_Shared.HealthKitPickupEffects( iCount );
+				}
+				return iTakenHealth;
+			}
 
-		//	// Ammo from the cart or engineer dispensers is flatly ignored.
-		//	if ( eAmmoSource == kAmmoSource_DispenserOrCart )
-		//		return 0;
+			// Ammo from the cart or engineer dispensers is flatly ignored.
+			if ( eAmmoSource == kAmmoSource_DispenserOrCart )
+				return 0;
 
-		//	Assert( eAmmoSource == kAmmoSource_Resupply );
-		//}
+			Assert( eAmmoSource == kAmmoSource_Resupply );
+		}
 
 		// Items that rely on timers to refill ammo use these attributes
 		// Prevents "touch supply closet and spam the thing" scenario.
@@ -17950,9 +17972,20 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 					m_Shared.ActivateRageBuff( this, iBuffType );
 
 					// Pyro needs high defense while he's taunting
-					//m_Shared.AddCond( TF_COND_DEFENSEBUFF_HIGH, 3.0f );
-					m_Shared.AddCond( TF_COND_INVULNERABLE_USER_BUFF, 2.60f );
-					m_Shared.AddCond( TF_COND_MEGAHEAL, 2.60f );
+					if ( ff_use_new_phlog.GetBool() )
+					{
+						m_Shared.AddCond( TF_COND_MEGAHEAL, 2.60f );
+						m_Shared.AddCond( TF_COND_INVULNERABLE_USER_BUFF, 2.60f );
+					}
+					else
+					{
+						m_Shared.AddCond( TF_COND_DEFENSEBUFF_HIGH, 3.0f );
+						if ( GetHealth() < GetMaxHealth() )
+						{
+							SetHealth( GetMaxHealth() );
+						}
+					}
+					
 				}
 			}
 		}

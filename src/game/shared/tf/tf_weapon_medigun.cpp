@@ -288,10 +288,14 @@ void CWeaponMedigun::WeaponReset( void )
 	m_flNextBuzzTime = 0;
 	m_flReleaseStartedAt = 0;
 
+	int iPreserveUber = 0;
 	if ( TFGameRules()->State_Get() == GR_STATE_RND_RUNNING )
 	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pOwner, iPreserveUber, preserve_ubercharge );
 		// This is determined via an attribute in SetStoredChargeLevel()
-		m_flChargeLevel = Min( (float)m_flChargeLevel, m_flChargeLevelToPreserve );
+		float flPreserveCharge = MIN( m_flChargeLevel, m_flChargeLevelToPreserve );
+		float flPreserveChargeOld = MIN( m_flChargeLevel, iPreserveUber / 100.f );
+		m_flChargeLevel = MAX ( flPreserveCharge, flPreserveChargeOld );
 	}
 	else
 	{

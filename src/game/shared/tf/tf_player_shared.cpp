@@ -184,6 +184,11 @@ ConVar tf_allow_all_team_partner_taunt( "tf_allow_all_team_partner_taunt", "1", 
 
 extern ConVar ff_use_new_dead_ringer;
 extern ConVar ff_use_new_tide_turner;
+extern ConVar ff_use_new_bonk;
+extern ConVar ff_use_new_critacola;
+extern ConVar ff_new_shield_charge;
+extern ConVar ff_use_new_atomizer;
+extern ConVar ff_use_new_soda_popper;
 
 // AFTERBURN
 const float tf_afterburn_max_duration = 10.f;
@@ -3498,7 +3503,7 @@ void CTFPlayerShared::OnRemovePhase( void )
 		WRITE_SHORT( clamp( m_iPhaseDamage, 0, 10000 ) );
 	MessageEnd();
 
-	if ( m_iPhaseDamage )
+	if ( m_iPhaseDamage && ff_use_new_bonk.GetBool() )
 	{
 		// Apply slow based on how much damage we took while active
 		float flSlowDuration = 5.f; //RemapValClamped( m_iPhaseDamage, 10.f, 1000.f, 2.f, 6.f );
@@ -6103,7 +6108,10 @@ void CTFPlayerShared::OnAddShieldCharge( void )
 	// Remove debuffs
 	for ( int i = 0; g_aDebuffConditions[i] != TF_COND_LAST; i++ )
 	{
-		RemoveCond( g_aDebuffConditions[i] );
+		if ( ff_new_shield_charge.GetBool() )
+		{
+			RemoveCond( g_aDebuffConditions[i] );
+		}
 	}
 
 	// store the players we CAN see for the TF_DEMOMAN_KILL_PLAYER_YOU_DIDNT_SEE achievement
@@ -7426,7 +7434,7 @@ void CTFPlayerShared::UpdateCritBoostEffect( ECritBoostUpdateType eUpdateType )
 {
 	bool bShouldDisplayCritBoostEffect = IsCritBoosted()
 									  || InCond( TF_COND_ENERGY_BUFF )
-									  //|| IsHypeBuffed()
+									  || ( IsHypeBuffed() && !ff_use_new_soda_popper.GetBool() )
 									  || InCond( TF_COND_SNIPERCHARGE_RAGE_BUFF );
 
 	if ( m_pOuter->GetActiveTFWeapon() )
@@ -7543,7 +7551,8 @@ void CTFPlayerShared::UpdateCritBoostEffect( ECritBoostUpdateType eUpdateType )
 void CTFPlayerShared::OnAddSodaPopperHype( void )
 {
 #ifdef CLIENT_DLL
-	if ( m_pOuter->IsLocalPlayer() )
+	UpdateCritBoostEffect();
+	if ( m_pOuter->IsLocalPlayer() && ff_use_new_soda_popper.GetBool() )
 	{
 		m_pOuter->EmitSound( "DisciplineDevice.PowerUp" );
 	}
@@ -7553,7 +7562,8 @@ void CTFPlayerShared::OnAddSodaPopperHype( void )
 void CTFPlayerShared::OnRemoveSodaPopperHype( void )
 {
 #ifdef CLIENT_DLL
-	if ( m_pOuter->IsLocalPlayer() )
+	UpdateCritBoostEffect();
+	if ( m_pOuter->IsLocalPlayer() && ff_use_new_soda_popper.GetBool() )
 	{
 		m_pOuter->EmitSound( "DisciplineDevice.PowerDown" );
 	}
@@ -10930,11 +10940,11 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 			// Make this change based on attrs, hardcode right now
 			maxfbspeed *= RemapValClamped( m_Shared.GetScoutHypeMeter(), 0.0f, 100.0f, 1.0f, 1.45f );
 		}
-		// Atomic Punch gives a move bonus while active
-// 		if ( m_Shared.InCond( TF_COND_PHASE ) )
-// 		{
-// 			maxfbspeed *= 1.25f;
-// 		}
+		// Crit-a-Cola gives a move bonus while active
+		if ( m_Shared.InCond( TF_COND_ENERGY_BUFF ) && !ff_use_new_critacola.GetBool() )
+		{
+			maxfbspeed *= 1.25f;
+		}
 	}
 
 	// Mann Vs Machine mode has a speed penalty for carrying the flag
@@ -12675,7 +12685,7 @@ bool CTFPlayer::CanAirDash( void ) const
 	if ( !bScout )
 		return false;
 
-	if ( m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) )
+	if ( m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) && ff_use_new_soda_popper.GetBool() )
 	{
 		if ( m_Shared.GetAirDash() < 5 )
 			return true;
@@ -12685,12 +12695,19 @@ bool CTFPlayer::CanAirDash( void ) const
 
 	CTFWeaponBase *pTFActiveWeapon = GetActiveTFWeapon();
 	int iDashCount = tf_scout_air_dash_count.GetInt();
-	CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFActiveWeapon, iDashCount, air_dash_count );
+	if ( ff_use_new_atomizer.GetBool() )
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFActiveWeapon, iDashCount, air_dash_count );
+	}
+	else
+	{
+		CALL_ATTRIB_HOOK_INT( iDashCount, air_dash_count );
+	}
 
 	if ( m_Shared.GetAirDash() >= iDashCount )
 		return false;
 
-	if ( pTFActiveWeapon )
+	if ( pTFActiveWeapon && ff_use_new_atomizer.GetBool() )
 	{
 		// TODO(driller): Hack fix to restrict this to The Atomzier (currently the only item that uses this attribute) on what would be the third jump
 		float flTimeSinceDeploy = gpGlobals->curtime - pTFActiveWeapon->GetLastDeployTime();
@@ -13953,17 +13970,20 @@ void CTFPlayerShared::SetScoutHypeMeter( float val )
 		return;
 
 	m_flHypeMeter = Clamp(val, 0.0f, 100.0f);
-	//if ( m_flHypeMeter >= 100.f )
-	//{
-	//	if ( m_pOuter->IsPlayerClass( TF_CLASS_SCOUT ) )
-	//	{
-	//		CTFWeaponBase* pWeapon = m_pOuter->GetActiveTFWeapon();
-	//		if ( pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_SODA_POPPER )
-	//		{
-	//			AddCond( TF_COND_CRITBOOSTED_HYPE );
-	//		}
-	//	}
-	//}
+	if ( !ff_use_new_soda_popper.GetBool() )
+	{
+		if ( m_flHypeMeter >= 100.f )
+		{
+			if ( m_pOuter->IsPlayerClass( TF_CLASS_SCOUT ) )
+			{
+				CTFWeaponBase* pWeapon = m_pOuter->GetActiveTFWeapon();
+				if ( pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_SODA_POPPER )
+				{
+					AddCond( TF_COND_SODAPOPPER_HYPE );
+				}
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

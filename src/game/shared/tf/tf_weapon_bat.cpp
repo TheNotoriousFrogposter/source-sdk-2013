@@ -127,6 +127,8 @@ PRECACHE_WEAPON_REGISTER( tf_projectile_ball_ornament );
 
 static string_t s_iszTrainName;
 
+extern ConVar ff_use_new_sandman;
+
 //=============================================================================
 #define STUNBALL_TRAIL_ALPHA						128
 
@@ -213,6 +215,13 @@ void CTFBat_Wood::LaunchBallThink( void )
 #ifdef CLIENT_DLL
 	C_CTF_GameStats.Event_PlayerFiredWeapon( pPlayer, IsCurrentAttackACrit() );
 #endif
+}
+
+float CTFBat_Wood::InternalGetEffectBarRechargeTime( void )
+{
+	if ( !ff_use_new_sandman.GetBool() )
+		return 15.0f;
+	return 10.0f; // default
 }
 
 //-----------------------------------------------------------------------------
@@ -727,12 +736,20 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 		return;
 
 	// We have a more intense stun based on our travel time.
+	if ( !ff_use_new_sandman.GetBool() )
+	{
+		FLIGHT_TIME_TO_MAX_STUN == 1.f;
+	}
 	float flLifeTime = Min( gpGlobals->curtime - m_flCreationTime, FLIGHT_TIME_TO_MAX_STUN );
 	float flLifeTimeRatio = flLifeTime / FLIGHT_TIME_TO_MAX_STUN;
 	if ( flLifeTimeRatio > 0.1f )
 	{
 		bool bMax = flLifeTimeRatio >= 1.f;
 		int iStunFlags = ( bMax ) ? TF_STUN_SPECIAL_SOUND | TF_STUN_MOVEMENT : TF_STUN_SOUND | TF_STUN_MOVEMENT;
+		if ( !ff_use_new_sandman.GetBool() )
+		{
+			iStunFlags = ( bMax ) ? TF_STUN_SPECIAL_SOUND | TF_STUN_CONTROLS : TF_STUN_SOUND | TF_STUN_LOSER_STATE;
+		}
 		float flStunAmount = 0.5f;
 		float flStunDuration = Max( 2.f, tf_scout_stunball_base_duration.GetFloat() * flLifeTimeRatio );
 		if ( bMax )
@@ -780,7 +797,7 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 	info.SetAttacker( GetOwnerEntity() );
 	info.SetInflictor( pInflictor ); 
 	info.SetWeapon( pInflictor );
-	info.SetDamage( ( flLifeTimeRatio >= 1.f ) ? GetDamage() * 1.5f : GetDamage() );
+	info.SetDamage( ( flLifeTimeRatio >= 1.f && ff_use_new_sandman.GetBool() ) ? GetDamage() * 1.5f : GetDamage() );		
 	info.SetDamageCustom( TF_DMG_CUSTOM_BASEBALL );
 	info.SetDamageForce( GetDamageForce() );
 	info.SetDamagePosition( GetAbsOrigin() );

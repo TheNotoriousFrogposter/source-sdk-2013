@@ -827,18 +827,36 @@ ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_NOTIFY 
 
 ConVar ff_enforcer_disguise_damage_bonus ( "ff_enforcer_disguise_damage_bonus", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 gives damage bonus when undisguised, 1 gives damage bonus when disguised." );
 ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "TF_COND_MEGAHEAL prevents capping or defending control points." );
-ConVar ff_minigun_penalty( "ff_minigun_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
-ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% resistance against initial hit, 65%-20% resistance + speed boost for the next 3 seconds" );
-ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Changes the Ullapool Caber's explosion behavior to the newer format." );
-ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance or not. 2 uses 2013 version of the Loose Cannon" );
-ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion sizes (146Hu)instead of older ones (159Hu) for Demoman, grenade direct hit damage depends on where the grenade struck the enemy." );
+ConVar ff_minigun_penalty ( "ff_minigun_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
+ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed crit on shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%." );
+ConVar ff_airblast_minicrit ( "ff_airblast_minicrit", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Whether to mini-crit the airblasted victims or not if they are hit by a reserve shooter or a direct hit rocket." );
+ConVar ff_disable_updraft ( "ff_disable_updraft", "1.0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove the parachute updraft effect while on fire." );
+ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% resistance against initial hit, 65%-20% resistance + speed boost + afterburn immunity for the next 3 seconds" );
+ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - explosion deals up to 150 damage, melee attack deals 35 damage, 1 - explosion deals up to 83 damage, melee attack deals 55 damage." );
+ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - impact damage is 60% of the grenade damage, 1 - impact damage scales from 25-50 depending on the distance, 2 - same as 0, but explosion radius falloff affects double donk , -50% damage on world contact." );
+ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), grenade will always deal full damage rather than depending on where the grenade struck the enemy." );
 ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
 ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 3 seconds and no recharging from ammo pack if disabled." );
 ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
 ConVar ff_use_new_ambassador ( "ff_use_new_ambassador", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Headshot crit has 1200 hammer unit range limit." );
-ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
-ConVar ff_use_new_gunslinger ( "ff_use_new_gunslinger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use modern mini sentry." );
+ConVar ff_use_new_gunslinger ( "ff_use_new_gunslinger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - mini sentry starts at 100 HP, cannot be repaired or wrench boosted, gibs drop metals, 1 - mini sentry starts at 50 HP, can be repaired or wrench boosted, gibs drop no metals." );
 ConVar ff_use_new_tide_turner ( "ff_use_new_tide_turner", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Mini crit at the end of the charge instead of a crit." );
+ConVar ff_use_new_sandman ( "ff_use_new_sandman", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Slow movement instead of a stun, 20% less flight time requirement for a moon shot, recharge 5 seconds faster." );
+ConVar ff_use_new_cleaver ( "ff_use_new_cleaver", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove long range mini crit on hit, recharge 1.5s faster if you hit a long range hit." );
+ConVar ff_use_new_bonk ( "ff_use_new_bonk", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Slow down the player after the invulnerability wears off." );
+ConVar ff_use_new_critacola ( "ff_use_new_critacola", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 25% faster speed, 1 - mark on death after attacking." );
+ConVar ff_use_new_black_box ( "ff_use_new_black_box", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - heal per enemy hit, 1 - heal based on the damage dealt." );
+ConVar ff_use_new_raygun ( "ff_use_new_raygun", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 24^3 hitbox, penetrate teammates, can lit huntsman on fire, damage scales based on the projectile lifetime (100%-60%), max cloak drain and uber drain, 1 - 1 pixel hitbox, damage scales based on the distance falloff (120%-50%), less cloak drain and uber drain the further the target" );
+ConVar ff_use_new_beggars ( "ff_use_new_beggars", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Misfire removes ammo from the clip instead of from the reserve ammo" );
+ConVar ff_use_new_wrangler ( "ff_use_new_wrangler", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing while the shield is up has 67% penalty." );
+ConVar ff_use_new_atomizer ( "ff_use_new_atomizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - triple jump deals 10 damage self damage, 1 - require the atomizer to be deployed, triple jump not available for 0.7s after deploying atomizer." );
+ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no damage if disabled." );
+ConVar ff_use_new_sydney_sleeper ( "ff_use_new_sydney_sleeper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - jarate explosion on a fully charged bodyshot or a headshot, 1 - headshot does minicrit and reduce jarate cooldown by 1 second" );
+ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no damage if disabled." );
+ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives ubercharge, 300 burn damage to fill the meter." );
+ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a sandwich to the ground" );
+ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff." );
+ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
 
 #ifndef GAME_DLL
 extern ConVar cl_burninggibs;
@@ -5655,7 +5673,14 @@ void CTFGameRules::RadiusDamage( CTFRadiusDamageInfo &info )
 				{
 					// Scale Health mod with damage dealt, input being the maximum amount of health possible
 					float flScale = Clamp( nDamageDealt / flBaseDamage, 0.f, 1.0f );
-					iModHealthOnHit = (int)( (float)iModHealthOnHit * flScale );
+					if ( ff_use_new_black_box.GetBool() )
+					{
+						iModHealthOnHit = (int)( (float)iModHealthOnHit * flScale );
+					}
+					else
+					{
+						iModHealthOnHit = (int)( (float)iModHealthOnHit * iDamageEnemies );
+					}
 					int iHealed = info.dmgInfo->GetAttacker()->TakeHealth( iModHealthOnHit, DMG_GENERIC );
 					if ( iHealed )
 					{
@@ -6159,6 +6184,12 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 				eBonusEffect = kBonusEffect_MiniCrit;
 			}
+			else if ( pTFAttacker && ( pTFAttacker->m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) ) && !ff_use_new_soda_popper.GetBool() )
+			{
+				// Soda popper hype provides mini-crits
+				info.SetCritType( CTakeDamageInfo::CRIT_MINI );
+				eBonusEffect = kBonusEffect_MiniCrit;
+			}
 			else if ( ( info.GetDamageType() & DMG_IGNITE ) && pVictim && pVictim->m_Shared.InCond( TF_COND_BURNING ) && info.GetDamageCustom() == TF_DMG_CUSTOM_BURNING_FLARE )
 			{
 				CTFFlareGun *pFlareGun = dynamic_cast< CTFFlareGun* >( pWeapon );
@@ -6203,7 +6234,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				{
 					int iDashCount = 0;
 					CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFAttacker->GetActiveTFWeapon(), iDashCount, air_dash_count );
-					if ( iDashCount )
+					if ( iDashCount && ff_use_new_atomizer.GetBool() )
 					{
 						info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 						eBonusEffect = kBonusEffect_MiniCrit;
@@ -6218,7 +6249,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					if ( pSniper->IsZoomed() && pSniper->GetJarateTime() )
 					{
 						float flJarateTime = pSniper->GetJarateTime();
-						if ( flJarateTime >= 1.f )
+						if ( flJarateTime >= 1.f && ff_use_new_sydney_sleeper.GetBool() )
 						{
 							info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 							eBonusEffect = kBonusEffect_MiniCrit;
@@ -6250,7 +6281,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					{
 						int iMiniCritAirborne = 0;
 						CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iMiniCritAirborne, mini_crit_airborne );
-						if ( iMiniCritAirborne == 1 &&	pVictim &&	( pVictim->InAirDueToExplosion() ) )
+						if ( iMiniCritAirborne == 1 &&	pVictim &&	( ff_airblast_minicrit.GetBool() ? pVictim->InAirDueToKnockback() : pVictim->InAirDueToExplosion() ) )
 						{
 							bAllSeeCrit = true;
 							info.SetCritType( CTakeDamageInfo::CRIT_MINI );
@@ -7453,7 +7484,14 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			if ( info.GetWeapon() )
 			{
 				int iNoSelfBlastDamage = 0;
-				CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iNoSelfBlastDamage, no_self_blast_dmg );
+				if ( ff_use_new_rocketjumper.GetBool() )
+				{
+					CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iNoSelfBlastDamage, no_self_blast_dmg );
+				}
+				else
+				{
+					CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetAttacker(), iNoSelfBlastDamage, no_self_blast_dmg );
+				}
 
 				const bool bIgnoreThisSelfDamage = ( iNoSelfBlastDamage == kSelfBlastResponse_IgnoreProjectilesFromAllWeapons )
 					|| ( (iNoSelfBlastDamage == kSelfBlastResponse_IgnoreProjectilesFromThisWeapon) && (info.GetDamageCustom() == TF_DMG_CUSTOM_PRACTICE_STICKY) );

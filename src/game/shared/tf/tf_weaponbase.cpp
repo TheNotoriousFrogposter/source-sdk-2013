@@ -94,8 +94,10 @@ extern ConVar cl_crosshair_file;
 extern ConVar cl_flipviewmodels;
 #endif
 
+extern ConVar ff_use_new_raygun;
 extern ConVar ff_use_new_spycicle;
 extern ConVar ff_use_new_katana;
+extern ConVar ff_use_new_beggars;
 extern ConVar ff_new_weapon_switch_speed;
 
 //=============================================================================
@@ -2035,7 +2037,8 @@ bool CTFWeaponBase::ReloadSingly( void )
 			}
 			else
 			{
-				if ( ( !CanOverload() && ( Clip1() == GetMaxClip1() || pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 ) ) )
+				if ( ( !CanOverload() && ( Clip1() == GetMaxClip1() || pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 ) ) ||
+						( CanOverload() && !ff_use_new_beggars.GetBool() && pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 ) )
 				{
 					m_iReloadMode.Set( TF_RELOAD_FINISH );
 				}
@@ -5473,7 +5476,7 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 					// STAGING_ENGY
 					// Scale drain after 512 Hu to 1536Hu ( 50% drain at 1024, 0 drain at 1536 units )
 					Vector toEnt = pVictim->GetAbsOrigin() - pAttacker->GetAbsOrigin();
-					if ( toEnt.LengthSqr() > Square( 512.0f ) )
+					if ( toEnt.LengthSqr() > Square( 512.0f ) && ( ff_use_new_raygun.GetBool() ) )
 					{
 						iSubtractVictimMedigunChargeOnHit *= RemapValClamped( toEnt.LengthSqr(), (512.0f * 512.0f), (1536.0f * 1536.0f), 1.0f, 0.0f );
 					}	
@@ -5494,7 +5497,7 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 				// STAGING_ENGY
 				// Scale drain after 512 Hu to 1536Hu ( 50% drain at 1024, 0 drain at 1536 units )
 				Vector toEnt = pVictim->GetAbsOrigin() - pAttacker->GetAbsOrigin();
-				if ( toEnt.LengthSqr() > Square( 512.0f ) )
+				if ( toEnt.LengthSqr() > Square( 512.0f ) && ( ff_use_new_raygun.GetBool() ) )
 				{
 					iSubtractVictimCloakOnHit *= RemapValClamped( toEnt.LengthSqr(), (512.0f * 512.0f), (1536.0f * 1536.0f), 1.0f, 0.0f );
 				}

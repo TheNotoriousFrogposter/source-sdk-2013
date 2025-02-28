@@ -318,14 +318,13 @@ void CTFKnife::DisguiseOnKill()
 	if ( !m_hBackstabVictim.Get() )
 		return;
 
-	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );
-	if ( !pPlayer || !pPlayer->CanDisguise() )
-		return;
-	
 	int nTeam = m_hBackstabVictim->GetTeamNumber();
 	int nClass = m_hBackstabVictim->GetPlayerClass()->GetClassIndex();
-		
-	pPlayer->m_Shared.Disguise( nTeam, nClass, m_hBackstabVictim.Get(), true );
+	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );
+	if ( pPlayer )
+	{
+		pPlayer->m_Shared.Disguise( nTeam, nClass, m_hBackstabVictim.Get(), true );
+	}
 #endif
 }
 

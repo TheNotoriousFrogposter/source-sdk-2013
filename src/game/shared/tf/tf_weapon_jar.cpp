@@ -90,6 +90,8 @@ PRECACHE_WEAPON_REGISTER( tf_projectile_cleaver );
 #define TF_WEAPON_CLEAVER_IMPACT_FLESH_SOUND	"Cleaver.ImpactFlesh"
 #define TF_WEAPON_CLEAVER_IMPACT_WORLD_SOUND	"Cleaver.ImpactWorld"
 
+extern ConVar ff_use_new_cleaver;
+
 
 //=============================================================================
 //
@@ -976,6 +978,7 @@ CTFProjectile_Cleaver::CTFProjectile_Cleaver()
 
 #ifdef GAME_DLL
 #define FLIGHT_TIME_TO_REDUCE_COOLDOWN	0.5f
+#define FLIGHT_TIME_TO_MAX_DMG	1.f
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -1010,14 +1013,21 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 
 	CBaseEntity *pInflictor = GetLauncher();
 
+	bool bIsMiniCrit = false;
+
 	float flLifeTime = gpGlobals->curtime - m_flCreationTime;
-	if ( flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN )
+	if ( flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN && ff_use_new_cleaver.GetBool() )
 	{
 		auto pLauncher = dynamic_cast<CTFWeaponBase*>( pInflictor );
 		if ( pLauncher && pOwner != pPlayer && pLauncher->HasEffectBarRegeneration() )
 		{
 			pLauncher->DecrementBarRegenTime( 1.5f );
 		}
+	}
+
+	if ( flLifeTime >= FLIGHT_TIME_TO_MAX_DMG && !ff_use_new_cleaver.GetBool() )
+	{
+		bIsMiniCrit = true;
 	}
 
 	// just do the bleed effect directly since the bleed
@@ -1033,7 +1043,7 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 	info.SetInflictor( pInflictor ); 
 	info.SetWeapon( pInflictor );
 	info.SetDamage( GetDamage() );
-	info.SetDamageCustom( TF_DMG_CUSTOM_CLEAVER );
+	info.SetDamageCustom( bIsMiniCrit ? TF_DMG_CUSTOM_CLEAVER_CRIT : TF_DMG_CUSTOM_CLEAVER );
 	info.SetDamagePosition( GetAbsOrigin() );
 	int iDamageType = GetDamageType();
 	if ( IsCritical() )
