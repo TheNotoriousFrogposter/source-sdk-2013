@@ -37,6 +37,8 @@ ConVar tf_cart_spell_drop_rate( "tf_cart_spell_drop_rate", "4" );
 ConVar tf_cart_duck_drop_rate( "tf_cart_duck_drop_rate", "10", FCVAR_DEVELOPMENTONLY );
 ConVar tf_cart_soul_drop_rate( "tf_cart_soul_drop_rate", "10", FCVAR_DEVELOPMENTONLY );
 
+extern ConVar ff_use_new_beggars;
+
 //-----------------------------------------------------------------------------
 // Purpose: SendProxy that converts the Healing list UtlVector to entindices
 //-----------------------------------------------------------------------------
@@ -524,7 +526,14 @@ bool CObjectDispenser::DispenseAmmo( CTFPlayer *pPlayer )
 	int iAmmoToAdd = 0;
 
 	int nNoPrimaryAmmoFromDispensersWhileActive = 0;
-	CALL_ATTRIB_HOOK_INT_ON_OTHER( pPlayer->GetActiveWeapon(), nNoPrimaryAmmoFromDispensersWhileActive, no_primary_ammo_from_dispensers );
+	if ( ff_use_new_beggars.GetBool() )
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pPlayer->GetActiveWeapon(), nNoPrimaryAmmoFromDispensersWhileActive, no_primary_ammo_from_dispensers );
+	}
+	else
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pPlayer, nNoPrimaryAmmoFromDispensersWhileActive, no_primary_ammo_from_dispensers );
+	}
 
 	float flAmmoRate = g_flDispenserAmmoRates[GetUpgradeLevel()];
 
