@@ -189,6 +189,7 @@ extern ConVar ff_use_new_critacola;
 extern ConVar ff_new_shield_charge;
 extern ConVar ff_use_new_atomizer;
 extern ConVar ff_use_new_soda_popper;
+extern ConVar ff_use_new_booties;
 
 // AFTERBURN
 const float tf_afterburn_max_duration = 10.f;
@@ -10858,7 +10859,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 	// If we have an item with a move speed modification, apply it to the final speed.
 	CALL_ATTRIB_HOOK_FLOAT( maxfbspeed, mult_player_movespeed );
 
-	if ( m_Shared.IsShieldEquipped() )
+	if ( m_Shared.IsShieldEquipped() || !ff_use_new_booties.GetBool() )
 	{
 		CALL_ATTRIB_HOOK_FLOAT( maxfbspeed, mult_player_movespeed_shieldrequired );
 	}

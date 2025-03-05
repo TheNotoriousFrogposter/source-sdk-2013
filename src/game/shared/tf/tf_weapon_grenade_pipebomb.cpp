@@ -468,7 +468,7 @@ CTFGrenadePipebombProjectile* CTFGrenadePipebombProjectile::Create( const Vector
 		DispatchSpawn( pGrenade );
 
 		pGrenade->InitGrenade( velocity, angVelocity, pOwner, weaponInfo );
-		pGrenade->SetDamage( ( ff_use_new_grenade.GetBool() ? pGrenade->GetDamage() : TF_WEAPON_GRENADE_XBOX_DAMAGE ) * flMultDmg );
+		pGrenade->SetDamage( ( ( ff_use_new_grenade.GetBool() || pGrenade->m_iType != TF_GL_MODE_REGULAR ) ? pGrenade->GetDamage() : TF_WEAPON_GRENADE_XBOX_DAMAGE ) * flMultDmg );
 		pGrenade->SetFullDamage( pGrenade->GetDamage() );
 
 		if ( pGrenade->m_iType != TF_GL_MODE_REMOTE_DETONATE )
@@ -782,7 +782,7 @@ void CTFGrenadePipebombProjectile::PipebombTouch( CBaseEntity *pOther )
 				{
 					// Impact damage scales with distance
 					float flDistanceSq = (pOther->GetAbsOrigin() - pAttacker->GetAbsOrigin()).LengthSqr();
-					float flImpactDamage = ff_use_new_cannon.GetInt() == 1 ? RemapValClamped( flDistanceSq, 512 * 512, 1024 * 1024, 50, 25 ) : m_flDamage;
+					float flImpactDamage = ff_use_new_cannon.GetBool() ? RemapValClamped( flDistanceSq, 512 * 512, 1024 * 1024, 50, 25 ) : m_flDamage;
 
 					CTakeDamageInfo info( this, pAttacker, m_hLauncher, vec3_origin, vOrigin, flImpactDamage, GetDamageType(), TF_DMG_CUSTOM_CANNONBALL_PUSH );
 					pOther->TakeDamage( info );
@@ -885,7 +885,7 @@ void CTFGrenadePipebombProjectile::VPhysicsCollision( int index, gamevcollisione
 
 		if ( m_bTouched == false )
 		{
-			( ff_use_new_cannon.GetInt() == 2 && m_iType == TF_GL_MODE_CANNONBALL ) ? SetDamage( GetDamageScaleOnWorldContact() * GetDamage() * 0.5 ) : SetDamage( GetDamageScaleOnWorldContact() * GetDamage() ) ;
+			SetDamage( GetDamageScaleOnWorldContact() * GetDamage() );
 
 			int iNoBounce = 0;
 			if ( GetLauncher() )

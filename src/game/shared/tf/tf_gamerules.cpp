@@ -825,15 +825,15 @@ ConVar tf_medieval_autorp( "tf_medieval_autorp", "1", FCVAR_REPLICATED | FCVAR_N
 ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
 ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_NOTIFY | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
 
-ConVar ff_enforcer_disguise_damage_bonus ( "ff_enforcer_disguise_damage_bonus", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 gives damage bonus when undisguised, 1 gives damage bonus when disguised." );
+ConVar ff_enforcer_disguise_damage_bonus ( "ff_enforcer_disguise_damage_bonus", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
 ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "TF_COND_MEGAHEAL prevents capping or defending control points." );
 ConVar ff_minigun_penalty ( "ff_minigun_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
 ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed crit on shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%." );
 ConVar ff_airblast_minicrit ( "ff_airblast_minicrit", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Whether to mini-crit the airblasted victims or not if they are hit by a reserve shooter or a direct hit rocket." );
-ConVar ff_disable_updraft ( "ff_disable_updraft", "1.0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove the parachute updraft effect while on fire." );
+ConVar ff_use_new_parachute ( "ff_use_new_parachute", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove the parachute updraft effect while on fire, -25% max air velocity, cannot redeploy parachute." );
 ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% resistance against initial hit, 65%-20% resistance + speed boost + afterburn immunity for the next 3 seconds." );
 ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - explosion deals up to 150 damage, melee attack deals 35 damage, 1 - explosion deals up to 83 damage, melee attack deals 55 damage." );
-ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - impact damage is 60% of the grenade damage, 1 - impact damage scales from 25-50 depending on the distance, 2 - same as 0, but explosion radius falloff affects double donk , -50% damage on world contact." );
+ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
 ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), grenade will always deal full damage rather than depending on where the grenade struck the enemy." );
 ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
 ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 3 seconds and no recharging from ammo pack if disabled." );
@@ -850,10 +850,11 @@ ConVar ff_use_new_raygun ( "ff_use_new_raygun", "1", FCVAR_NOTIFY | FCVAR_REPLIC
 ConVar ff_use_new_beggars ( "ff_use_new_beggars", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Misfire removes ammo from the clip instead of from the reserve ammo, can receive primary ammo from the dispenser when the rocket launcher is holstered." );
 ConVar ff_use_new_wrangler ( "ff_use_new_wrangler", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing while the shield is up has 67% penalty." );
 ConVar ff_use_new_atomizer ( "ff_use_new_atomizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - triple jump deals 10 damage self damage, 1 - require the atomizer to be deployed, triple jump not available for 0.7s after deploying atomizer." );
-ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no damage if disabled." );
+ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no self damage if disabled." );
 ConVar ff_use_new_sydney_sleeper ( "ff_use_new_sydney_sleeper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - jarate explosion on a fully charged bodyshot or a headshot, 1 - headshot does minicrit and reduce jarate cooldown by 1 second" );
 ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Five additional air jumps instead of mini-crit, manual activation, no charging by running." );
 ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives ubercharge, 300 burn damage to fill the meter." );
+ConVar ff_use_new_booties ( "ff_use_new_booties", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Shield is required for the booties to provide speed bonus." );
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a sandwich to the ground." );
 ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff." );
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
@@ -5820,10 +5821,7 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 		{
 			case TF_WEAPON_PIPEBOMBLAUNCHER :
 			case TF_WEAPON_GRENADELAUNCHER :
-				flAdjustedDamage *= 0.75f;
-				break;
 			case TF_WEAPON_CANNON :
-				if ( ff_use_new_cannon.GetInt() <= 1 )
 				flAdjustedDamage *= 0.75f;
 				break;
 			case TF_WEAPON_STICKBOMB :
@@ -6217,10 +6215,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				{
 					info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 					eBonusEffect = kBonusEffect_DoubleDonk;
-					if ( ff_use_new_cannon.GetInt() <= 1 )
-					{
-						flDamage = Max( flDamage, info.GetMaxDamage() ); // Double donk victims score max damage
-					}
+					flDamage = Max( flDamage, info.GetMaxDamage() ); // Double donk victims score max damage
 					EconEntity_OnOwnerKillEaterEvent( pGrenadeLauncher, pTFAttacker, pVictim, kKillEaterEvent_DoubleDonks );
 				}
 			}

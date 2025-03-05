@@ -50,12 +50,12 @@ ConVar  tf_clamp_airducks( "tf_clamp_airducks", "1", FCVAR_REPLICATED );
 ConVar  tf_resolve_stuck_players( "tf_resolve_stuck_players", "1", FCVAR_REPLICATED );
 ConVar  tf_scout_hype_mod( "tf_scout_hype_mod", "55", FCVAR_REPLICATED | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
 ConVar	tf_max_charge_speed( "tf_max_charge_speed", "750", FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT  | FCVAR_DEVELOPMENTONLY );
-ConVar  tf_parachute_gravity( "tf_parachute_gravity", "0.2f", FCVAR_REPLICATED, "Gravity while parachute is deployed" );
-ConVar  tf_parachute_maxspeed_xy( "tf_parachute_maxspeed_xy", "300.0f", FCVAR_REPLICATED, "Max XY Speed while Parachute is deployed" );
-ConVar  tf_parachute_maxspeed_z( "tf_parachute_maxspeed_z", "-100.0f", FCVAR_REPLICATED, "Max Z Speed while Parachute is deployed" );
-ConVar  tf_parachute_maxspeed_onfire_z( "tf_parachute_maxspeed_onfire_z", "10.0f", FCVAR_REPLICATED, "Max Z Speed when on Fire and Parachute is deployed" );
-ConVar  tf_parachute_aircontrol( "tf_parachute_aircontrol", "2.5f", FCVAR_REPLICATED, "Multiplier for how much air control players have when Parachute is deployed" );
-ConVar	tf_parachute_deploy_toggle_allowed( "tf_parachute_deploy_toggle_allowed", "0", FCVAR_REPLICATED );
+ConVar  tf_parachute_gravity( "tf_parachute_gravity", "0.2f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Gravity while parachute is deployed" );
+ConVar  tf_parachute_maxspeed_xy( "tf_parachute_maxspeed_xy", "300.0f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Max XY Speed while Parachute is deployed" );
+ConVar  tf_parachute_maxspeed_z( "tf_parachute_maxspeed_z", "-100.0f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Max Z Speed while Parachute is deployed" );
+ConVar  tf_parachute_maxspeed_onfire_z( "tf_parachute_maxspeed_onfire_z", "10.0f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Max Z Speed when on Fire and Parachute is deployed" );
+ConVar  tf_parachute_aircontrol( "tf_parachute_aircontrol", "2.5f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Multiplier for how much air control players have when Parachute is deployed" );
+ConVar	tf_parachute_deploy_toggle_allowed( "tf_parachute_deploy_toggle_allowed", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
 ConVar  tf_halloween_kart_aircontrol( "tf_halloween_kart_aircontrol", "1.2f", FCVAR_CHEAT | FCVAR_REPLICATED, "Multiplier for how much air control players have when in Kart Mode" );
 ConVar	tf_ghost_up_speed( "tf_ghost_up_speed", "300.f", FCVAR_CHEAT | FCVAR_REPLICATED, "Speed that ghost go upward while holding jump key" );
@@ -86,7 +86,7 @@ extern ConVar cl_sidespeed;
 extern ConVar mp_tournament_readymode_countdown;
 extern ConVar ff_use_new_atomizer;
 extern ConVar ff_use_new_soda_popper;
-extern ConVar ff_disable_updraft;
+extern ConVar ff_use_new_parachute;
 
 #define TF_MAX_SPEED   (400 * 1.3)	// 400 is Scout max speed, and we allow up to 3% movement bonus.
 
@@ -1168,7 +1168,7 @@ void CTFGameMovement::ToggleParachute()
 		{
 			int iParachuteDisabled = 0;
 			CALL_ATTRIB_HOOK_INT_ON_OTHER( m_pTFPlayer, iParachuteDisabled, parachute_disabled );
-			if ( !iParachuteDisabled && ( tf_parachute_deploy_toggle_allowed.GetBool() || !m_pTFPlayer->m_Shared.InCond( TF_COND_PARACHUTE_DEPLOYED ) ) )
+			if ( !iParachuteDisabled && ( !ff_use_new_parachute.GetBool() || tf_parachute_deploy_toggle_allowed.GetBool() || !m_pTFPlayer->m_Shared.InCond( TF_COND_PARACHUTE_DEPLOYED ) ) )
 			{
 				m_pTFPlayer->m_Shared.AddCond( TF_COND_PARACHUTE_ACTIVE );
 				m_pTFPlayer->m_Shared.AddCond( TF_COND_PARACHUTE_DEPLOYED );
@@ -2660,10 +2660,10 @@ void CTFGameMovement::FullWalkMove()
 	{
 		if ( m_pTFPlayer->m_Shared.InCond( TF_COND_PARACHUTE_ACTIVE ) && mv->m_vecVelocity[2] < 0 )
 		{
-			float flMaxSpeedZ = ff_disable_updraft.GetBool() ? tf_parachute_maxspeed_z.GetFloat() : tf_parachute_maxspeed_onfire_z.GetFloat();
+			float flMaxSpeedZ = ( !ff_use_new_parachute.GetBool() && m_pTFPlayer->m_Shared.InCond( TF_COND_BURNING ) ) ? tf_parachute_maxspeed_onfire_z.GetFloat() : tf_parachute_maxspeed_z.GetFloat();
 			mv->m_vecVelocity[2] = Max( mv->m_vecVelocity[2], flMaxSpeedZ );
 			
-			float flDrag = tf_parachute_maxspeed_xy.GetFloat();
+			float flDrag = ff_use_new_parachute.GetBool() ? tf_parachute_maxspeed_xy.GetFloat() : ( tf_parachute_maxspeed_xy.GetFloat() * 4/3 );
 			// Instead of clamping, we'll dampen
 			float flSpeedX = abs( mv->m_vecVelocity[0] );
 			float flSpeedY = abs( mv->m_vecVelocity[1] );
