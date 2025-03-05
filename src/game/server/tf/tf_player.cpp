@@ -298,6 +298,7 @@ extern ConVar ff_use_new_dead_ringer;
 extern ConVar ff_use_new_katana;
 extern ConVar ff_use_new_sydney_sleeper;
 extern ConVar ff_use_new_phlog;
+extern ConVar ff_use_new_razorback;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
@@ -10142,10 +10143,22 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				// Unequip.
 				CTFWearable *pItem = dynamic_cast<CTFWearable *>( pEntity );
 				pItem->Break();
-				pItem->AddEffects( EF_NODRAW );
+				if ( ff_use_new_razorback.GetBool() )
+				{
+					pItem->AddEffects( EF_NODRAW );
 
-				// reset the charge.
-				m_Shared.SetItemChargeMeter( LOADOUT_POSITION_SECONDARY, 0.f );
+					// reset the charge.
+					m_Shared.SetItemChargeMeter( LOADOUT_POSITION_SECONDARY, 0.f );
+				}
+				else
+				{
+					pItem->RemoveFrom( this );
+				}
+			}
+
+			if ( !ff_use_new_razorback.GetBool() )
+			{
+				UTIL_Remove( pEntity );
 			}
 
 			// tell the bot his Razorback just got broken
