@@ -33,7 +33,6 @@ END_DATADESC()
 // -- Data Desc
 
 extern ConVar ff_new_shield_charge;
-extern ConVar ff_use_new_tide_turner;
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -199,29 +198,10 @@ void CTFWearableDemoShield::ShieldBash( CTFPlayer *pPlayer, float flCurrentCharg
 		trace.m_pEnt->DispatchTraceAttack( info, dir, &trace );
 		ApplyMultiDamage();
 
+		pOwner->m_Shared.SetShieldImpact( true );
+
 		// Calculate charge crit if we did any bash damage
-		if ( ff_new_shield_charge.GetBool() )
-		{
-			pOwner->m_Shared.CalcChargeCrit();
-		}
-		else
-		{
-			// Keying on TideTurner
-
-			int iDemoChargeDamagePenalty = 0;
-
-			CALL_ATTRIB_HOOK_INT_ON_OTHER( pOwner, iDemoChargeDamagePenalty, lose_demo_charge_on_damage_when_charging );
-			if ( iDemoChargeDamagePenalty && ff_use_new_tide_turner.GetBool() )
-			{
-				pOwner->m_Shared.SetNextMeleeCrit( MELEE_MINICRIT );
-			}
-			else
-			{
-				pOwner->m_Shared.SetNextMeleeCrit( MELEE_CRIT );
-			}
-
-			SetContextThink( &CTFPlayer::RemoveMeleeCrit, gpGlobals->curtime + 0.3f, "RemoveMeleeCrit" );
-		}
+		pOwner->m_Shared.CalcChargeCrit();
 	}
 
 	UTIL_ScreenShake( pOwner->WorldSpaceCenter(), 25.0, 150.0, 1.0, 750, SHAKE_START );

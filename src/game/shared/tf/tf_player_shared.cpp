@@ -384,6 +384,7 @@ BEGIN_RECV_TABLE_NOBASE( CTFPlayerShared, DT_TFPlayerShared )
 	RecvPropInt( RECVINFO( m_iItemFindBonus ) ),
 	RecvPropBool( RECVINFO( m_bShieldEquipped ) ),
 	RecvPropBool( RECVINFO( m_bParachuteEquipped ) ),
+	RecvPropBool( RECVINFO( m_bImpactDamage ) ),
 	RecvPropInt( RECVINFO( m_iNextMeleeCrit ) ),
 	RecvPropInt( RECVINFO( m_iDecapitations ) ),
 	RecvPropInt( RECVINFO( m_iRevengeCrits ) ),
@@ -556,6 +557,7 @@ BEGIN_SEND_TABLE_NOBASE( CTFPlayerShared, DT_TFPlayerShared )
 	SendPropInt( SENDINFO( m_iItemFindBonus ) ),
 	SendPropBool( SENDINFO( m_bShieldEquipped ) ),
 	SendPropBool( SENDINFO( m_bParachuteEquipped ) ),
+	SendPropBool( SENDINFO( m_bImpactDamage ) ),
 	SendPropInt( SENDINFO( m_iNextMeleeCrit ) ),
 	SendPropInt( SENDINFO( m_iDecapitations ), 8, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO( m_iRevengeCrits ), 7, SPROP_UNSIGNED ),
@@ -834,6 +836,7 @@ CTFPlayerShared::CTFPlayerShared()
 	m_iNextMeleeCrit = 0;
 
 	m_bParachuteEquipped = false;
+	m_bImpactDamage = false;
 
 	m_iDecapitations = m_iOldDecapitations = 0;
 	m_iOldKillStreak = 0;
@@ -943,6 +946,7 @@ void CTFPlayerShared::Init( CTFPlayer *pPlayer )
 	m_iNextMeleeCrit = 0;
 
 	m_bParachuteEquipped = false;
+	m_bImpactDamage = false;
 
 	m_iDecapitations = m_iOldDecapitations = 0;
 	m_iOldKillStreak = 0;
@@ -6075,7 +6079,18 @@ void CTFPlayerShared::CalcChargeCrit( bool bForceCrit )
 	// Keying on TideTurner
 	int iDemoChargeDamagePenalty = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( m_pOuter, iDemoChargeDamagePenalty, lose_demo_charge_on_damage_when_charging );
-	if ( iDemoChargeDamagePenalty && GetDemomanChargeMeter() <= 75 && ff_use_new_tide_turner.GetBool() )
+	if ( IsShieldImpact() && !ff_new_shield_charge.GetBool() )
+	{
+		if ( iDemoChargeDamagePenalty && ff_use_new_tide_turner.GetBool() )
+		{
+			SetNextMeleeCrit( MELEE_MINICRIT );
+		}
+		else
+		{
+			SetNextMeleeCrit( MELEE_CRIT );
+		}
+	}
+	else if ( iDemoChargeDamagePenalty && GetDemomanChargeMeter() <= 75 && ff_use_new_tide_turner.GetBool() )
 	{
 		SetNextMeleeCrit( MELEE_MINICRIT );
 	}
@@ -6172,6 +6187,7 @@ void CTFPlayer::RemoveMeleeCrit( void )
 {
 	m_Shared.SetNextMeleeCrit( MELEE_NOCRIT );
 	m_Shared.m_bPostShieldCharge = false;
+	m_Shared.SetShieldImpact( false );
 	// Remove crit boost right away.  DemoShieldChargeThink depends on m_bPostShieldCharge being true
 	// to attempt to remove crits (which we just cleared) so clear crits here as well.
 	if ( m_Shared.InCond( TF_COND_CRITBOOSTED_DEMO_CHARGE ) )
