@@ -1428,8 +1428,11 @@ float CTFGrenadePipebombProjectile::GetDamageRadius()
 	{
 		if ( m_bTouched == false )
 		{
-			float flArmTime = tf_grenadelauncher_livetime.GetFloat();
-			flRadiusMod *= RemapValClamped( gpGlobals->curtime - m_flCreationTime, flArmTime, flArmTime + tf_sticky_radius_ramp_time.GetFloat(), tf_sticky_airdet_radius.GetFloat(), 1.0 );
+			if ( ff_use_new_grenade.GetBool() )
+			{
+				float flArmTime = tf_grenadelauncher_livetime.GetFloat();
+				flRadiusMod *= RemapValClamped( gpGlobals->curtime - m_flCreationTime, flArmTime, flArmTime + tf_sticky_radius_ramp_time.GetFloat(), tf_sticky_airdet_radius.GetFloat(), 1.0 );
+			}
 		}
 	}
 #endif // GAME_DLL

@@ -822,8 +822,8 @@ ConVar tf_medieval( "tf_medieval", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable
 
 ConVar tf_medieval_autorp( "tf_medieval_autorp", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Medieval Mode auto-roleplaying.\n", true, 0, true, 1 );
 
-ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
-ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_NOTIFY | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
+ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
+ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
 
 ConVar ff_enforcer_disguise_damage_bonus ( "ff_enforcer_disguise_damage_bonus", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
 ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "TF_COND_MEGAHEAL prevents capping or defending control points." );
@@ -834,7 +834,7 @@ ConVar ff_use_new_parachute ( "ff_use_new_parachute", "1", FCVAR_NOTIFY | FCVAR_
 ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% resistance against initial hit, 65%-20% resistance + speed boost + afterburn immunity for the next 3 seconds." );
 ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - explosion deals up to 150 damage, melee attack deals 35 damage, 1 - explosion deals up to 83 damage, melee attack deals 55 damage." );
 ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
-ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), grenade will always deal full damage rather than depending on where the grenade struck the enemy." );
+ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit always deal full damage rather than depending on where the grenade struck the enemy." );
 ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
 ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 3 seconds and no recharging from ammo pack if disabled." );
 ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
