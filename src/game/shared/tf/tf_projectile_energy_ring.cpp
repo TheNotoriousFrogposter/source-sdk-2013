@@ -300,7 +300,7 @@ void CTFProjectile_EnergyRing::ProjectileTouch( CBaseEntity *pOther )
 		int iDmgType = GetDamageType();
 		if ( ff_use_new_raygun.GetBool() )
 		{
-			iDmgType |= DMG_USEDISTANCEMOD;
+			iDmgType |= DMG_USEDISTANCEMOD | DMG_PREVENT_PHYSICS_FORCE;
 		}
 
 		CTakeDamageInfo info( this, pOwner, GetLauncher(), nDamage, iDmgType, TF_DMG_CUSTOM_PLASMA );

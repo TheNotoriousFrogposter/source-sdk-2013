@@ -298,6 +298,7 @@ extern ConVar ff_use_new_katana;
 extern ConVar ff_use_new_sydney_sleeper;
 extern ConVar ff_use_new_phlog;
 extern ConVar ff_use_new_razorback;
+extern ConVar ff_old_healonkill;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
@@ -11579,8 +11580,15 @@ void CTFPlayer::OnKilledOther_Effects( CBaseEntity *pVictim, const CTakeDamageIn
 	if ( iHealOnKill != 0 )
 	{
 		int iHealthToAdd = MIN( iHealOnKill, m_Shared.GetMaxBuffedHealth() - m_iHealth );
-		TakeHealth( iHealthToAdd, DMG_GENERIC );
-		//m_iHealth += iHealthToAdd;
+
+		if ( ff_old_healonkill.GetBool() )
+		{
+			m_iHealth += iHealthToAdd;
+		}
+		else
+		{
+			TakeHealth( iHealthToAdd, DMG_GENERIC );
+		}
 
 		IGameEvent *event = gameeventmanager->CreateEvent( "player_healonhit" );
 		if ( event )

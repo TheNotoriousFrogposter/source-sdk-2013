@@ -825,16 +825,16 @@ ConVar tf_medieval_autorp( "tf_medieval_autorp", "1", FCVAR_REPLICATED | FCVAR_N
 ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
 ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
 
-ConVar ff_enforcer_disguise_damage_bonus ( "ff_enforcer_disguise_damage_bonus", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
 ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "TF_COND_MEGAHEAL prevents capping or defending control points." );
 ConVar ff_minigun_penalty ( "ff_minigun_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
 ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed crit on shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%." );
 ConVar ff_airblast_minicrit ( "ff_airblast_minicrit", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Whether to mini-crit the airblasted victims or not if they are hit by a reserve shooter or a direct hit rocket." );
+ConVar ff_use_new_enforcer ( "ff_use_new_enforcer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
 ConVar ff_use_new_parachute ( "ff_use_new_parachute", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove the parachute updraft effect while on fire, -25% max air velocity, cannot redeploy parachute." );
 ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% resistance against initial hit, 65%-20% resistance + speed boost + afterburn immunity for the next 3 seconds." );
 ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - explosion deals up to 150 damage, melee attack deals 35 damage, 1 - explosion deals up to 83 damage, melee attack deals 55 damage." );
 ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
-ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit always deal full damage rather than depending on where the grenade struck the enemy." );
+ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
 ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
 ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 3 seconds and no recharging from ammo pack if disabled." );
 ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
@@ -859,6 +859,7 @@ ConVar ff_use_new_razorback ( "ff_use_new_razorback", "1", FCVAR_NOTIFY | FCVAR_
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a sandwich to the ground." );
 ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff." );
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
+ConVar ff_old_healonkill ( "ff_old_healonkill", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the ability to overheal when gaining health on a kill." );
 
 #ifndef GAME_DLL
 extern ConVar cl_burninggibs;
