@@ -856,6 +856,7 @@ ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FC
 ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives ubercharge, 300 burn damage to fill the meter." );
 ConVar ff_use_new_booties ( "ff_use_new_booties", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Shield is required for the booties to provide speed bonus." );
 ConVar ff_use_new_razorback ( "ff_use_new_razorback", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Recharge after 30 seconds." );
+ConVar ff_use_new_rescue_ranger ( "ff_use_new_rescue_ranger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing consumes metal." );
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a sandwich to the ground." );
 ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff." );
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
