@@ -688,36 +688,33 @@ void CTFProjectile_Arrow::BuildingHealingArrow( CBaseEntity *pOther )
 	{
 		nHealed = pBuilding->Command_Repair( pTFAttacker, iArrowHealAmount, 1.f, 4.f, true );
 	}
-	else
+	else if ( pBuilding->CanBeRepaired() && ( !pBuilding->IsMiniBuilding() || ff_use_new_gunslinger.GetBool() ) )
 	{
 		nHealed = (int)(flNewHealth - pBuilding->GetHealth());
 	}
 
 	if ( nHealed > 0 )
 	{
-		if ( !pBuilding->IsMiniBuilding() || ff_use_new_gunslinger.GetBool() )
+		if ( !ff_use_new_rescue_ranger.GetBool() )
 		{
-			if ( !ff_use_new_rescue_ranger.GetBool() )
+			pBuilding->SetHealth( flNewHealth );
+
+			IGameEvent * event = gameeventmanager->CreateEvent( "building_healed" );
+			if ( event )
 			{
-				pBuilding->SetHealth( flNewHealth );
+				// HLTV event priority, not transmitted
+				event->SetInt( "priority", 1 );	
 
-				IGameEvent * event = gameeventmanager->CreateEvent( "building_healed" );
-				if ( event )
-				{
-					// HLTV event priority, not transmitted
-					event->SetInt( "priority", 1 );	
-
-					// Healed by another player.
-					event->SetInt( "building", pBuilding->entindex() );
-					event->SetInt( "healer", pTFAttacker->entindex() );
-					event->SetInt( "amount", nHealed );
-					gameeventmanager->FireEvent( event );
-				}
+				// Healed by another player.
+				event->SetInt( "building", pBuilding->entindex() );
+				event->SetInt( "healer", pTFAttacker->entindex() );
+				event->SetInt( "amount", nHealed );
+				gameeventmanager->FireEvent( event );
 			}
-			const char *pParticleName = GetTeamNumber() == TF_TEAM_BLUE ? CLAW_REPAIR_EFFECT_BLU : CLAW_REPAIR_EFFECT_RED;
-			CPVSFilter filter( GetAbsOrigin() );
-			TE_TFParticleEffect( filter, 0.0, pParticleName, GetAbsOrigin(), vec3_angle );
 		}
+		const char *pParticleName = GetTeamNumber() == TF_TEAM_BLUE ? CLAW_REPAIR_EFFECT_BLU : CLAW_REPAIR_EFFECT_RED;
+		CPVSFilter filter( GetAbsOrigin() );
+		TE_TFParticleEffect( filter, 0.0, pParticleName, GetAbsOrigin(), vec3_angle );
 	}
 }
 
