@@ -6561,7 +6561,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 
 			// Use Sentry position for distance mod
 			CObjectSentrygun *pSentry = dynamic_cast<CObjectSentrygun*>( info.GetInflictor() );
-			if ( pSentry && ff_use_new_wrangler.GetBool() )
+			if ( pSentry )
 			{
 				vAttackerPos = pSentry->WorldSpaceCenter();
 				// Sentries have a much further optimal distance
@@ -18388,13 +18388,18 @@ CAmmoDef* GetAmmoDef()
 	if ( !bInitted )
 	{
 		bInitted = true;
-		
+		int iDmgType = DMG_BULLET;
+		if ( ff_use_new_wrangler.GetBool() )
+		{
+			iDmgType |= DMG_USEDISTANCEMOD | DMG_NOCLOSEDISTANCEMOD;
+		}
+
 		// Start at 1 here and skip the dummy ammo type to make CAmmoDef use the same indices
 		// as our #defines.
 		for ( int i=1; i < TF_AMMO_COUNT; i++ )
 		{
 			const char *pszAmmoName = GetAmmoName( i );
-			def.AddAmmoType( pszAmmoName, DMG_BULLET | DMG_USEDISTANCEMOD | DMG_NOCLOSEDISTANCEMOD, TRACER_LINE, 0, 0, "ammo_max", 2400, 10, 14 );
+			def.AddAmmoType( pszAmmoName, iDmgType, TRACER_LINE, 0, 0, "ammo_max", 2400, 10, 14 );
 			Assert( def.Index( pszAmmoName ) == i );
 		}
 	}
