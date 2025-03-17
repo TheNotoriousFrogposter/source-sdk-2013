@@ -164,13 +164,14 @@ void CTFWearableDemoShield::ShieldBash( CTFPlayer *pPlayer, float flCurrentCharg
 
 	// Play an impact sound.
 	bool bImpactDamage = false;
+	float flBashDamage = CalculateChargeDamage( flCurrentChargeMeter );
 	if ( trace.m_pEnt )
 	{
 		const char* pszSoundName = "";
 		if ( trace.m_pEnt->IsPlayer() )
 		{
 			bImpactDamage = true;
-			pszSoundName = "DemoCharge.HitFleshRange";
+			pszSoundName = flBashDamage > 0 ? "DemoCharge.HitFleshRange" : "DemoCharge.HitFlesh";
 		}
 		else
 		{
@@ -182,7 +183,6 @@ void CTFWearableDemoShield::ShieldBash( CTFPlayer *pPlayer, float flCurrentCharg
 	// Apply impact damage, if any.
 	if ( bImpactDamage )
 	{
-		float flBashDamage = CalculateChargeDamage( flCurrentChargeMeter );
 		CTakeDamageInfo info;
 		info.SetAttacker( pOwner );
 		info.SetInflictor( this ); 
