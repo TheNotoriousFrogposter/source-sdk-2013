@@ -848,7 +848,7 @@ ConVar ff_use_new_critacola ( "ff_use_new_critacola", "1", FCVAR_NOTIFY | FCVAR_
 ConVar ff_use_new_black_box ( "ff_use_new_black_box", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - heal per enemy hit, 1 - heal based on the damage dealt." );
 ConVar ff_use_new_raygun ( "ff_use_new_raygun", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 24^3 hitbox, penetrate teammates, can lit huntsman on fire, damage scales based on the projectile lifetime (100%-60%), max cloak drain and uber drain, 1 - 1 pixel hitbox, damage scales based on the distance falloff (120%-50%), less cloak drain and uber drain the further the target." );
 ConVar ff_use_new_beggars ( "ff_use_new_beggars", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Misfire removes ammo from the clip instead of from the reserve ammo, can receive primary ammo from the dispenser when the rocket launcher is holstered." );
-ConVar ff_use_new_wrangler ( "ff_use_new_wrangler", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing while the shield is up has 67% penalty." );
+ConVar ff_use_new_wrangler ( "ff_use_new_wrangler", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing while the shield is up has 67% penalty, apply damage falloff and bullet spread to the sentry gun." );
 ConVar ff_use_new_atomizer ( "ff_use_new_atomizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - triple jump deals 10 damage self damage, 1 - require the atomizer to be deployed, triple jump not available for 0.7s after deploying atomizer." );
 ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no self damage if disabled." );
 ConVar ff_use_new_sydney_sleeper ( "ff_use_new_sydney_sleeper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - jarate explosion on a fully charged bodyshot or a headshot, 1 - headshot does minicrit and reduce jarate cooldown by 1 second" );
@@ -6561,7 +6561,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 
 			// Use Sentry position for distance mod
 			CObjectSentrygun *pSentry = dynamic_cast<CObjectSentrygun*>( info.GetInflictor() );
-			if ( pSentry )
+			if ( pSentry && ff_use_new_wrangler.GetBool() )
 			{
 				vAttackerPos = pSentry->WorldSpaceCenter();
 				// Sentries have a much further optimal distance

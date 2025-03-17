@@ -1535,7 +1535,7 @@ bool CObjectSentrygun::Fire()
 		{
 			info.m_pAttacker = this;
 		}
-		if ( m_bPlayerControlled )
+		if ( m_bPlayerControlled && ff_use_new_wrangler.GetBool() )
 		{
 			info.m_vecSpread = VECTOR_CONE_3DEGREES;
 		}
