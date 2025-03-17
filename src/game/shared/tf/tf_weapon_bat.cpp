@@ -736,12 +736,9 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 		return;
 
 	// We have a more intense stun based on our travel time.
-	if ( !ff_use_new_sandman.GetBool() )
-	{
-		FLIGHT_TIME_TO_MAX_STUN == 1.f;
-	}
-	float flLifeTime = Min( gpGlobals->curtime - m_flCreationTime, FLIGHT_TIME_TO_MAX_STUN );
-	float flLifeTimeRatio = flLifeTime / FLIGHT_TIME_TO_MAX_STUN;
+	float flLifeTimeToMaxStun = ff_use_new_sandman.GetBool() ? FLIGHT_TIME_TO_MAX_STUN : 1.f;
+	float flLifeTime = Min( gpGlobals->curtime - m_flCreationTime, flLifeTimeToMaxStun );
+	float flLifeTimeRatio = flLifeTime / flLifeTimeToMaxStun;
 	if ( flLifeTimeRatio > 0.1f )
 	{
 		bool bMax = flLifeTimeRatio >= 1.f;
