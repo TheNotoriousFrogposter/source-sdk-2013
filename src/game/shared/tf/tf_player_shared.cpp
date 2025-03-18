@@ -7171,7 +7171,10 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 {
 #ifdef CLIENT_DLL
 	// STAGING_SPY
-	AddUberScreenEffect( m_pOuter );
+	if ( ff_use_new_dead_ringer.GetBool() )
+	{
+		AddUberScreenEffect( m_pOuter );
+	}
 #else
 #endif
 	// Go stealth w/o sound or fade out.
@@ -7201,7 +7204,10 @@ void CTFPlayerShared::OnRemoveFeignDeath( void )
 {
 #ifdef CLIENT_DLL
 	// STAGING_SPY
-	RemoveUberScreenEffect( m_pOuter );
+	if ( ff_use_new_dead_ringer.GetBool() )
+	{
+		RemoveUberScreenEffect( m_pOuter );
+	}
 #endif
 	// Previous code removed cloak meter, this has been moved to on RemoveStealth checking for steath type
 	// FeignDeath is the duration of cloak where speed, no shimmer and damage reduction take place
