@@ -5431,10 +5431,13 @@ void CTFWeaponBase::ApplyOnInjuredAttributes( CTFPlayer *pVictim, CTFPlayer *pAt
 			if ( ff_use_new_spycicle.GetBool() )
 			{
 				pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 1.f );
+				// STAGING_SPY
+				pVictim->m_Shared.AddCond( TF_COND_AFTERBURN_IMMUNE, iBecomeFireproofOnHitByFire );
 			}
 			else
 			{
 				pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 3.f );
+				pVictim->m_Shared.AddCond( TF_COND_AFTERBURN_IMMUNE, 3.f );
 			}
 
 			if ( pVictim->m_Shared.InCond( TF_COND_BURNING ) )
@@ -5442,8 +5445,6 @@ void CTFWeaponBase::ApplyOnInjuredAttributes( CTFPlayer *pVictim, CTFPlayer *pAt
 				pVictim->EmitSound( "TFPlayer.FlameOut" );
 				pVictim->m_Shared.RemoveCond( TF_COND_BURNING );
 			}
-			// STAGING_SPY
-			pVictim->m_Shared.AddCond( TF_COND_AFTERBURN_IMMUNE, iBecomeFireproofOnHitByFire );
 		}
 	}
 }

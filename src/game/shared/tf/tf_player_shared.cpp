@@ -191,6 +191,7 @@ extern ConVar ff_new_shield_charge;
 extern ConVar ff_use_new_atomizer;
 extern ConVar ff_use_new_soda_popper;
 extern ConVar ff_use_new_booties;
+extern ConVar ff_use_new_spycicle;
 
 // AFTERBURN
 const float tf_afterburn_max_duration = 10.f;
@@ -5136,7 +5137,11 @@ void CTFPlayerShared::OnRemoveBlastImmune( void )
 void CTFPlayerShared::OnAddFireImmune( void )
 {
 #ifdef CLIENT_DLL
-	AddUberScreenEffect( m_pOuter );
+	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) || ff_use_new_spycicle.GetBool() )
+	{
+		AddUberScreenEffect( m_pOuter );
+	}
+
 	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) )
 	{
 		AddResistParticle( m_pOuter, MEDIGUN_FIRE_RESIST );
@@ -5151,7 +5156,11 @@ void CTFPlayerShared::OnAddFireImmune( void )
 void CTFPlayerShared::OnRemoveFireImmune( void )
 {
 #ifdef CLIENT_DLL
-	RemoveUberScreenEffect( m_pOuter );
+	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) || ff_use_new_spycicle.GetBool() )
+	{
+		RemoveUberScreenEffect( m_pOuter );
+	}
+
 	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) )
 	{
 		RemoveResistParticle( m_pOuter, MEDIGUN_FIRE_RESIST );
