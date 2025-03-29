@@ -35,7 +35,6 @@ extern bool IsInCommentaryMode();
 extern ConVar tf_nav_in_combat_range;
 
 extern ConVar ff_use_new_gunslinger;
-extern ConVar ff_use_new_wrangler;
 
 // Ground placed version
 #define SENTRY_MODEL_PLACEMENT			"models/buildables/sentry1_blueprint.mdl"
@@ -621,7 +620,7 @@ bool CObjectSentrygun::OnWrenchHit( CTFPlayer *pPlayer, CTFWrench *pWrench, Vect
 		// STAGING_ENGY
 		// Mod repair value by shield value
 		float flRepairAmount = pWrench->GetRepairAmount();
-		if ( m_nShieldLevel == SHIELD_NORMAL && ff_use_new_wrangler.GetBool() )
+		if ( m_nShieldLevel == SHIELD_NORMAL )
 		{
 			flRepairAmount *= SHIELD_NORMAL_VALUE;
 		}
@@ -668,7 +667,7 @@ bool CObjectSentrygun::OnWrenchHit( CTFPlayer *pPlayer, CTFWrench *pWrench, Vect
 
 			// STAGING_ENGY
 			// Mod Ammo if shielded
-			if ( m_nShieldLevel == SHIELD_NORMAL && ff_use_new_wrangler.GetBool() )
+			if ( m_nShieldLevel == SHIELD_NORMAL )
 			{
 				iAmountToAdd *= SHIELD_NORMAL_VALUE;
 			}
@@ -694,7 +693,7 @@ bool CObjectSentrygun::OnWrenchHit( CTFPlayer *pPlayer, CTFWrench *pWrench, Vect
 
 			// STAGING_ENGY
 			// Mod Ammo if shielded
-			if ( m_nShieldLevel == SHIELD_NORMAL && ff_use_new_wrangler.GetBool() )
+			if ( m_nShieldLevel == SHIELD_NORMAL )
 			{
 				iAmountToAdd *= SHIELD_NORMAL_VALUE;
 			}
@@ -1535,7 +1534,7 @@ bool CObjectSentrygun::Fire()
 		{
 			info.m_pAttacker = this;
 		}
-		if ( m_bPlayerControlled && ff_use_new_wrangler.GetBool() )
+		if ( m_bPlayerControlled )
 		{
 			info.m_vecSpread = VECTOR_CONE_3DEGREES;
 		}

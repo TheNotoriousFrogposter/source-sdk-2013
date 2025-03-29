@@ -90,7 +90,6 @@ BEGIN_DATADESC( CTFProjectile_GrapplingHook )
 END_DATADESC()
 
 extern ConVar ff_use_new_gunslinger;
-extern ConVar ff_use_new_wrangler;
 extern ConVar ff_use_new_rescue_ranger;
 
 //-----------------------------------------------------------------------------
@@ -677,7 +676,7 @@ void CTFProjectile_Arrow::BuildingHealingArrow( CBaseEntity *pOther )
 		return;
 
 	// if building is shielded, reduce health gain
-	if ( pBuilding->GetShieldLevel() == SHIELD_NORMAL && ff_use_new_wrangler.GetBool() )
+	if ( pBuilding->GetShieldLevel() == SHIELD_NORMAL )
 	{
 		iArrowHealAmount *= SHIELD_NORMAL_VALUE;
 	}
