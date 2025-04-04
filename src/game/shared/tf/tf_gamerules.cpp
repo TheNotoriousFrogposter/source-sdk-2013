@@ -7422,6 +7422,11 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 
 				flRealDamage *= flDamageReduction;
 
+				if ( !pVictim->m_Shared.IsFeignDeathReady() && !ff_use_new_dead_ringer.GetBool() )
+				{
+					pVictim->m_Shared.ReduceFeignDeathDuration( RemapValClamped ( flRealDamage, 0, 100.f, 0, 6.f ) );
+				}
+
 				CTFWeaponInvis *pWatch = (CTFWeaponInvis *) pVictim->Weapon_OwnsThisID( TF_WEAPON_INVIS );
 				PotentiallyDamageMitigatedEvent( pVictim, pVictim, pWatch, flBeforeflRealDamage, flRealDamage );
 
