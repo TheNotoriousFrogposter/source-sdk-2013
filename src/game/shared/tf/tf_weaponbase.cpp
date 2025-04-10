@@ -5437,7 +5437,6 @@ void CTFWeaponBase::ApplyOnInjuredAttributes( CTFPlayer *pVictim, CTFPlayer *pAt
 			else
 			{
 				pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 3.f );
-				pVictim->m_Shared.AddCond( TF_COND_AFTERBURN_IMMUNE, 3.f );
 			}
 
 			if ( pVictim->m_Shared.InCond( TF_COND_BURNING ) )

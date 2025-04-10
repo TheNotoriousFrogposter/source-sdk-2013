@@ -143,7 +143,7 @@ bool CHealthKit::MyTouch( CBasePlayer *pPlayer )
 				EmitSound( user, entindex(), TF_HEALTHKIT_PICKUP_SOUND );
 
 				CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
-				if ( pOwner && ( pOwner != pTFPlayer || ff_lunchbox_self_healing.GetBool() ) )
+				if ( pOwner && ( pOwner != pTFPlayer ) )
 				{
 					if ( pOwner->GetTeamNumber() == pTFPlayer->GetTeamNumber() )
 					{
