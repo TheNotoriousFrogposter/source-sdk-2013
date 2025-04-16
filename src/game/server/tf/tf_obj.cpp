@@ -2261,10 +2261,10 @@ void CBaseObject::CreateObjectGibs( void )
 	int nMetalPerGib = nTotalMetal / m_aGibs.Count();
 	int nLeftOver = nTotalMetal % m_aGibs.Count();
 
-	if ( IsMiniBuilding() && ff_use_new_gunslinger.GetBool() )
+	if ( IsMiniBuilding() )
 	{
 		// STAGING_ENGY
-		nMetalPerGib = 0;
+		nMetalPerGib = ff_use_new_gunslinger.GetBool() ? 0 : 7;
 		nLeftOver = 0;
 	}
 

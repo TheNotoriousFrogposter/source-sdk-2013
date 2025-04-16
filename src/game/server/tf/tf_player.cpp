@@ -10735,7 +10735,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 							(int)GetAbsOrigin().y,
 							(int)GetAbsOrigin().z );
 
-						if ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD && ff_use_new_sydney_sleeper.GetBool() )
+						if ( ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) && ff_use_new_sydney_sleeper.GetBool() )
 						{
 							auto pWeaponBaseSecondary = dynamic_cast< CTFWeaponBase* >( pTFAttacker->GetEntityForLoadoutSlot( LOADOUT_POSITION_SECONDARY ) );
 							if ( pWeaponBaseSecondary && pWeaponBaseSecondary->HasEffectBarRegeneration() )
@@ -10752,7 +10752,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 // 							NDebugOverlay::Sphere( info.GetDamagePosition(), tf_space_thrust_scout.GetFloat(), 255, 20, 20, true, 5.f );
 						}
 						// explosive jarate shot for a fully charged shot or headshot
-						if ( pSniper->IsFullyCharged() || IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD && !ff_use_new_sydney_sleeper.GetBool() )
+						if ( ( pSniper->IsFullyCharged() || IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) && !ff_use_new_sydney_sleeper.GetBool() )
 						{
 							JarExplode( entindex(), pTFAttacker, pTFWeapon, pTFWeapon, info.GetDamagePosition(), pTFAttacker->GetTeamNumber(), 100.f, TF_COND_URINE, flJarateTime, "peejar_impact", TF_WEAPON_PEEJAR_EXPLODE_SOUND  );
 						}
