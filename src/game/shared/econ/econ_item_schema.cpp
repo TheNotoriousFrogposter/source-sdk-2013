@@ -4418,14 +4418,8 @@ bool CEconItemSchema::BInitTextBuffer( CUtlBuffer &buffer, CUtlVector<CUtlString
 
 	Reset();
 	m_pKVRawDefinition = new KeyValues( "CEconItemSchema" );
-	//if ( m_pKVRawDefinition->LoadFromBuffer( NULL, buffer ) )
-	if ( m_pKVRawDefinition->LoadFromFile(g_pFullFileSystem, "scripts/items/items_game_custom.txt","GAME"))
+	if ( m_pKVRawDefinition->LoadFromBuffer( NULL, buffer ) )
 	{
-		KeyValues* append = new KeyValues( "CEconItemSchema" );
-		if ( append->LoadFromBuffer( NULL, buffer ))
-		{
-			m_pKVRawDefinition->RecursiveMergeKeyValues(append);
-		}
 		return BInitSchema( m_pKVRawDefinition, pVecErrors )
 			&& BPostSchemaInit( pVecErrors );
 	}
