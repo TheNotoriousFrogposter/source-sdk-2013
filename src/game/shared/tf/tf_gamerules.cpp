@@ -836,7 +836,7 @@ ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICAT
 ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
 ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
 ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
-ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 3 seconds and no recharging from ammo pack if disabled." );
+ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 2 seconds and no recharging from ammo pack if disabled." );
 ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
 ConVar ff_use_new_ambassador ( "ff_use_new_ambassador", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Headshot crit has 1200 hammer unit range limit." );
 ConVar ff_use_new_gunslinger ( "ff_use_new_gunslinger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - mini sentry starts at 100 HP, cannot be repaired or wrench boosted, gibs drop metals, 1 - mini sentry starts at 50 HP, can be repaired or wrench boosted, gibs drop no metals." );

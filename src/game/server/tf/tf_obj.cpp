@@ -2185,6 +2185,9 @@ float CBaseObject::GetConstructionMultiplier( void )
 
 	float flMultiplier = 1.0;
 
+	if ( IsMiniBuilding() && !ff_use_new_gunslinger.GetBool() )
+		flMultiplier *= 4.f;
+
 	// expire all the old 
 	int i = m_ConstructorList.LastInorder();
 	while ( i != m_ConstructorList.InvalidIndex() )

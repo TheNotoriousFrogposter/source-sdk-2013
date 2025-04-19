@@ -234,7 +234,7 @@ float CTFWearableDemoShield::CalculateChargeDamage( float flCurrentChargeMeter )
 	
 	int iFullImpactDamage = 0;
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, iFullImpactDamage, no_charge_impact_range );
-	if ( iFullImpactDamage == 1 )
+	if ( iFullImpactDamage )
 	{
 		flImpactDamage = 50.0f;
 	}
