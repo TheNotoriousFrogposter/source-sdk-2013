@@ -10959,7 +10959,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 	// If we have an item with a move speed modification, apply it to the final speed.
 	CALL_ATTRIB_HOOK_FLOAT( maxfbspeed, mult_player_movespeed );
 
-	if ( m_Shared.IsShieldEquipped() || !ff_use_new_booties.GetBool() )
+	if ( m_Shared.IsShieldEquipped() )
 	{
 		CALL_ATTRIB_HOOK_FLOAT( maxfbspeed, mult_player_movespeed_shieldrequired );
 	}

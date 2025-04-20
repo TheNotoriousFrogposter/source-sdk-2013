@@ -853,7 +853,6 @@ ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | 
 ConVar ff_use_new_sydney_sleeper ( "ff_use_new_sydney_sleeper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - jarate explosion on a fully charged bodyshot or a headshot, 1 - headshot does minicrit and reduce jarate cooldown by 1 second" );
 ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Five additional air jumps instead of mini-crit, manual activation, no charging by running." );
 ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives ubercharge, 300 burn damage to fill the meter." );
-ConVar ff_use_new_booties ( "ff_use_new_booties", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Shield is required for the booties to provide speed bonus." );
 ConVar ff_use_new_razorback ( "ff_use_new_razorback", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Recharge after 30 seconds." );
 ConVar ff_use_new_rescue_ranger ( "ff_use_new_rescue_ranger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing consumes metal." );
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a sandwich to the ground." );
