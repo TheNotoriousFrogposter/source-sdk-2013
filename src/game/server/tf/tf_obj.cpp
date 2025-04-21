@@ -2254,6 +2254,25 @@ void CBaseObject::CreateObjectGibs( void )
 		return;
 	}
 
+	CBaseEntity *pEntity = m_hBuiltOnEntity.Get();
+	CBaseObject *pObject = dynamic_cast<CBaseObject *>( pEntity );
+
+	// only spawn sapper gibs if the attached building is a dispenser
+	if ( GetType() == OBJ_ATTACHMENT_SAPPER )
+	{
+		if ( pEntity )
+		{
+			if ( pEntity->IsPlayer() )
+				return;
+
+			if ( pObject )
+			{
+				if ( pObject->GetType() & OBJ_SENTRYGUN || pObject->GetType() & OBJ_TELEPORTER )
+					return;
+			}
+		}
+	}
+
 	const CObjectInfo *pObjectInfo = GetObjectInfo( ObjectType() );
 
 	// grant some percentage of the cost to build if number of metal to drop is not specified
