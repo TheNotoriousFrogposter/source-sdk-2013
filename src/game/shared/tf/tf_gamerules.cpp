@@ -826,7 +826,7 @@ ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_DE
 ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
 
 ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "TF_COND_MEGAHEAL prevents capping or defending control points." );
-ConVar ff_minigun_penalty ( "ff_minigun_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
+ConVar ff_minigun_spinup_penalty ( "ff_minigun_spinup_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
 ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed crit on shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%." );
 ConVar ff_airblast_minicrit ( "ff_airblast_minicrit", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Whether to mini-crit the airblasted victims or not if they are hit by a reserve shooter or a direct hit rocket." );
 ConVar ff_use_new_enforcer ( "ff_use_new_enforcer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
@@ -859,6 +859,7 @@ ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY 
 ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and Escape Plan use their own respective buff." );
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
 ConVar ff_old_healonkill ( "ff_old_healonkill", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the ability to overheal when gaining health on a kill." );
+ConVar ff_allow_taunt_sticky ( "ff_allow_taunt_sticky", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Allow Demoman to detonate stickies while taunting." );
 
 #ifndef GAME_DLL
 extern ConVar cl_burninggibs;

@@ -6569,6 +6569,11 @@ bool C_TFPlayer::CreateMove( float flInputSampleTime, CUserCmd *pCmd )
 			VectorCopy( angMoveAngle, pCmd->viewangles );
 		}
 
+		if ( nCurrentButtons & IN_ATTACK2 )
+		{
+			pCmd->buttons |= IN_ATTACK2;
+		}
+
 		// allow remap taunt keys to go through
 		CTFTauntInfo *pTaunt = m_TauntEconItemView.GetStaticData()->GetTauntData();
 		if ( pTaunt )

@@ -35,7 +35,7 @@
 #define TF_MINIGUN_SPINUP_TIME 0.75f
 #define TF_MINIGUN_PENALTY_PERIOD 1.f
 
-extern ConVar ff_minigun_penalty;
+extern ConVar ff_minigun_spinup_penalty;
 
 //=============================================================================
 //
@@ -1004,7 +1004,7 @@ float CTFMinigun::GetProjectileDamage( void )
 	float flSpinTime = Max( flPreFireWindUp, GetFiringDuration() );
 	// DevMsg( "PreFireTime: %.2f\n", flPreFireWindUp );
 
-	if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD && ff_minigun_penalty.GetBool())
+	if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD && ff_minigun_spinup_penalty.GetBool())
 	{
 		float flMod = 1.f;
 		flMod = RemapValClamped( flSpinTime, 0.2f, TF_MINIGUN_PENALTY_PERIOD, 0.5f, 1.f );
@@ -1027,7 +1027,7 @@ float CTFMinigun::GetWeaponSpread( void )
 	float flSpinTime = Max( flPreFireWindUp, GetFiringDuration() );
 	//DevMsg( "PreFireTime: %.2f\n", flPreFireWindUp );
 
-	if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD && ff_minigun_penalty.GetBool() )
+	if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD && ff_minigun_spinup_penalty.GetBool() )
 	{
 		const float flMaxSpread = 1.5f;
 		float flMod = RemapValClamped( flSpinTime, 0.f, TF_MINIGUN_PENALTY_PERIOD, flMaxSpread, 1.f );
