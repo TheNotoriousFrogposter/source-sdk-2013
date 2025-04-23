@@ -181,7 +181,7 @@ bool CHealthKit::MyTouch( CBasePlayer *pPlayer )
 
 				CTF_GameStats.Event_PlayerHealthkitPickup( pTFPlayer );
 			}
-			else if ( !m_bThrownSingleInstance || ff_lunchbox_self_healing.GetBool() )
+			else if ( !m_bThrownSingleInstance )
 			{
 				if ( bIsAnyHeavyWithSandvichEquippedPickingUp )
 				{
