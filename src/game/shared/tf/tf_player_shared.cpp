@@ -190,7 +190,6 @@ extern ConVar ff_use_new_critacola;
 extern ConVar ff_new_shield_charge;
 extern ConVar ff_use_new_atomizer;
 extern ConVar ff_use_new_soda_popper;
-extern ConVar ff_use_new_booties;
 extern ConVar ff_use_new_spycicle;
 extern ConVar ff_allow_taunt_sticky;
 
