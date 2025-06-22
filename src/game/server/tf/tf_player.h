@@ -578,6 +578,7 @@ public:
 	void BleedPlayer( float flBleedingTime );
 	void BleedPlayerEx( float flBleedingTime, int nBleedDmg, bool bPermenantBleeding, int nDmgType );
 	void RollRareSpell();
+	void GiveItem(int inputdata);
 	void ClearSpells();
 
 	void InputIgnitePlayer( inputdata_t &inputdata );
@@ -594,6 +595,7 @@ public:
 	void InputTriggerLootIslandAchievement( inputdata_t &inputdata );
 	void InputTriggerLootIslandAchievement2( inputdata_t &inputdata );
 	void InputRollRareSpell( inputdata_t &inputdata );
+	void InputGiveItem(inputdata_t &inputdata);
 	void InputRoundSpawn( inputdata_t &inputdata );
 
 	bool InAirDueToExplosion( void ) { return (!(GetFlags() & FL_ONGROUND) && (GetWaterLevel() == WL_NotInWater) && ( (m_iBlastJumpState != 0) ) || m_Shared.InCond( TF_COND_ROCKETPACK ) ); }
@@ -618,7 +620,25 @@ public:
 	bool IsZombieCostumeEquipped( void ) const;
 	bool HasWearablesEquipped( const CSchemaItemDefHandle *ppItemDefs, int nWearables ) const;
 
-	CEconItemView *GetEquippedItemForLoadoutSlot( int iLoadoutSlot ){ return m_Inventory.GetInventoryItemByItemID( m_EquippedLoadoutItemIndices[iLoadoutSlot] ); }
+	//BetaM - Fixes custom taunts/action items to be "valid" for loadouts
+	CEconItemView* GetEquippedItemForLoadoutSlot(int iLoadoutSlot) {
+		auto itemID = m_EquippedLoadoutItemIndices[iLoadoutSlot];
+		CEconItemView* pItem;
+		if (itemID < 65536)
+		{
+			int count = TFInventoryManager()->GetModItemCount();
+			for (int i = 0; i < count; i++)
+			{
+				pItem = TFInventoryManager()->GetModItem(i);
+				if (pItem && pItem->GetItemDefIndex() == itemID)
+				{
+					return pItem;
+				}
+			}
+		}
+		return m_Inventory.GetInventoryItemByItemID(m_EquippedLoadoutItemIndices[iLoadoutSlot]);
+	}
+
 	CBaseEntity *GetEntityForLoadoutSlot( int iLoadoutSlot, bool bForceCheckWearable = false );			//Gets whatever entity is associated with the loadout slot (wearable or weapon)
 	CTFWearable *GetEquippedWearableForLoadoutSlot( int iLoadoutSlot );
 

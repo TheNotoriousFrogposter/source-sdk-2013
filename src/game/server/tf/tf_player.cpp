@@ -548,6 +548,7 @@ BEGIN_DATADESC( CTFPlayer )
 	DEFINE_INPUTFUNC( FIELD_VOID, "TriggerLootIslandAchievement2", InputTriggerLootIslandAchievement2 ),
 	DEFINE_INPUTFUNC( FIELD_STRING,	"SpeakResponseConcept",	InputSpeakResponseConcept ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "RollRareSpell", InputRollRareSpell ),
+	DEFINE_INPUTFUNC( FIELD_INTEGER, "GiveItem", InputGiveItem ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "RoundSpawn", InputRoundSpawn ),
 END_DATADESC()
 
@@ -864,6 +865,95 @@ void cc_CreatePredictionError_f()
 ConCommand cc_CreatePredictionError( "CreatePredictionError", cc_CreatePredictionError_f, "Create a prediction error", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
 
 // -------------------------------------------------------------------------------- //
+
+CON_COMMAND_F(give_econ, "Give ECON item with specified ID from item schema.\nFormat: <id> <classname> <attribute1> <value1> <attribute2> <value2> ... <attributeN> <valueN>", FCVAR_CHEAT)
+{
+	if (args.ArgC() < 2)
+		return;
+
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+	if (!pPlayer)
+		return;
+
+	int iItemID = atoi(args[1]);
+	CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinition(iItemID);
+	if (!pItemDef)
+		return;
+
+	//KeyValues* pKVInitValues = pItemDef->GetRawDefinition();
+
+	TFPlayerClassData_t* pData = pPlayer->GetPlayerClass()->GetData();
+	CEconItemView econItem;
+
+	econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+
+	//bool bAddedAttributes = false;
+
+	// Additonal params are attributes.
+	/*for (int i = 3; i + 1 < args.ArgC(); i += 2)
+	{
+		int iAttribIndex = atoi(args[i]);
+		float flValue = V_atof(args[i + 1]);
+
+		CEconItemAttribute econAttribute(iAttribIndex, flValue);
+		bAddedAttributes = econItem.AddAttribute(&econAttribute);
+	}
+
+	econItem.SkipBaseAttributes(bAddedAttributes);*/
+
+
+
+	// Nuke whatever we have in this slot.
+	//int iClass = pPlayer->GetPlayerClass()->GetClassIndex();
+	const char* pszLoadoutSlot = econItem.GetDefinitionString("item_slot", "class");
+	int iSlot = StringFieldToInt(pszLoadoutSlot, GetItemSchema()->GetLoadoutStrings(EQUIP_TYPE_CLASS), true);
+	CBaseEntity* pEntity = pPlayer->GetEntityForLoadoutSlot(iSlot);
+
+	if (pEntity)
+	{
+		CBaseCombatWeapon* pWeapon = pEntity->MyCombatWeaponPointer();
+		if (pWeapon)
+		{
+			if (pWeapon == pPlayer->GetActiveWeapon())
+				pWeapon->Holster();
+
+			pPlayer->Weapon_Detach(pWeapon);
+			UTIL_Remove(pWeapon);
+		}
+		else if (pEntity->IsWearable())
+		{
+			CEconWearable* pWearable = static_cast<CEconWearable*>(pEntity);
+			pPlayer->RemoveWearable(pWearable);
+		}
+		else
+		{
+			Assert(false);
+			UTIL_Remove(pEntity);
+		}
+	}
+
+	const char* pszClassname = args.ArgC() > 2 ? args[2] : pItemDef->GetItemClass();
+	CEconEntity* pEconEnt = dynamic_cast<CEconEntity*>(pPlayer->GiveNamedItem(pszClassname, 0, &econItem));
+
+	if (pEconEnt)
+	{
+		pEconEnt->GiveTo(pPlayer);
+
+		CBaseCombatWeapon* pWeapon = pEconEnt->MyCombatWeaponPointer();
+		if (pWeapon)
+		{
+			int iAmmo = pWeapon->GetPrimaryAmmoType();
+			if (iAmmo > -1)
+				pPlayer->SetAmmoCount(pPlayer->GetMaxAmmo(iAmmo), iAmmo);
+		}
+
+		CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>(pEconEnt);
+		if (pBuilder)
+		{
+			pBuilder->SetSubType(pData->m_aBuildable[0]);
+		}
+	}
+}
 
 enum eCoachCommand
 {
@@ -4908,7 +4998,7 @@ CEconItemView *CTFPlayer::GetLoadoutItem( int iClass, int iSlot, bool bReportWhi
 
 	// Check to see if this item passes the tournament rules (in whitelist/or normal quality).
 	// If it doesn't, we fall back to the base item for the loadout slot.
-	if ( (pItem && pItem->IsValid()) && (pItem->GetItemQuality() != AE_NORMAL) && !pItem->GetStaticData()->IsAllowedInMatch() && TFGameRules()->IsInTournamentMode() )
+	if ( (pItem && pItem->IsValid()) && (pItem->GetItemQuality() != AE_NORMAL) && !pItem->GetStaticData()->IsAllowedInMatch() /*&& TFGameRules()->IsInTournamentMode()*/ )
 	{
 		if ( bReportWhitelistFails )
 		{
@@ -20774,6 +20864,86 @@ void CTFPlayer::SetCustomModelWithClassAnimations( const char *pszModel )
 void CTFPlayer::InputSetCustomModelWithClassAnimations( inputdata_t &inputdata )
 {
 	SetCustomModelWithClassAnimations( inputdata.value.String() );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+
+void CTFPlayer::GiveItem(int inputdata)
+{
+
+	if (!IsAlive())
+		return;
+
+	CTFPlayer* pPlayer = this;
+
+	
+	CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinition(inputdata);
+	if (!pItemDef)
+		return;
+
+	TFPlayerClassData_t* pData = pPlayer->GetPlayerClass()->GetData();
+	CEconItemView econItem;
+
+	econItem.Init(inputdata, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+
+	// Nuke whatever we have in this slot.
+	const char* pszLoadoutSlot = econItem.GetDefinitionString("item_slot", "class");
+	int iSlot = StringFieldToInt(pszLoadoutSlot, GetItemSchema()->GetLoadoutStrings(EQUIP_TYPE_CLASS), true);
+	CBaseEntity* pEntity = pPlayer->GetEntityForLoadoutSlot(iSlot);
+
+	if (pEntity)
+	{
+		CBaseCombatWeapon* pWeapon = pEntity->MyCombatWeaponPointer();
+		if (pWeapon)
+		{
+			if (pWeapon == pPlayer->GetActiveWeapon())
+				pWeapon->Holster();
+
+			pPlayer->Weapon_Detach(pWeapon);
+			UTIL_Remove(pWeapon);
+		}
+		else if (pEntity->IsWearable())
+		{
+			CEconWearable* pWearable = static_cast<CEconWearable*>(pEntity);
+			pPlayer->RemoveWearable(pWearable);
+		}
+		else
+		{
+			Assert(false);
+			UTIL_Remove(pEntity);
+		}
+	}
+
+	const char* pszClassname = pItemDef->GetItemClass();
+	CEconEntity* pEconEnt = dynamic_cast<CEconEntity*>(pPlayer->GiveNamedItem(pszClassname, 0, &econItem));
+
+	if (pEconEnt)
+	{
+		pEconEnt->GiveTo(pPlayer);
+
+		CBaseCombatWeapon* pWeapon = pEconEnt->MyCombatWeaponPointer();
+		if (pWeapon)
+		{
+			int iAmmo = pWeapon->GetPrimaryAmmoType();
+			if (iAmmo > -1)
+				pPlayer->SetAmmoCount(pPlayer->GetMaxAmmo(iAmmo), iAmmo);
+		}
+
+		CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>(pEconEnt);
+		if (pBuilder)
+		{
+			pBuilder->SetSubType(pData->m_aBuildable[0]);
+		}
+	}
+}
+
+
+void CTFPlayer::InputGiveItem(inputdata_t& input)
+{
+	int iItem = input.value.Int();
+	GiveItem(iItem);
 }
 
 //-----------------------------------------------------------------------------
