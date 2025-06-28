@@ -831,19 +831,15 @@ ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_
 ConVar ff_airblast_minicrit ( "ff_airblast_minicrit", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Whether to mini-crit the airblasted victims or not if they are hit by the Reserve Shooter or a Direct Hit rocket." );
 ConVar ff_use_new_enforcer ( "ff_use_new_enforcer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
 ConVar ff_use_new_parachute ( "ff_use_new_parachute", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove the parachute updraft effect while on fire, -25% max air velocity, cannot redeploy parachute." );
-ConVar ff_use_new_dead_ringer ( "ff_use_new_dead_ringer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 90% damage resistance for 6 seconds, 1 - 75% damage resistance against initial hit, 65%-20% resistance + speed boost + afterburn immunity for the next 3 seconds." );
 ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - explosion deals up to 150 damage, melee attack deals 35 damage, 1 - explosion deals up to 83 damage, melee attack deals 55 damage." );
 ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
 ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
 ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
 ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 2 seconds and no recharging from ammo pack if disabled." );
 ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
-ConVar ff_use_new_ambassador ( "ff_use_new_ambassador", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Headshot crit has 1200 hammer unit range limit." );
 ConVar ff_use_new_gunslinger ( "ff_use_new_gunslinger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - mini sentry starts at 100 HP, cannot be repaired or wrench boosted, gibs drop metals, 1 - mini sentry starts at 50 HP, can be repaired or wrench boosted, gibs drop no metals." );
 ConVar ff_use_new_tide_turner ( "ff_use_new_tide_turner", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Mini-crit at the end of a charge attack instead of a crit." );
-ConVar ff_use_new_sandman ( "ff_use_new_sandman", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Slow movement instead of a stun, 20% less flight time requirement for a moon shot, recharge 5 seconds faster." );
 ConVar ff_use_new_cleaver ( "ff_use_new_cleaver", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove long range mini-crit on hit, recharge 1.5s faster if you hit a long range hit." );
-ConVar ff_use_new_bonk ( "ff_use_new_bonk", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Slow down the player after the invulnerability wears off." );
 ConVar ff_use_new_critacola ( "ff_use_new_critacola", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 25% faster speed, 1 - mark on death after attacking." );
 ConVar ff_use_new_black_box ( "ff_use_new_black_box", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - heal per enemy hit, 1 - heal based on the damage dealt." );
 ConVar ff_use_new_raygun ( "ff_use_new_raygun", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 24^3 hitbox, penetrate teammates, can lit huntsman on fire, damage scales based on the projectile lifetime (100%-60%), 1 - 1 pixel hitbox, damage scales based on the distance falloff (120%-50%), less cloak drain and uber drain the further the target." );
@@ -853,10 +849,8 @@ ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | 
 ConVar ff_use_new_sydney_sleeper ( "ff_use_new_sydney_sleeper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - jarate explosion on a fully charged bodyshot or a headshot, 1 - headshot does mini-crit and reduce jarate cooldown by 1 second" );
 ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Five additional air jumps instead of mini-crits, manual activation, no charging by running." );
 ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives invulnerability, 300 burn damage to fill the meter." );
-ConVar ff_use_new_razorback ( "ff_use_new_razorback", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Recharge after 30 seconds." );
 ConVar ff_use_new_rescue_ranger ( "ff_use_new_rescue_ranger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing consumes metal." );
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a lunch box item to the ground." );
-ConVar ff_use_split_equalizer ( "ff_use_split_equalizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "The Equalizer and the Escape Plan use their own respective buff." );
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
 ConVar ff_old_healonkill ( "ff_old_healonkill", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the ability to overheal when gaining health on a kill." );
 ConVar ff_allow_taunt_sticky ( "ff_allow_taunt_sticky", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Allow Demoman to detonate stickies while taunting." );
@@ -7415,10 +7409,13 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			if ( pVictim->m_Shared.InCond( TF_COND_FEIGN_DEATH ) || pVictim->m_Shared.IsFeignDeathReady() )
 			{
 				// Damage reduction is proportional to cloak remaining (60%->20%)
-				float flDamageReduction = ff_use_new_dead_ringer.GetBool() ? RemapValClamped( pVictim->m_Shared.GetSpyCloakMeter(), 50.0f, 0.0f, tf_feign_death_damage_scale.GetFloat(), tf_stealth_damage_reduction.GetFloat() ): 0.1f;
+				int iNewFeignDeath = 1;
+				CTFWeaponInvis *pWatch = (CTFWeaponInvis *) pVictim->Weapon_OwnsThisID( TF_WEAPON_INVIS );
+				CALL_ATTRIB_HOOK_INT_ON_OTHER( pWatch, iNewFeignDeath, obsolete );
+				float flDamageReduction = ( iNewFeignDeath == 1 ) ? RemapValClamped( pVictim->m_Shared.GetSpyCloakMeter(), 50.0f, 0.0f, tf_feign_death_damage_scale.GetFloat(), tf_stealth_damage_reduction.GetFloat() ): 0.1f;
 
 				// On Activate Reduce Remaining Cloak by 50%
-				if ( pVictim->m_Shared.IsFeignDeathReady() && ff_use_new_dead_ringer.GetBool() )
+				if ( pVictim->m_Shared.IsFeignDeathReady() && iNewFeignDeath == 1 )
 				{
 					flDamageReduction = tf_feign_death_activate_damage_scale.GetFloat();
 				}
@@ -7428,12 +7425,11 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 
 				flRealDamage *= flDamageReduction;
 
-				if ( !pVictim->m_Shared.IsFeignDeathReady() && !ff_use_new_dead_ringer.GetBool() )
+				if ( !pVictim->m_Shared.IsFeignDeathReady() && iNewFeignDeath != 1 )
 				{
 					pVictim->m_Shared.ReduceFeignDeathDuration( RemapValClamped ( flRealDamage, 0, 100.f, 0, 6.f ) );
 				}
 
-				CTFWeaponInvis *pWatch = (CTFWeaponInvis *) pVictim->Weapon_OwnsThisID( TF_WEAPON_INVIS );
 				PotentiallyDamageMitigatedEvent( pVictim, pVictim, pWatch, flBeforeflRealDamage, flRealDamage );
 
 				// Original damage would've killed the player, but the reduced damage wont

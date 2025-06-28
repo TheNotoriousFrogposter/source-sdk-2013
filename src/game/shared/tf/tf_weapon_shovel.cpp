@@ -31,8 +31,6 @@ END_PREDICTION_DATA()
 LINK_ENTITY_TO_CLASS( tf_weapon_shovel, CTFShovel );
 PRECACHE_WEAPON_REGISTER( tf_weapon_shovel );
 
-extern ConVar ff_use_split_equalizer;
-
 //=============================================================================
 //
 // Weapon Shovel functions.
@@ -91,6 +89,19 @@ void CTFShovel::PrimaryAttack()
 
 	BaseClass::PrimaryAttack();
 }
+
+// -----------------------------------------------------------------------------
+// Purpose:
+// -----------------------------------------------------------------------------
+bool CTFShovel::HasBothBoost( void )
+{
+	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
+	CTFShovel *pWpn = static_cast< CTFShovel * >( pOwner->Weapon_OwnsThisID( TF_WEAPON_SHOVEL ) );
+	int bNewPickaxe = 1;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER ( pWpn, bNewPickaxe, obsolete )
+	return HasDamageBoost() && bNewPickaxe != 1;
+}
+
 // -----------------------------------------------------------------------------
 // Purpose:
 // -----------------------------------------------------------------------------
@@ -106,7 +117,7 @@ float CTFShovel::GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* p
 {
 	float flDamage = BaseClass::GetMeleeDamage( pTarget, piDamageType, piCustomDamage );
 
-	if ( ff_use_split_equalizer.GetBool() ? !HasDamageBoost() : ( !HasDamageBoost() && !HasSpeedBoost() ) )
+	if ( !HasDamageBoost() )
 		return flDamage;
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
@@ -124,7 +135,7 @@ float CTFShovel::GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* p
 //-----------------------------------------------------------------------------
 float CTFShovel::GetSpeedMod( void )
 {
-	if ( m_bHolstering || ff_use_split_equalizer.GetBool() ? !HasSpeedBoost() : ( !HasSpeedBoost() && !HasDamageBoost() ) )
+	if ( m_bHolstering || ( !HasSpeedBoost() && !HasBothBoost() ) )
 		return 1.f;
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
@@ -152,7 +163,7 @@ bool CTFShovel::Deploy( void )
 	bool ret = BaseClass::Deploy();
 
 	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
-	if ( pOwner && ff_use_split_equalizer.GetBool() ? HasSpeedBoost() : ( HasDamageBoost() || HasSpeedBoost() ) )
+	if ( pOwner && ( HasSpeedBoost() || HasBothBoost() ) )
 	{
 		SetContextThink( &CTFShovel::MoveSpeedThink, gpGlobals->curtime + 0.25f, "SHOVEL_SPEED_THINK" );
 	}
@@ -195,7 +206,7 @@ void CTFShovel::MoveSpeedThink( void )
 //-----------------------------------------------------------------------------
 float CTFShovel::GetForceScale( void )
 {
-	if ( ff_use_split_equalizer.GetBool() ? HasDamageBoost() : ( HasDamageBoost() || HasSpeedBoost() ) )
+	if ( HasDamageBoost() )
 	{
 		return BaseClass::GetForceScale() * 2.f;
 	}

@@ -294,11 +294,9 @@ extern ConVar tf_rocketpack_impact_push_min;
 extern ConVar tf_rocketpack_impact_push_max;
 
 extern ConVar ff_use_new_spycicle;
-extern ConVar ff_use_new_dead_ringer;
 extern ConVar ff_use_new_katana;
 extern ConVar ff_use_new_sydney_sleeper;
 extern ConVar ff_use_new_phlog;
-extern ConVar ff_use_new_razorback;
 extern ConVar ff_old_healonkill;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
@@ -10192,6 +10190,8 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 		CBaseEntity *pEntity = itemList.Element( 0 );
 		if ( pEntity && !pEntity->IsEffectActive( EF_NODRAW ) )
 		{
+			int iNewShield = 1;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER_WITH_ITEMS( this, iNewShield, &itemList, obsolete );
 			if ( pEntity->IsWearable() )
 			{
 				// Yay stats.
@@ -10200,7 +10200,7 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				// Unequip.
 				CTFWearable *pItem = dynamic_cast<CTFWearable *>( pEntity );
 				pItem->Break();
-				if ( ff_use_new_razorback.GetBool() )
+				if ( iNewShield == 1 )
 				{
 					pItem->AddEffects( EF_NODRAW );
 
@@ -10213,7 +10213,7 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				}
 			}
 
-			if ( !ff_use_new_razorback.GetBool() )
+			if ( iNewShield != 1 )
 			{
 				UTIL_Remove( pEntity );
 			}
@@ -15817,7 +15817,10 @@ void CTFPlayer::SpyDeadRingerDeath( const CTakeDamageInfo& info )
 	if ( !CanGoInvisible( true ) || ( m_Shared.GetSpyCloakMeter() < 100.0f ) )
 		return;
 
-	if ( ff_use_new_dead_ringer.GetBool() )
+	int iNewFeignDeath = 1;
+	CTFWeaponInvis *pWpn = (CTFWeaponInvis *)Weapon_OwnsThisID( TF_WEAPON_INVIS );
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
+	if ( iNewFeignDeath == 1 )
 	{
 		m_Shared.SetSpyCloakMeter( 50.0f );
 	}
@@ -15827,7 +15830,7 @@ void CTFPlayer::SpyDeadRingerDeath( const CTakeDamageInfo& info )
 	FeignDeath( info, true );
 
 	// Go feign death.
-	float feign_duration = ff_use_new_dead_ringer.GetBool() ? tf_feign_death_duration.GetFloat() : 6.f;
+	float feign_duration = ( iNewFeignDeath == 1 ) ? tf_feign_death_duration.GetFloat() : 6.f;
 	m_Shared.AddCond( TF_COND_FEIGN_DEATH, feign_duration );
 	m_bGoingFeignDeath = false;
 }

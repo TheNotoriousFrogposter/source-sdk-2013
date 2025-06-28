@@ -127,8 +127,6 @@ PRECACHE_WEAPON_REGISTER( tf_projectile_ball_ornament );
 
 static string_t s_iszTrainName;
 
-extern ConVar ff_use_new_sandman;
-
 //=============================================================================
 #define STUNBALL_TRAIL_ALPHA						128
 
@@ -219,7 +217,9 @@ void CTFBat_Wood::LaunchBallThink( void )
 
 float CTFBat_Wood::InternalGetEffectBarRechargeTime( void )
 {
-	if ( !ff_use_new_sandman.GetBool() )
+	int iSlowBall = 1;
+	CALL_ATTRIB_HOOK_INT ( iSlowBall, obsolete )
+	if ( iSlowBall != 1 )
 		return 15.0f;
 	return 10.0f; // default
 }
@@ -736,14 +736,17 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 		return;
 
 	// We have a more intense stun based on our travel time.
-	float flLifeTimeToMaxStun = ff_use_new_sandman.GetBool() ? FLIGHT_TIME_TO_MAX_STUN : 1.f;
+	CBaseEntity *pInflictor = GetLauncher();
+	int iSlowBall = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pInflictor, iSlowBall, obsolete )
+	float flLifeTimeToMaxStun = ( iSlowBall == 1 ) ? FLIGHT_TIME_TO_MAX_STUN : 1.f;
 	float flLifeTime = Min( gpGlobals->curtime - m_flCreationTime, flLifeTimeToMaxStun );
 	float flLifeTimeRatio = flLifeTime / flLifeTimeToMaxStun;
 	if ( flLifeTimeRatio > 0.1f )
 	{
 		bool bMax = flLifeTimeRatio >= 1.f;
 		int iStunFlags = ( bMax ) ? TF_STUN_SPECIAL_SOUND | TF_STUN_MOVEMENT : TF_STUN_SOUND | TF_STUN_MOVEMENT;
-		if ( !ff_use_new_sandman.GetBool() )
+		if ( iSlowBall != 1 )
 		{
 			iStunFlags = ( bMax ) ? TF_STUN_SPECIAL_SOUND | TF_STUN_CONTROLS : TF_STUN_SOUND | TF_STUN_LOSER_STATE;
 		}
@@ -789,12 +792,11 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 	const trace_t *pTrace = &CBaseEntity::GetTouchTrace();
 	trace_t *pNewTrace = const_cast<trace_t*>( pTrace );
 
-	CBaseEntity *pInflictor = GetLauncher();
 	CTakeDamageInfo info;
 	info.SetAttacker( GetOwnerEntity() );
 	info.SetInflictor( pInflictor ); 
 	info.SetWeapon( pInflictor );
-	info.SetDamage( ( flLifeTimeRatio >= 1.f && ff_use_new_sandman.GetBool() ) ? GetDamage() * 1.5f : GetDamage() );		
+	info.SetDamage( ( flLifeTimeRatio >= 1.f && iSlowBall == 1 ) ? GetDamage() * 1.5f : GetDamage() );		
 	info.SetDamageCustom( TF_DMG_CUSTOM_BASEBALL );
 	info.SetDamageForce( GetDamageForce() );
 	info.SetDamagePosition( GetAbsOrigin() );

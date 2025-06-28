@@ -40,8 +40,6 @@ BEGIN_DATADESC( CTFRevolver )
 END_DATADESC()
 #endif
 
-extern ConVar ff_use_new_ambassador;
-
 //=============================================================================
 //
 // Weapon Revolver functions.
@@ -104,8 +102,11 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 	if ( pPlayer && pPlayer->m_Shared.IsCritBoosted() )
 		return true;
 
+	CTFRevolver *pWpn = static_cast< CTFRevolver * >( pPlayer->Weapon_OwnsThisID( TF_WEAPON_REVOLVER ) );
+	int bRangeLimit = 1;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER ( pWpn, bRangeLimit, obsolete )
 	// Magic.
-	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) && ff_use_new_ambassador.GetBool() )
+	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) && bRangeLimit == 1 )
 		return false;
 
 	// can only fire a crit shot if this is a headshot, unless we're critboosted

@@ -183,9 +183,7 @@ ConVar tf_allow_taunt_switch( "tf_allow_taunt_switch", "0", FCVAR_REPLICATED, "0
 
 ConVar tf_allow_all_team_partner_taunt( "tf_allow_all_team_partner_taunt", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
-extern ConVar ff_use_new_dead_ringer;
 extern ConVar ff_use_new_tide_turner;
-extern ConVar ff_use_new_bonk;
 extern ConVar ff_use_new_critacola;
 extern ConVar ff_new_shield_charge;
 extern ConVar ff_use_new_atomizer;
@@ -3552,7 +3550,10 @@ void CTFPlayerShared::OnRemovePhase( void )
 		WRITE_SHORT( clamp( m_iPhaseDamage, 0, 10000 ) );
 	MessageEnd();
 
-	if ( m_iPhaseDamage && ff_use_new_bonk.GetBool() )
+	CTFLunchBox_Drink *pWpn = (CTFLunchBox_Drink *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_LUNCHBOX );
+	int iSlowMovement = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pWpn, iSlowMovement, obsolete )
+	if ( m_iPhaseDamage && iSlowMovement )
 	{
 		// Apply slow based on how much damage we took while active
 		float flSlowDuration = 5.f; //RemapValClamped( m_iPhaseDamage, 10.f, 1000.f, 2.f, 6.f );
@@ -7058,11 +7059,10 @@ void CTFPlayerShared::OnAddStealthed( void )
 //-----------------------------------------------------------------------------
 void CTFPlayerShared::OnRemoveStealthed( void )
 {
+	CTFWeaponInvis *pWpn = (CTFWeaponInvis *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_INVIS );
 #ifdef CLIENT_DLL
 	if ( !m_bSyncingConditions )
 		return;
-
-	CTFWeaponInvis *pWpn = (CTFWeaponInvis *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_INVIS );
 
 	int iReducedCloak = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( m_pOuter, iReducedCloak, set_quiet_unstealth );
@@ -7113,9 +7113,11 @@ void CTFPlayerShared::OnRemoveStealthed( void )
 #endif
 
 	// End feign death if we leave stealth for some reason.
+	int iNewFeignDeath = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
 	if ( InCond( TF_COND_FEIGN_DEATH ) )
 	{
-		if ( m_flCloakMeter > 40.0f && !ff_use_new_dead_ringer.GetBool() )
+		if ( m_flCloakMeter > 40.0f && iNewFeignDeath != 1 )
 			m_flCloakMeter = 40.0f;
 
 		RemoveCond( TF_COND_FEIGN_DEATH );
@@ -7176,9 +7178,12 @@ void CTFPlayerShared::OnRemoveStealthedUserBuffFade( void )
 //-----------------------------------------------------------------------------
 void CTFPlayerShared::OnAddFeignDeath( void )
 {
+	CTFWeaponInvis *pWpn = (CTFWeaponInvis *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_INVIS );
+	int iNewFeignDeath = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
 #ifdef CLIENT_DLL
 	// STAGING_SPY
-	if ( ff_use_new_dead_ringer.GetBool() )
+	if ( iNewFeignDeath == 1 )
 	{
 		AddUberScreenEffect( m_pOuter );
 	}
@@ -7192,7 +7197,7 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 
 	// STAGING_SPY
 	// Add a speed boost while feigned and afterburn immunity while running away
-	if ( ff_use_new_dead_ringer.GetBool() )
+	if ( iNewFeignDeath == 1 )
 	{
 		AddCond( TF_COND_SPEED_BOOST, tf_feign_death_speed_duration.GetFloat() );
 		AddCond( TF_COND_AFTERBURN_IMMUNE, tf_feign_death_speed_duration.GetFloat() );
@@ -7200,7 +7205,7 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 
 	SetFeignDeathReady( false );
 
-	float feign_duration = ff_use_new_dead_ringer.GetBool() ? tf_feign_death_speed_duration.GetFloat() : 6.f;
+	float feign_duration = ( iNewFeignDeath == 1 ) ? tf_feign_death_speed_duration.GetFloat() : 6.f;
 	m_flFeignDeathEnd = gpGlobals->curtime + feign_duration;
 }
 
@@ -7211,7 +7216,10 @@ void CTFPlayerShared::OnRemoveFeignDeath( void )
 {
 #ifdef CLIENT_DLL
 	// STAGING_SPY
-	if ( ff_use_new_dead_ringer.GetBool() )
+	CTFWeaponInvis *pWpn = (CTFWeaponInvis *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_INVIS );
+	int iNewFeignDeath = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
+	if ( iNewFeignDeath == 1 )
 	{
 		RemoveUberScreenEffect( m_pOuter );
 	}
@@ -9709,7 +9717,9 @@ bool CTFPlayerShared::AddToSpyCloakMeter( float val, bool bForce )
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWpn, val, ReducedCloakFromAmmo );
 		}
 
-		if ( pWpn->HasFeignDeath() && !ff_use_new_dead_ringer.GetBool() )
+		int iNewFeignDeath = 1;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
+		if ( pWpn->HasFeignDeath() && iNewFeignDeath != 1 )
 		{
 			val = Min( val, 35.0f );
 		}
