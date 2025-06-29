@@ -66,8 +66,6 @@ END_PREDICTION_DATA()
 LINK_ENTITY_TO_CLASS( tf_weapon_handgun_scout_primary, CTFPistol_ScoutPrimary );
 PRECACHE_WEAPON_REGISTER( tf_weapon_handgun_scout_primary );
 
-extern ConVar ff_use_new_shortstop;
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -98,7 +96,7 @@ void CTFPistol_ScoutPrimary::SecondaryAttack( void )
 	if ( !pOwner )
 		return;
 
-	if ( !ff_use_new_shortstop.GetBool() )
+	if ( IsOldShortstop() )
 		return;
 
 	if ( !CanAttack() )
@@ -235,9 +233,20 @@ void CTFPistol_ScoutPrimary::Precache( void )
 	PrecacheScriptSound( "Weapon_Hands.PushImpact" );
 	
 	BaseClass::Precache();
-	
-	if ( !ff_use_new_shortstop.GetBool() )
+
+	if ( IsOldShortstop() )
 		m_iPrimaryAmmoType = TF_AMMO_SECONDARY;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+bool CTFPistol_ScoutPrimary::IsOldShortstop( void )
+{
+	int bNewShortstop = 1;
+	CALL_ATTRIB_HOOK_INT ( bNewShortstop, obsolete )
+
+	return !bNewShortstop;
 }
 
 //============================

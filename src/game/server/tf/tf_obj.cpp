@@ -109,8 +109,6 @@ ConVar tf_obj_damage_tank_achievement_amount( "tf_obj_damage_tank_achievement_am
 extern short g_sModelIndexFireball;
 extern ConVar tf_cheapobjects;
 
-extern ConVar ff_use_new_gunslinger;
-
 // Minimum distance between 2 objects to ensure player movement between them
 #define MINIMUM_OBJECT_SAFE_DISTANCE		100
 
@@ -351,6 +349,16 @@ void CBaseObject::SetTransmit( CCheckTransmitInfo *pInfo, bool bAlways )
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CBaseObject::IsOldMiniBuilding( void ) const
+{
+	CTFRobotArm *pRobotArm = dynamic_cast<CTFRobotArm*>( GetBuilder()->Weapon_OwnsThisID( TF_WEAPON_WRENCH ) );
+	int iNewMiniSentry = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pRobotArm, iNewMiniSentry, obsolete )
+	return !iNewMiniSentry;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1392,7 +1400,7 @@ bool CBaseObject::StartBuilding( CBaseEntity *pBuilder )
 	else if ( IsMiniBuilding() )
 	{
 		int iHealth = GetMaxHealthForCurrentLevel();
-		if ( !IsDisposableBuilding() && ff_use_new_gunslinger.GetBool() )
+		if ( !IsDisposableBuilding() && !IsOldMiniBuilding() )
 		{
 			iHealth /= 2.0f;
 		}
@@ -2123,7 +2131,7 @@ bool CBaseObject::Construct( float flHealth )
 		// Minibuildings build health at a reduced rate
 		// Staging_engy
 		{
-			float mini_mult = ff_use_new_gunslinger.GetBool() ? 0.5f : 0.f;
+			float mini_mult = !IsOldMiniBuilding() ? 0.5f : 0.f;
 			SetHealth( Min( (float)GetMaxHealth(), m_flHealth + (IsMiniBuilding() ? (flHealth * mini_mult) : flHealth) ) );
 		}
 
@@ -2185,7 +2193,7 @@ float CBaseObject::GetConstructionMultiplier( void )
 
 	float flMultiplier = 1.0;
 
-	if ( IsMiniBuilding() && !ff_use_new_gunslinger.GetBool() )
+	if ( IsMiniBuilding() && IsOldMiniBuilding() )
 		flMultiplier *= 4.f;
 
 	// expire all the old 
@@ -2198,7 +2206,7 @@ float CBaseObject::GetConstructionMultiplier( void )
 		{
 			m_ConstructorList.RemoveAt( iThis );
 		}
-		else if ( !IsMiniBuilding() || ff_use_new_gunslinger.GetBool() )
+		else if ( !IsMiniBuilding() || !IsOldMiniBuilding() )
 		{
 			// STAGING_ENGY
 			// each Player adds a fixed amount of speed boost
@@ -2286,7 +2294,7 @@ void CBaseObject::CreateObjectGibs( void )
 	if ( IsMiniBuilding() )
 	{
 		// STAGING_ENGY
-		nMetalPerGib = ff_use_new_gunslinger.GetBool() ? 0 : 7;
+		nMetalPerGib = !IsOldMiniBuilding() ? 0 : 7;
 		nLeftOver = 0;
 	}
 

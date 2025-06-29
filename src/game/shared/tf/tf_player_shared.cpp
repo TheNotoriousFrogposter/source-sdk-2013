@@ -7117,7 +7117,7 @@ void CTFPlayerShared::OnRemoveStealthed( void )
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
 	if ( InCond( TF_COND_FEIGN_DEATH ) )
 	{
-		if ( m_flCloakMeter > 40.0f && iNewFeignDeath != 1 )
+		if ( m_flCloakMeter > 40.0f && !iNewFeignDeath )
 			m_flCloakMeter = 40.0f;
 
 		RemoveCond( TF_COND_FEIGN_DEATH );
@@ -7183,7 +7183,7 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
 #ifdef CLIENT_DLL
 	// STAGING_SPY
-	if ( iNewFeignDeath == 1 )
+	if ( iNewFeignDeath )
 	{
 		AddUberScreenEffect( m_pOuter );
 	}
@@ -7197,7 +7197,7 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 
 	// STAGING_SPY
 	// Add a speed boost while feigned and afterburn immunity while running away
-	if ( iNewFeignDeath == 1 )
+	if ( iNewFeignDeath )
 	{
 		AddCond( TF_COND_SPEED_BOOST, tf_feign_death_speed_duration.GetFloat() );
 		AddCond( TF_COND_AFTERBURN_IMMUNE, tf_feign_death_speed_duration.GetFloat() );
@@ -7205,7 +7205,7 @@ void CTFPlayerShared::OnAddFeignDeath( void )
 
 	SetFeignDeathReady( false );
 
-	float feign_duration = ( iNewFeignDeath == 1 ) ? tf_feign_death_speed_duration.GetFloat() : 6.f;
+	float feign_duration = iNewFeignDeath ? tf_feign_death_speed_duration.GetFloat() : 6.f;
 	m_flFeignDeathEnd = gpGlobals->curtime + feign_duration;
 }
 
@@ -7219,7 +7219,7 @@ void CTFPlayerShared::OnRemoveFeignDeath( void )
 	CTFWeaponInvis *pWpn = (CTFWeaponInvis *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_INVIS );
 	int iNewFeignDeath = 1;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
-	if ( iNewFeignDeath == 1 )
+	if ( iNewFeignDeath )
 	{
 		RemoveUberScreenEffect( m_pOuter );
 	}
@@ -9719,7 +9719,7 @@ bool CTFPlayerShared::AddToSpyCloakMeter( float val, bool bForce )
 
 		int iNewFeignDeath = 1;
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
-		if ( pWpn->HasFeignDeath() && iNewFeignDeath != 1 )
+		if ( pWpn->HasFeignDeath() && !iNewFeignDeath )
 		{
 			val = Min( val, 35.0f );
 		}

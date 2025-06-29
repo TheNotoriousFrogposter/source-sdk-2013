@@ -99,6 +99,7 @@ extern ConVar ff_use_new_spycicle;
 extern ConVar ff_use_new_katana;
 extern ConVar ff_use_new_beggars;
 extern ConVar ff_new_weapon_switch_speed;
+extern ConVar ff_new_shield_charge;
 
 //=============================================================================
 //
@@ -1268,7 +1269,7 @@ bool CTFWeaponBase::Deploy( void )
 		int iIsSword = 0;
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pLastWeapon, iIsSword, is_a_sword );
 		CALL_ATTRIB_HOOK_INT( iIsSword, is_a_sword );
-		if ( iIsSword )
+		if ( iIsSword && ff_new_shield_charge.GetBool() )
 		{
 			// swords deploy and holster 75% slower
 			flDeployTimeMultiplier *= 1.75f;
