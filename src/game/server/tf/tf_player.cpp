@@ -10200,7 +10200,7 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				// Unequip.
 				CTFWearable *pItem = dynamic_cast<CTFWearable *>( pEntity );
 				pItem->Break();
-				if ( iNewShield == 1 )
+				if ( iNewShield )
 				{
 					pItem->AddEffects( EF_NODRAW );
 
@@ -10213,7 +10213,7 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				}
 			}
 
-			if ( iNewShield != 1 )
+			if ( !iNewShield )
 			{
 				UTIL_Remove( pEntity );
 			}
@@ -15820,7 +15820,7 @@ void CTFPlayer::SpyDeadRingerDeath( const CTakeDamageInfo& info )
 	int iNewFeignDeath = 1;
 	CTFWeaponInvis *pWpn = (CTFWeaponInvis *)Weapon_OwnsThisID( TF_WEAPON_INVIS );
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWpn, iNewFeignDeath, obsolete );
-	if ( iNewFeignDeath == 1 )
+	if ( iNewFeignDeath )
 	{
 		m_Shared.SetSpyCloakMeter( 50.0f );
 	}
@@ -15830,7 +15830,7 @@ void CTFPlayer::SpyDeadRingerDeath( const CTakeDamageInfo& info )
 	FeignDeath( info, true );
 
 	// Go feign death.
-	float feign_duration = ( iNewFeignDeath == 1 ) ? tf_feign_death_duration.GetFloat() : 6.f;
+	float feign_duration = iNewFeignDeath ? tf_feign_death_duration.GetFloat() : 6.f;
 	m_Shared.AddCond( TF_COND_FEIGN_DEATH, feign_duration );
 	m_bGoingFeignDeath = false;
 }

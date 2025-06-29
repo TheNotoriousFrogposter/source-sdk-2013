@@ -834,10 +834,8 @@ ConVar ff_use_new_parachute ( "ff_use_new_parachute", "1", FCVAR_NOTIFY | FCVAR_
 ConVar ff_use_new_caber ( "ff_use_new_caber", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - explosion deals up to 150 damage, melee attack deals 35 damage, 1 - explosion deals up to 83 damage, melee attack deals 55 damage." );
 ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
 ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
-ConVar ff_use_new_shortstop ( "ff_use_new_shortstop", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Use its own ammo pool, enable shoving by alt firing." );
 ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 2 seconds and no recharging from ammo pack if disabled." );
 ConVar ff_use_new_katana ( "ff_use_new_katana", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the old honorbound and healing system if disabled." );
-ConVar ff_use_new_gunslinger ( "ff_use_new_gunslinger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - mini sentry starts at 100 HP, cannot be repaired or wrench boosted, gibs drop metals, 1 - mini sentry starts at 50 HP, can be repaired or wrench boosted, gibs drop no metals." );
 ConVar ff_use_new_tide_turner ( "ff_use_new_tide_turner", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Mini-crit at the end of a charge attack instead of a crit." );
 ConVar ff_use_new_cleaver ( "ff_use_new_cleaver", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove long range mini-crit on hit, recharge 1.5s faster if you hit a long range hit." );
 ConVar ff_use_new_critacola ( "ff_use_new_critacola", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 25% faster speed, 1 - mark on death after attacking." );
@@ -7412,10 +7410,10 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 				int iNewFeignDeath = 1;
 				CTFWeaponInvis *pWatch = (CTFWeaponInvis *) pVictim->Weapon_OwnsThisID( TF_WEAPON_INVIS );
 				CALL_ATTRIB_HOOK_INT_ON_OTHER( pWatch, iNewFeignDeath, obsolete );
-				float flDamageReduction = ( iNewFeignDeath == 1 ) ? RemapValClamped( pVictim->m_Shared.GetSpyCloakMeter(), 50.0f, 0.0f, tf_feign_death_damage_scale.GetFloat(), tf_stealth_damage_reduction.GetFloat() ): 0.1f;
+				float flDamageReduction = iNewFeignDeath ? RemapValClamped( pVictim->m_Shared.GetSpyCloakMeter(), 50.0f, 0.0f, tf_feign_death_damage_scale.GetFloat(), tf_stealth_damage_reduction.GetFloat() ): 0.1f;
 
 				// On Activate Reduce Remaining Cloak by 50%
-				if ( pVictim->m_Shared.IsFeignDeathReady() && iNewFeignDeath == 1 )
+				if ( pVictim->m_Shared.IsFeignDeathReady() && iNewFeignDeath )
 				{
 					flDamageReduction = tf_feign_death_activate_damage_scale.GetFloat();
 				}
@@ -7425,7 +7423,7 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 
 				flRealDamage *= flDamageReduction;
 
-				if ( !pVictim->m_Shared.IsFeignDeathReady() && iNewFeignDeath != 1 )
+				if ( !pVictim->m_Shared.IsFeignDeathReady() && !iNewFeignDeath )
 				{
 					pVictim->m_Shared.ReduceFeignDeathDuration( RemapValClamped ( flRealDamage, 0, 100.f, 0, 6.f ) );
 				}

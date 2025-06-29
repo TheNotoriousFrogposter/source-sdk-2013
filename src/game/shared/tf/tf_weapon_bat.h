@@ -196,8 +196,6 @@ public:
 
 	virtual int			GetWeaponID( void ) const				{ return TF_WEAPON_BAT_GIFTWRAP; }
 
-	virtual float		InternalGetEffectBarRechargeTime( void ) { return 10.f; }
-
 	virtual const char *GetEffectLabelText( void )				{ return "#TF_BALL"; }
 	virtual const char *GetBallViewModelName( void ) const		{ return "models/weapons/c_models/c_xms_festive_ornament.mdl"; }
 

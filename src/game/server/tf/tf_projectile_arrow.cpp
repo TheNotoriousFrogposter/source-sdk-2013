@@ -89,7 +89,6 @@ END_NETWORK_TABLE()
 BEGIN_DATADESC( CTFProjectile_GrapplingHook )
 END_DATADESC()
 
-extern ConVar ff_use_new_gunslinger;
 extern ConVar ff_use_new_rescue_ranger;
 
 //-----------------------------------------------------------------------------
@@ -687,7 +686,7 @@ void CTFProjectile_Arrow::BuildingHealingArrow( CBaseEntity *pOther )
 	{
 		nHealed = pBuilding->Command_Repair( pTFAttacker, iArrowHealAmount, 1.f, 4.f, true );
 	}
-	else if ( pBuilding->CanBeRepaired() && ( !pBuilding->IsMiniBuilding() || ff_use_new_gunslinger.GetBool() ) )
+	else if ( pBuilding->CanBeRepaired() && ( !pBuilding->IsMiniBuilding() || !pBuilding->IsOldMiniBuilding() ) )
 	{
 		nHealed = (int)(flNewHealth - pBuilding->GetHealth());
 	}

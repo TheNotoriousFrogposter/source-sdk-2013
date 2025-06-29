@@ -335,6 +335,7 @@ public:
 	
 	bool			IsMiniBuilding( void ) const { return m_bMiniBuilding; }
 	bool			IsDisposableBuilding( void ) const { return m_bDisposableBuilding; }
+	bool			IsOldMiniBuilding( void ) const;
 
 	virtual bool ShouldBlockNav() const OVERRIDE { return false; }
 

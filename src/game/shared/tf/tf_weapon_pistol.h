@@ -81,6 +81,7 @@ public:
 	virtual void	ItemPostFrame();
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo );
 	virtual void	Precache( void );
+	bool			IsOldShortstop( void );
 
 	void			Push( void );
 
