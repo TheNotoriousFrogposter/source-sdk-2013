@@ -68,8 +68,6 @@ PRECACHE_REGISTER_FN(PrecacheRing);
 ConVar tf_bison_tick_time( "tf_bison_tick_time", "0.025", FCVAR_CHEAT );
 #endif
 
-extern ConVar ff_use_new_raygun;
-
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -191,7 +189,9 @@ void CTFProjectile_EnergyRing::Spawn()
 	SetRenderMode( kRenderNone	);
 	SetSolidFlags( FSOLID_TRIGGER | FSOLID_NOT_SOLID );
 	SetCollisionGroup( TFCOLLISION_GROUP_ROCKETS );
-	if ( !ff_use_new_raygun.GetBool() )
+	int iNewRaygun = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwnerEntity(), iNewRaygun, energy_weapon_no_ammo );
+	if ( iNewRaygun == 2 )
 	{
 		CollisionProp()->UseTriggerBounds( true, 24, true );
 	}
@@ -263,9 +263,12 @@ void CTFProjectile_EnergyRing::ProjectileTouch( CBaseEntity *pOther )
 						 pOther->IsCombatItem() ||
 						 pOther->IsProjectileCollisionTarget();
 
+	int iNewRaygun = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwnerEntity(), iNewRaygun, energy_weapon_no_ammo );
+
 	if ( bCombatEntity )
 	{
-		if ( !ff_use_new_raygun.GetBool() )
+		if ( iNewRaygun == 2 )
 		{
 			if ( pOther->InSameTeam( this ) )
 			{
@@ -283,14 +286,14 @@ void CTFProjectile_EnergyRing::ProjectileTouch( CBaseEntity *pOther )
 		}
 
 		// Bison projectiles shouldn't collide with friendly things
-		if ( ( ShouldPenetrate() || !ff_use_new_raygun.GetBool() ) && ( pOther->InSameTeam( this ) || ( gpGlobals->curtime - m_flLastHitTime ) < tf_bison_tick_time.GetFloat() ) )
+		if ( ( ShouldPenetrate() || iNewRaygun == 2 ) && ( pOther->InSameTeam( this ) || ( gpGlobals->curtime - m_flLastHitTime ) < tf_bison_tick_time.GetFloat() ) )
 			return;
 
 		m_flLastHitTime = gpGlobals->curtime;
 
 		float lifeTimeScale = 1.f;
 
-		if ( !ff_use_new_raygun.GetBool() )
+		if ( iNewRaygun == 2 )
 		{
 			lifeTimeScale = RemapValClamped( gpGlobals->curtime - m_flInitTime, 0.175f, 0.35f, 1.0f, 0.6f );
 		}
@@ -298,7 +301,7 @@ void CTFProjectile_EnergyRing::ProjectileTouch( CBaseEntity *pOther )
 		const int nDamage = GetDamage() * lifeTimeScale;
 		
 		int iDmgType = GetDamageType();
-		if ( ff_use_new_raygun.GetBool() )
+		if ( iNewRaygun != 2 )
 		{
 			iDmgType |= DMG_USEDISTANCEMOD | DMG_PREVENT_PHYSICS_FORCE;
 		}
