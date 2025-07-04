@@ -10190,8 +10190,6 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 		CBaseEntity *pEntity = itemList.Element( 0 );
 		if ( pEntity && !pEntity->IsEffectActive( EF_NODRAW ) )
 		{
-			int iNewShield = 1;
-			CALL_ATTRIB_HOOK_INT_ON_OTHER_WITH_ITEMS( this, iNewShield, &itemList, obsolete );
 			if ( pEntity->IsWearable() )
 			{
 				// Yay stats.
@@ -10200,7 +10198,7 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				// Unequip.
 				CTFWearable *pItem = dynamic_cast<CTFWearable *>( pEntity );
 				pItem->Break();
-				if ( iNewShield )
+				if ( iBackStabShield == 1 )
 				{
 					pItem->AddEffects( EF_NODRAW );
 
@@ -10213,7 +10211,7 @@ bool CTFPlayer::CheckBlockBackstab( CTFPlayer *pTFAttacker )
 				}
 			}
 
-			if ( !iNewShield )
+			if ( iBackStabShield > 1 )
 			{
 				UTIL_Remove( pEntity );
 			}
@@ -10826,7 +10824,9 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 							(int)GetAbsOrigin().y,
 							(int)GetAbsOrigin().z );
 
-						if ( ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) && ff_use_new_sydney_sleeper.GetBool() )
+						int bNewDartGun = 1;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER ( pSniper, bNewDartGun, obsolete )
+						if ( ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) && bNewDartGun )
 						{
 							auto pWeaponBaseSecondary = dynamic_cast< CTFWeaponBase* >( pTFAttacker->GetEntityForLoadoutSlot( LOADOUT_POSITION_SECONDARY ) );
 							if ( pWeaponBaseSecondary && pWeaponBaseSecondary->HasEffectBarRegeneration() )
@@ -10843,7 +10843,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 // 							NDebugOverlay::Sphere( info.GetDamagePosition(), tf_space_thrust_scout.GetFloat(), 255, 20, 20, true, 5.f );
 						}
 						// explosive jarate shot for a fully charged shot or headshot
-						if ( ( pSniper->IsFullyCharged() || IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) && !ff_use_new_sydney_sleeper.GetBool() )
+						if ( ( pSniper->IsFullyCharged() || IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) && !bNewDartGun )
 						{
 							JarExplode( entindex(), pTFAttacker, pTFWeapon, pTFWeapon, info.GetDamagePosition(), pTFAttacker->GetTeamNumber(), 100.f, TF_COND_URINE, flJarateTime, "peejar_impact", TF_WEAPON_PEEJAR_EXPLODE_SOUND  );
 						}
@@ -11657,7 +11657,9 @@ void CTFPlayer::OnKilledOther_Effects( CBaseEntity *pVictim, const CTakeDamageIn
 		// due to bizarre floating point rounding or something equally silly.
 		int iTargetHealth = ( int )( ( ( float )iRestoreHealthToPercentageOnKill / 100.0f ) * ( float )iRestoreMax ) + 1;
 
-		int iBaseMaxHealth = ff_use_new_katana.GetBool() ? ( GetMaxHealth() * 1.5 ) : GetMaxHealth(),
+		int iHonorbound = 0;
+		CALL_ATTRIB_HOOK_INT( iHonorbound, honorbound );
+		int iBaseMaxHealth = iHonorbound < 2 ? ( GetMaxHealth() * 1.5 ) : GetMaxHealth(),
 			iNewHealth = Min( GetHealth() + iTargetHealth, iBaseMaxHealth ),
 			iDeltaHealth = Max(iNewHealth - GetHealth(), 0);
 

@@ -102,9 +102,8 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 	if ( pPlayer && pPlayer->m_Shared.IsCritBoosted() )
 		return true;
 
-	CTFRevolver *pWpn = static_cast< CTFRevolver * >( pPlayer->Weapon_OwnsThisID( TF_WEAPON_REVOLVER ) );
 	int bRangeLimit = 1;
-	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pWpn, bRangeLimit, obsolete )
+	CALL_ATTRIB_HOOK_INT ( bRangeLimit, obsolete )
 	// Magic.
 	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) && bRangeLimit )
 		return false;

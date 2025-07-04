@@ -94,9 +94,7 @@ extern ConVar cl_crosshair_file;
 extern ConVar cl_flipviewmodels;
 #endif
 
-extern ConVar ff_use_new_raygun;
 extern ConVar ff_use_new_spycicle;
-extern ConVar ff_use_new_katana;
 extern ConVar ff_use_new_beggars;
 extern ConVar ff_new_weapon_switch_speed;
 extern ConVar ff_new_shield_charge;
@@ -1157,7 +1155,9 @@ bool CTFWeaponBase::CanHolster( void ) const
 	CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
 	if ( pPlayer && ( pPlayer->GetActiveWeapon() != this || gpGlobals->curtime >= pPlayer->m_Shared.m_flFirstPrimaryAttack ) )
 	{
-		if ( IsHonorBound() && pPlayer->m_Shared.m_iKillCountSinceLastDeploy == 0 && ( pPlayer->GetHealth() <= 50 || !ff_use_new_katana.GetBool() ) )
+		int iHonorbound = 0;
+		CALL_ATTRIB_HOOK_INT( iHonorbound, honorbound );
+		if ( IsHonorBound() && pPlayer->m_Shared.m_iKillCountSinceLastDeploy == 0 && ( pPlayer->GetHealth() <= 50 || iHonorbound > 1 ) )
 		{
 #ifdef CLIENT_DLL
 			pPlayer->EmitSound( "Player.DenyWeaponSelection" );
@@ -5481,8 +5481,11 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 		if ( pVictim->IsPlayerClass( TF_CLASS_MEDIC ) )
 		{
 			int iSubtractVictimMedigunChargeOnHit = 0;
-			CALL_ATTRIB_HOOK_INT( iSubtractVictimMedigunChargeOnHit, subtract_victim_medigun_charge_onhit );
-			if ( iSubtractVictimMedigunChargeOnHit > 0 )
+			int iReduceUber = 0;
+			int iReduceUber2 = 0;
+			CALL_ATTRIB_HOOK_INT( iReduceUber, subtract_victim_medigun_charge_onhit );
+			CALL_ATTRIB_HOOK_INT( iReduceUber2, subtract_victim_medigun_charge_onhit2 );
+			if ( iReduceUber > 0 || iReduceUber2 > 0 )
 			{
 				CWeaponMedigun *pMedigun = (CWeaponMedigun *)pVictim->Weapon_OwnsThisID( TF_WEAPON_MEDIGUN );
 				if ( pMedigun && !pMedigun->IsReleasingCharge() )
@@ -5490,10 +5493,11 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 					// STAGING_ENGY
 					// Scale drain after 512 Hu to 1536Hu ( 50% drain at 1024, 0 drain at 1536 units )
 					Vector toEnt = pVictim->GetAbsOrigin() - pAttacker->GetAbsOrigin();
-					if ( toEnt.LengthSqr() > Square( 512.0f ) && ( ff_use_new_raygun.GetBool() ) )
+					if ( toEnt.LengthSqr() > Square( 512.0f ) )
 					{
-						iSubtractVictimMedigunChargeOnHit *= RemapValClamped( toEnt.LengthSqr(), (512.0f * 512.0f), (1536.0f * 1536.0f), 1.0f, 0.0f );
+						iReduceUber *= RemapValClamped( toEnt.LengthSqr(), (512.0f * 512.0f), (1536.0f * 1536.0f), 1.0f, 0.0f );
 					}	
+					iSubtractVictimMedigunChargeOnHit += iReduceUber + iReduceUber2;
 
 					pMedigun->SubtractCharge( iSubtractVictimMedigunChargeOnHit / 100.0f );
 					bDidDrain = true;
@@ -5505,16 +5509,20 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 		if ( pVictim->IsPlayerClass( TF_CLASS_SPY ) )
 		{
 			int iSubtractVictimCloakOnHit = 0;
-			CALL_ATTRIB_HOOK_INT( iSubtractVictimCloakOnHit, subtract_victim_cloak_on_hit );
-			if ( iSubtractVictimCloakOnHit > 0 )
+			int iReduceCloak = 0;
+			int iReduceCloak2 = 0;
+			CALL_ATTRIB_HOOK_INT( iReduceCloak, subtract_victim_cloak_on_hit );
+			CALL_ATTRIB_HOOK_INT( iReduceCloak2, subtract_victim_cloak_on_hit2 );
+			if ( iReduceCloak > 0 || iReduceCloak2 > 0 )
 			{
 				// STAGING_ENGY
 				// Scale drain after 512 Hu to 1536Hu ( 50% drain at 1024, 0 drain at 1536 units )
 				Vector toEnt = pVictim->GetAbsOrigin() - pAttacker->GetAbsOrigin();
-				if ( toEnt.LengthSqr() > Square( 512.0f ) && ( ff_use_new_raygun.GetBool() ) )
+				if ( toEnt.LengthSqr() > Square( 512.0f ) )
 				{
-					iSubtractVictimCloakOnHit *= RemapValClamped( toEnt.LengthSqr(), (512.0f * 512.0f), (1536.0f * 1536.0f), 1.0f, 0.0f );
+					iReduceCloak *= RemapValClamped( toEnt.LengthSqr(), (512.0f * 512.0f), (1536.0f * 1536.0f), 1.0f, 0.0f );
 				}
+				iSubtractVictimCloakOnHit += iReduceCloak + iReduceCloak2;
 
 				float flCloak = pVictim->m_Shared.GetSpyCloakMeter();
 				flCloak -= iSubtractVictimCloakOnHit;

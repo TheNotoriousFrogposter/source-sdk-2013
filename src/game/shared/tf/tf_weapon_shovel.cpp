@@ -95,10 +95,8 @@ void CTFShovel::PrimaryAttack()
 // -----------------------------------------------------------------------------
 bool CTFShovel::HasBothBoost( void )
 {
-	CTFPlayer *pOwner = ToTFPlayer( GetOwner() );
-	CTFShovel *pWpn = static_cast< CTFShovel * >( pOwner->Weapon_OwnsThisID( TF_WEAPON_SHOVEL ) );
 	int bNewPickaxe = 1;
-	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pWpn, bNewPickaxe, obsolete )
+	CALL_ATTRIB_HOOK_INT ( bNewPickaxe, obsolete )
 	return HasDamageBoost() && !bNewPickaxe;
 }
 
