@@ -827,21 +827,9 @@ ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOP
 
 ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Quick-Fix ÜberCharge prevents capping or defending control points." );
 ConVar ff_minigun_spinup_penalty ( "ff_minigun_spinup_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
-ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed melee crit on a shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%." );
-ConVar ff_use_new_enforcer ( "ff_use_new_enforcer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - damage bonus when undisguised, 1 - damage bonus when disguised." );
-ConVar ff_use_new_parachute ( "ff_use_new_parachute", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove the parachute updraft effect while on fire, -25% max air velocity, cannot redeploy parachute." );
-ConVar ff_use_new_cannon ( "ff_use_new_cannon", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Scale the cannonball impact damage to distance." );
-ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
-ConVar ff_use_new_spycicle ( "ff_use_new_spycicle", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fire immunity for 2 seconds and no recharging from ammo pack if disabled." );
-ConVar ff_use_new_tide_turner ( "ff_use_new_tide_turner", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Mini-crit at the end of a charge attack instead of a crit." );
-ConVar ff_use_new_cleaver ( "ff_use_new_cleaver", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Remove long range mini-crit on hit, recharge 1.5s faster if you hit a long range hit." );
-ConVar ff_use_new_critacola ( "ff_use_new_critacola", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - 25% faster speed, 1 - mark on death after attacking." );
-ConVar ff_use_new_beggars ( "ff_use_new_beggars", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Misfire removes ammo from the clip instead of from the reserve ammo, can receive primary ammo from the dispenser when the rocket launcher is holstered." );
-ConVar ff_use_new_atomizer ( "ff_use_new_atomizer", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - triple jump deals 10 self damage, 1 - require the atomizer to be deployed, triple jump not available for 0.7s after deploying atomizer." );
-ConVar ff_use_new_rocketjumper ( "ff_use_new_rocketjumper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Kamikaze taunt causes no self damage if disabled." );
-ConVar ff_use_new_soda_popper ( "ff_use_new_soda_popper", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Five additional air jumps instead of mini-crits, manual activation, no charging by running." );
-ConVar ff_use_new_phlog ( "ff_use_new_phlog", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - Mmmph taunt gives 75% damage resistance and full HP, 225 burn damage to fill the meter. 1 - Mmmph taunt gives invulnerability, 300 burn damage to fill the meter." );
-ConVar ff_use_new_rescue_ranger ( "ff_use_new_rescue_ranger", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Repairing consumes metal." );
+ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed melee crit on a shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%, 75% slower deploy and holster speed on sword weapons." );
+ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses the modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
+ConVar ff_old_kamikaze ( "ff_old_kamikaze", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Equipping the Rocket Jumper prevents self damage from the Kamikaze taunt kill." );
 ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Heal yourself instantly by throwing a lunch box item to the ground." );
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
 ConVar ff_old_healonkill ( "ff_old_healonkill", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the ability to overheal when gaining health on a kill." );
@@ -6175,7 +6163,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 				eBonusEffect = kBonusEffect_MiniCrit;
 			}
-			else if ( pTFAttacker && ( pTFAttacker->m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) ) && !ff_use_new_soda_popper.GetBool() )
+			else if ( pTFAttacker && ( pTFAttacker->m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) ) && !pTFAttacker->m_Shared.IsNewSodaPopper() )
 			{
 				// Soda popper hype provides mini-crits
 				info.SetCritType( CTakeDamageInfo::CRIT_MINI );
@@ -6222,7 +6210,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				{
 					int iDashCount = 0;
 					CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFAttacker->GetActiveTFWeapon(), iDashCount, air_dash_count );
-					if ( iDashCount && ff_use_new_atomizer.GetBool() )
+					if ( iDashCount )
 					{
 						info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 						eBonusEffect = kBonusEffect_MiniCrit;
@@ -7483,13 +7471,13 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			if ( info.GetWeapon() )
 			{
 				int iNoSelfBlastDamage = 0;
-				if ( ff_use_new_rocketjumper.GetBool() )
+				if ( ff_old_kamikaze.GetBool() )
 				{
-					CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iNoSelfBlastDamage, no_self_blast_dmg );
+					CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetAttacker(), iNoSelfBlastDamage, no_self_blast_dmg );
 				}
 				else
 				{
-					CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetAttacker(), iNoSelfBlastDamage, no_self_blast_dmg );
+					CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iNoSelfBlastDamage, no_self_blast_dmg );
 				}
 
 				const bool bIgnoreThisSelfDamage = ( iNoSelfBlastDamage == kSelfBlastResponse_IgnoreProjectilesFromAllWeapons )

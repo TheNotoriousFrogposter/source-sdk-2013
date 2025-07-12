@@ -52,7 +52,6 @@ ConVar tf_grenadelauncher_livetime( "tf_grenadelauncher_livetime", "0.8", FCVAR_
 extern ConVar tf_sticky_radius_ramp_time;
 extern ConVar tf_sticky_airdet_radius;
 extern ConVar ff_use_new_grenade;
-extern ConVar ff_use_new_cannon;
 
 #ifndef CLIENT_DLL
 
@@ -462,7 +461,7 @@ CTFGrenadePipebombProjectile* CTFGrenadePipebombProjectile::Create( const Vector
 	const char* pszBombClass = GetPipebombClass( iPipeBombDetonateType );
 	CTFGrenadePipebombProjectile *pGrenade = static_cast<CTFGrenadePipebombProjectile*>( CBaseEntity::CreateNoSpawn( pszBombClass, position, angles, pOwner ) );
 	int iNewGrenade = 1;
-	CALL_ATTRIB_HOOK_INT_ON_OTHER( pGrenade->GetOwnerEntity(), iNewGrenade, obsolete );
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pOwner->GetActiveWeapon(), iNewGrenade, obsolete );
 	if ( pGrenade )
 	{
 		// Set the pipebomb mode before calling spawn, so the model & associated vphysics get setup properly
@@ -784,7 +783,9 @@ void CTFGrenadePipebombProjectile::PipebombTouch( CBaseEntity *pOther )
 				{
 					// Impact damage scales with distance
 					float flDistanceSq = (pOther->GetAbsOrigin() - pAttacker->GetAbsOrigin()).LengthSqr();
-					float flImpactDamage = ff_use_new_cannon.GetBool() ? RemapValClamped( flDistanceSq, 512 * 512, 1024 * 1024, 50, 25 ) : m_flDamage;
+					int iNewCannon = 0;
+					CALL_ATTRIB_HOOK_INT_ON_OTHER ( m_hLauncher, iNewCannon, cannonball_push_back )
+					float flImpactDamage = iNewCannon ? RemapValClamped( flDistanceSq, 512 * 512, 1024 * 1024, 50, 25 ) : m_flDamage;
 
 					CTakeDamageInfo info( this, pAttacker, m_hLauncher, vec3_origin, vOrigin, flImpactDamage, GetDamageType(), TF_DMG_CUSTOM_CANNONBALL_PUSH );
 					pOther->TakeDamage( info );

@@ -149,7 +149,6 @@ BEGIN_DATADESC( CTFCrossbow )
 END_DATADESC()
 #endif
 
-extern ConVar ff_use_new_beggars;
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -244,7 +243,9 @@ void CTFRocketLauncher::Misfire( void )
 			UTIL_TraceLine( pRocket->GetAbsOrigin(), pPlayer->EyePosition(), MASK_SOLID, pRocket, COLLISION_GROUP_NONE, &tr );
 			pRocket->Explode( &tr, pPlayer );
 
-			if (!ff_use_new_beggars.GetBool())
+			int nCanOverload = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER( pPlayer, nCanOverload, can_overload );
+			if ( nCanOverload > 1 )
 			{
 				m_iClip1++;
 				pPlayer->RemoveAmmo( 1, m_iPrimaryAmmoType );

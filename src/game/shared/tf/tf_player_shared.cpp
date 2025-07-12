@@ -183,12 +183,7 @@ ConVar tf_allow_taunt_switch( "tf_allow_taunt_switch", "0", FCVAR_REPLICATED, "0
 
 ConVar tf_allow_all_team_partner_taunt( "tf_allow_all_team_partner_taunt", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
-extern ConVar ff_use_new_tide_turner;
-extern ConVar ff_use_new_critacola;
 extern ConVar ff_new_shield_charge;
-extern ConVar ff_use_new_atomizer;
-extern ConVar ff_use_new_soda_popper;
-extern ConVar ff_use_new_spycicle;
 extern ConVar ff_allow_taunt_sticky;
 
 // AFTERBURN
@@ -5136,7 +5131,9 @@ void CTFPlayerShared::OnRemoveBlastImmune( void )
 void CTFPlayerShared::OnAddFireImmune( void )
 {
 #ifdef CLIENT_DLL
-	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) || ff_use_new_spycicle.GetBool() )
+	int iMode = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( m_pOuter, iMode, freeze_backstab_victim )
+	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) || iMode == 1 )
 	{
 		AddUberScreenEffect( m_pOuter );
 	}
@@ -5155,7 +5152,9 @@ void CTFPlayerShared::OnAddFireImmune( void )
 void CTFPlayerShared::OnRemoveFireImmune( void )
 {
 #ifdef CLIENT_DLL
-	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) || ff_use_new_spycicle.GetBool() )
+	int iMode = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( m_pOuter, iMode, freeze_backstab_victim )
+	if ( !m_pOuter->IsPlayerClass( TF_CLASS_SPY ) || iMode == 1 )
 	{
 		RemoveUberScreenEffect( m_pOuter );
 	}
@@ -6132,9 +6131,12 @@ void CTFPlayerShared::CalcChargeCrit( bool bForceCrit )
 	// Keying on TideTurner
 	int iDemoChargeDamagePenalty = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( m_pOuter, iDemoChargeDamagePenalty, lose_demo_charge_on_damage_when_charging );
+	int iNewTideTurner = 1;
+	CTFWearableDemoShield *pWearableShield = GetEquippedDemoShield( m_pOuter );
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWearableShield, iNewTideTurner, obsolete );
 	if ( IsShieldImpact() && !ff_new_shield_charge.GetBool() )
 	{
-		if ( iDemoChargeDamagePenalty && ff_use_new_tide_turner.GetBool() )
+		if ( iDemoChargeDamagePenalty && iNewTideTurner )
 		{
 			SetNextMeleeCrit( MELEE_MINICRIT );
 		}
@@ -6143,7 +6145,7 @@ void CTFPlayerShared::CalcChargeCrit( bool bForceCrit )
 			SetNextMeleeCrit( MELEE_CRIT );
 		}
 	}
-	else if ( iDemoChargeDamagePenalty && GetDemomanChargeMeter() <= 75 && ff_use_new_tide_turner.GetBool() )
+	else if ( iDemoChargeDamagePenalty && GetDemomanChargeMeter() <= 75 && iNewTideTurner )
 	{
 		SetNextMeleeCrit( MELEE_MINICRIT );
 	}
@@ -7518,7 +7520,7 @@ void CTFPlayerShared::UpdateCritBoostEffect( ECritBoostUpdateType eUpdateType )
 {
 	bool bShouldDisplayCritBoostEffect = IsCritBoosted()
 									  || InCond( TF_COND_ENERGY_BUFF )
-									  || ( IsHypeBuffed() && !ff_use_new_soda_popper.GetBool() )
+									  || ( IsHypeBuffed() && !IsNewSodaPopper() )
 									  || InCond( TF_COND_SNIPERCHARGE_RAGE_BUFF );
 
 	if ( m_pOuter->GetActiveTFWeapon() )
@@ -7636,7 +7638,7 @@ void CTFPlayerShared::OnAddSodaPopperHype( void )
 {
 #ifdef CLIENT_DLL
 	UpdateCritBoostEffect();
-	if ( m_pOuter->IsLocalPlayer() && ff_use_new_soda_popper.GetBool() )
+	if ( m_pOuter->IsLocalPlayer() && IsNewSodaPopper() )
 	{
 		m_pOuter->EmitSound( "DisciplineDevice.PowerUp" );
 	}
@@ -7647,7 +7649,7 @@ void CTFPlayerShared::OnRemoveSodaPopperHype( void )
 {
 #ifdef CLIENT_DLL
 	UpdateCritBoostEffect();
-	if ( m_pOuter->IsLocalPlayer() && ff_use_new_soda_popper.GetBool() )
+	if ( m_pOuter->IsLocalPlayer() && IsNewSodaPopper() )
 	{
 		m_pOuter->EmitSound( "DisciplineDevice.PowerDown" );
 	}
@@ -11052,7 +11054,10 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 			maxfbspeed *= RemapValClamped( m_Shared.GetScoutHypeMeter(), 0.0f, 100.0f, 1.0f, 1.45f );
 		}
 		// Crit-a-Cola gives a move bonus while active
-		if ( m_Shared.InCond( TF_COND_ENERGY_BUFF ) && !ff_use_new_critacola.GetBool() )
+		int iNewCola = 1;
+		CTFLunchBox_Drink *pCola = dynamic_cast< CTFLunchBox_Drink* >( Weapon_OwnsThisID( TF_WEAPON_LUNCHBOX ) );
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pCola, iNewCola, obsolete );
+		if ( m_Shared.InCond( TF_COND_ENERGY_BUFF ) && !iNewCola )
 		{
 			maxfbspeed *= 1.25f;
 		}
@@ -12833,7 +12838,7 @@ bool CTFPlayer::CanAirDash( void ) const
 	if ( !bScout )
 		return false;
 
-	if ( m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) && ff_use_new_soda_popper.GetBool() )
+	if ( m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) && m_Shared.IsNewSodaPopper() )
 	{
 		if ( m_Shared.GetAirDash() < 5 )
 			return true;
@@ -12843,19 +12848,13 @@ bool CTFPlayer::CanAirDash( void ) const
 
 	CTFWeaponBase *pTFActiveWeapon = GetActiveTFWeapon();
 	int iDashCount = tf_scout_air_dash_count.GetInt();
-	if ( ff_use_new_atomizer.GetBool() )
-	{
-		CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFActiveWeapon, iDashCount, air_dash_count );
-	}
-	else
-	{
-		CALL_ATTRIB_HOOK_INT( iDashCount, air_dash_count );
-	}
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFActiveWeapon, iDashCount, air_dash_count );
+	CALL_ATTRIB_HOOK_INT( iDashCount, air_dash_count2 );
 
 	if ( m_Shared.GetAirDash() >= iDashCount )
 		return false;
 
-	if ( pTFActiveWeapon && ff_use_new_atomizer.GetBool() )
+	if ( pTFActiveWeapon )
 	{
 		// TODO(driller): Hack fix to restrict this to The Atomzier (currently the only item that uses this attribute) on what would be the third jump
 		float flTimeSinceDeploy = gpGlobals->curtime - pTFActiveWeapon->GetLastDeployTime();
@@ -14118,7 +14117,7 @@ void CTFPlayerShared::SetScoutHypeMeter( float val )
 		return;
 
 	m_flHypeMeter = Clamp(val, 0.0f, 100.0f);
-	if ( !ff_use_new_soda_popper.GetBool() )
+	if ( !IsNewSodaPopper() )
 	{
 		if ( m_flHypeMeter >= 100.f )
 		{
@@ -14132,6 +14131,14 @@ void CTFPlayerShared::SetScoutHypeMeter( float val )
 			}
 		}
 	}
+}
+
+bool CTFPlayerShared::IsNewSodaPopper( void ) const
+{
+	CTFSodaPopper *pWpn = (CTFSodaPopper *) m_pOuter->Weapon_OwnsThisID( TF_WEAPON_SODA_POPPER );
+	int iNewSodaPopper = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pWpn, iNewSodaPopper, obsolete )
+	return iNewSodaPopper;
 }
 
 //-----------------------------------------------------------------------------

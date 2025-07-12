@@ -94,8 +94,6 @@ extern ConVar cl_crosshair_file;
 extern ConVar cl_flipviewmodels;
 #endif
 
-extern ConVar ff_use_new_spycicle;
-extern ConVar ff_use_new_beggars;
 extern ConVar ff_new_weapon_switch_speed;
 extern ConVar ff_new_shield_charge;
 
@@ -2051,8 +2049,10 @@ bool CTFWeaponBase::ReloadSingly( void )
 			}
 			else
 			{
+				int nCanOverload = 0;
+				CALL_ATTRIB_HOOK_INT( nCanOverload, can_overload );
 				if ( ( !CanOverload() && ( Clip1() == GetMaxClip1() || pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 ) ) ||
-						( CanOverload() && !ff_use_new_beggars.GetBool() && pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 ) )
+						( CanOverload() && nCanOverload > 1 && pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 ) )
 				{
 					m_iReloadMode.Set( TF_RELOAD_FINISH );
 				}
@@ -5442,7 +5442,9 @@ void CTFWeaponBase::ApplyOnInjuredAttributes( CTFPlayer *pVictim, CTFPlayer *pAt
 		CALL_ATTRIB_HOOK_INT( iBecomeFireproofOnHitByFire, become_fireproof_on_hit_by_fire );
 		if ( iBecomeFireproofOnHitByFire > 0 && ( ( info.GetDamageType() & DMG_BURN ) || ( info.GetDamageType() & DMG_IGNITE ) ) )
 		{
-			if ( ff_use_new_spycicle.GetBool() )
+			int iMode = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER ( pVictim, iMode, freeze_backstab_victim )
+			if ( iMode == 1 )
 			{
 				pVictim->m_Shared.AddCond( TF_COND_FIRE_IMMUNE, 1.f );
 				// STAGING_SPY

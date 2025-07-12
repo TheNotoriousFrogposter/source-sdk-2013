@@ -89,8 +89,6 @@ END_NETWORK_TABLE()
 BEGIN_DATADESC( CTFProjectile_GrapplingHook )
 END_DATADESC()
 
-extern ConVar ff_use_new_rescue_ranger;
-
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -682,7 +680,9 @@ void CTFProjectile_Arrow::BuildingHealingArrow( CBaseEntity *pOther )
 
 	float flNewHealth = MIN( pBuilding->GetMaxHealth(), (int)pBuilding->GetHealth() + iArrowHealAmount );
 	int nHealed = 0;
-	if ( ff_use_new_rescue_ranger.GetBool() )
+	int iUseMetal = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFAttacker, iUseMetal, repair_health_to_metal_ratio_DISPLAY_ONLY )
+	if ( iUseMetal )
 	{
 		nHealed = pBuilding->Command_Repair( pTFAttacker, iArrowHealAmount, 1.f, 4.f, true );
 	}
@@ -693,7 +693,7 @@ void CTFProjectile_Arrow::BuildingHealingArrow( CBaseEntity *pOther )
 
 	if ( nHealed > 0 )
 	{
-		if ( !ff_use_new_rescue_ranger.GetBool() )
+		if ( !iUseMetal )
 		{
 			pBuilding->SetHealth( flNewHealth );
 

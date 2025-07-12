@@ -133,8 +133,6 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-extern ConVar ff_use_new_soda_popper;
-
 using namespace GCSDK;
 
 static_assert( TEAM_UNASSIGNED == 0, "If this assert fires, update the assert and the enum in ctexturecompositor.cpp which specifies team colors" );
@@ -2038,13 +2036,13 @@ public:
 				}
 				pPlayer->m_Shared.m_bChargeGlowing = false;
 			}
-			else if ( pPlayer->m_Shared.IsHypeBuffed() && ff_use_new_soda_popper.GetBool() )
+			else if ( pPlayer->m_Shared.IsHypeBuffed() && pPlayer->m_Shared.IsNewSodaPopper() )
 			{
 				vResult = Vector( 50, 2, 48 );
 				pPlayer->m_Shared.m_bChargeGlowing = false;
 			}
 			else if ( pPlayer->m_Shared.InCond( TF_COND_OFFENSEBUFF ) || pPlayer->m_Shared.InCond( TF_COND_ENERGY_BUFF )
-					|| ( pPlayer->m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) && !ff_use_new_soda_popper.GetBool() ) )
+					|| ( pPlayer->m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) && !pPlayer->m_Shared.IsNewSodaPopper() ) )
 			{
 				// Temporarily hijacking this proxy for buff FX.
 				if ( iVisibleTeam == TF_TEAM_RED )

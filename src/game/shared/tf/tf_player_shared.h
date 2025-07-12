@@ -525,6 +525,7 @@ public:
 	void	SetScoutHypeMeter( float val );
 	void	StopScoutHypeDrain( void )		{ RemoveCond( TF_COND_SODAPOPPER_HYPE ); }
 	bool	IsHypeBuffed( void ) const		{ return InCond( TF_COND_SODAPOPPER_HYPE ); }
+	bool	IsNewSodaPopper( void ) const;
 
 	void	DemoShieldChargeThink( void );
 	void	UpdateChargeMeter( void );

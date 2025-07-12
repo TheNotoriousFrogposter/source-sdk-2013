@@ -90,7 +90,6 @@ PRECACHE_WEAPON_REGISTER( tf_projectile_cleaver );
 #define TF_WEAPON_CLEAVER_IMPACT_FLESH_SOUND	"Cleaver.ImpactFlesh"
 #define TF_WEAPON_CLEAVER_IMPACT_WORLD_SOUND	"Cleaver.ImpactWorld"
 
-extern ConVar ff_use_new_cleaver;
 
 
 //=============================================================================
@@ -1015,8 +1014,10 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 
 	bool bIsMiniCrit = false;
 
+	int iNewCleaver = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER( pInflictor, iNewCleaver, desc_cleaver_description );
 	float flLifeTime = gpGlobals->curtime - m_flCreationTime;
-	if ( flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN && ff_use_new_cleaver.GetBool() )
+	if ( flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN && iNewCleaver )
 	{
 		auto pLauncher = dynamic_cast<CTFWeaponBase*>( pInflictor );
 		if ( pLauncher && pOwner != pPlayer && pLauncher->HasEffectBarRegeneration() )
@@ -1025,7 +1026,7 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 		}
 	}
 
-	if ( flLifeTime >= FLIGHT_TIME_TO_MAX_DMG && !ff_use_new_cleaver.GetBool() )
+	if ( flLifeTime >= FLIGHT_TIME_TO_MAX_DMG && !iNewCleaver )
 	{
 		bIsMiniCrit = true;
 	}

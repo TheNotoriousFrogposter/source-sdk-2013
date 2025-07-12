@@ -293,10 +293,6 @@ extern ConVar tf_tournament_classchange_ready_allowed;
 extern ConVar tf_rocketpack_impact_push_min;
 extern ConVar tf_rocketpack_impact_push_max;
 
-extern ConVar ff_use_new_spycicle;
-extern ConVar ff_use_new_katana;
-extern ConVar ff_use_new_sydney_sleeper;
-extern ConVar ff_use_new_phlog;
 extern ConVar ff_old_healonkill;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
@@ -5187,8 +5183,10 @@ bool CTFPlayer::AddToSpyKnife( float value, bool force )
 	CTFKnife *pWpn = (CTFKnife *)Weapon_OwnsThisID( TF_WEAPON_KNIFE );
 	if ( !pWpn )
 		return false;
-	
-	if ( !ff_use_new_spycicle.GetBool() )
+
+	int iMode = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pWpn, iMode, freeze_backstab_victim )
+	if ( iMode > 1 )
 		return false;
 
 	return pWpn->DecreaseRegenerationTime( value, force );
@@ -9822,11 +9820,13 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		if ( ( info.GetDamageType() & DMG_BURN ) != 0 || ( info.GetDamageType() & DMG_PLASMA ) != 0 )
 		{
 			float flInverseRageGainScale = 0.f;
+			int iMode = 0;
+			CALL_ATTRIB_HOOK_INT( iMode, burn_damage_earns_rage );
 			if ( TFGameRules()->IsMannVsMachineMode() )
 			{
 				flInverseRageGainScale = 12.f;
 			}
-			else if ( ff_use_new_phlog.GetBool() )
+			else if ( iMode == 1 )
 			{
 				flInverseRageGainScale = 3.f;
 			}
@@ -18054,7 +18054,9 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 					m_Shared.ActivateRageBuff( this, iBuffType );
 
 					// Pyro needs high defense while he's taunting
-					if ( ff_use_new_phlog.GetBool() )
+					int iMode = 0;
+					CALL_ATTRIB_HOOK_INT( iMode, burn_damage_earns_rage );
+					if ( iMode == 1 )
 					{
 						m_Shared.AddCond( TF_COND_MEGAHEAL, 2.60f );
 						m_Shared.AddCond( TF_COND_INVULNERABLE_USER_BUFF, 2.60f );
