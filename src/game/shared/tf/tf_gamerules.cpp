@@ -825,7 +825,6 @@ ConVar tf_medieval_autorp( "tf_medieval_autorp", "1", FCVAR_REPLICATED | FCVAR_N
 ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
 ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
 
-ConVar ff_megaheal_prevent_capping ( "ff_megaheal_prevent_capping", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Quick-Fix ÜberCharge prevents capping or defending control points." );
 ConVar ff_minigun_spinup_penalty ( "ff_minigun_spinup_penalty", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Apply damage and accuracy penalty on the minigun during the first second of spun-up time." );
 ConVar ff_new_shield_charge ( "ff_new_shield_charge", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0 - guaranteed melee crit on a shield bash, only deal impact damage if the charge meter is <40%, each head increases impact damage by 20%, 1 - impact damage at any range, remove debuff, each head increases impact damage by 10%, 75% slower deploy and holster speed on sword weapons." );
 ConVar ff_use_new_grenade( "ff_use_new_grenade", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Uses the modern grenade explosion radius (146Hu) instead of the older ones (159Hu), direct hit will always deal full damage rather than depending on where the grenade struck the enemy." );
@@ -16856,7 +16855,24 @@ bool CTFGameRules::PlayerMayCapturePoint( CBasePlayer *pPlayer, int iPointIndex,
 		}
 		return false;
 	}
-	if ( ( pTFPlayer->m_Shared.IsInvulnerable() || ( ff_megaheal_prevent_capping.GetBool() && pTFPlayer->m_Shared.InCond( TF_COND_MEGAHEAL ) ) ) && !IsMannVsMachineMode() )
+
+	int iBlockCapping = 1;
+#ifdef GAME_DLL
+	for ( int i = 0; i < pTFPlayer->m_Shared.GetNumHealers(); i++ )
+	{
+		CTFPlayer *pMedic = ToTFPlayer( pTFPlayer->m_Shared.GetHealerByIndex( i ) );
+		if ( !pMedic )
+			continue;
+
+		CWeaponMedigun *pMedigun = dynamic_cast <CWeaponMedigun*>( pMedic->GetActiveTFWeapon() );
+		if ( pMedigun && pMedigun->IsReleasingCharge() && pMedigun->GetChargeType() == MEDIGUN_QUICKFIX )
+		{
+			CALL_ATTRIB_HOOK_INT_ON_OTHER ( pMedigun, iBlockCapping, obsolete );
+		}
+	}
+#endif
+
+	if ( ( pTFPlayer->m_Shared.IsInvulnerable() || ( iBlockCapping && pTFPlayer->m_Shared.InCond( TF_COND_MEGAHEAL ) ) ) && !IsMannVsMachineMode() )
 	{
 		if ( pszReason )
 		{

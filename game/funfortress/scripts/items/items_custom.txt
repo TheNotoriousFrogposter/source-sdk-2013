@@ -2555,6 +2555,11 @@
 					"attribute_class"	"mult_medigun_overheal_amount"
 					"value"	"0.5"
 				}
+				"obsolete ammo penalty"
+				{
+					"attribute_class"	"obsolete"
+					"value"	"0"
+				}
 				"kill eater score type"
 				{
 					"attribute_class"	"kill_eater_score_type"
