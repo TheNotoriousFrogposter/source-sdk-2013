@@ -292,7 +292,7 @@ bool CTFInventoryManager::EquipItemInLoadout( int iClass, int iSlot, itemid_t iI
 		return m_LocalInventory.ClearLoadoutSlot( iClass, iSlot );
 
 	CEconItemView *pItem = m_LocalInventory.GetInventoryItemByItemID( iItemID );
-	if (iItemID < 100000)
+	if (iItemID < 65536)
 	{
 		int count = TFInventoryManager()->GetModItemCount();
 		for (int i = 0; i < count; i++)
@@ -1019,10 +1019,7 @@ void CTFPlayerInventory::LoadLocalLoadout()
 
 					CEconItemView *pItem = GetInventoryItemByItemID(uItemId);
 					if (pItem) {
-						CEconItem* pItemSOC = pItem->GetSOCData();
-						if (pItemSOC) {
-							pItemSOC->Equip( iClass, iSlot);
-						}
+						pItem->GetSOCData()->Equip(iClass, iSlot);
 					}
 				}
 			}
@@ -1032,6 +1029,7 @@ void CTFPlayerInventory::LoadLocalLoadout()
 	pLoadoutKV->deleteThis();
 
 	GTFGCClientSystem()->LocalInventoryChanged();
+	SendInventoryUpdateEvent();
 }
 
 //-----------------------------------------------------------------------------
@@ -1105,7 +1103,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 
 	// Unequip whatever was previously in the slot.
 	itemid_t ulPreviousItem = m_LoadoutItems[unClass][unSlot];
-	if (ulPreviousItem != 0 && ulPreviousItem < 100000)
+	if (ulPreviousItem != 0 && ulPreviousItem < 65536)
 	{
 		int count = TFInventoryManager()->GetModItemCount();
 		for (int i = 0; i < count; i++)
@@ -1126,7 +1124,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 	}
 
 	// Equip the new item and add it to our loadout.
-	if (ulItemID < 100000)
+	if (ulItemID < 65536)
 	{
 		int count = TFInventoryManager()->GetModItemCount();
 		CEconItemView* pItem;
@@ -1558,7 +1556,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 			if ( pItem && AreSlotsConsideredIdentical( pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot( iClass ), iSlot ) )
 				return pItem;
 
-			if (m_LoadoutItems[iClass][iSlot] < 100000)
+			if (m_LoadoutItems[iClass][iSlot] < 65536)
 			{
 				int count = TFInventoryManager()->GetModItemCount();
 				for (int i = 0; i < count; i++)
