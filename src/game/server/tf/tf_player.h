@@ -499,6 +499,8 @@ public:
 	void SetAutoReload( bool bAutoReload ) { m_bAutoReload = bAutoReload; }
 	bool ShouldDisableFallDamageScream( void ){ return m_bDisableFallDamageScream; }
 	void SetDisableFallDamageScream( bool bDisableFallDamageScream ) { m_bDisableFallDamageScream = bDisableFallDamageScream; }
+	bool ShouldRespawnOnLoadoutChanges( void ){ return m_bRespawnOnLoadoutChanges; }
+	void SetRespawnOnLoadoutChanges( bool bRespawnOnLoadoutChanges ) { m_bRespawnOnLoadoutChanges = bRespawnOnLoadoutChanges; }
 
 	virtual void	ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet );
 
@@ -1288,6 +1290,7 @@ private:
 	bool				m_bAutoRezoom;	// does the player want to re-zoom after each shot for sniper rifles
 	bool				m_bAutoReload;
 	bool				m_bDisableFallDamageScream;
+	bool				m_bRespawnOnLoadoutChanges;
 
 	bool				m_bForceItemRemovalOnRespawn;
 
