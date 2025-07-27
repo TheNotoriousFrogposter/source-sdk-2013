@@ -15282,6 +15282,9 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 	// play death sound as if we're taking huge damage when we landed on the ground
 	if ( info.GetDamageType() & DMG_FALL )
 	{
+		if ( ShouldDisableFallDamageScream() )
+			return;
+
 		CBaseEntity *pGround = GetGroundEntity();
 
 		// don't play sound for fall stomp event
