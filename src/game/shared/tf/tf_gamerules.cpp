@@ -833,6 +833,7 @@ ConVar ff_lunchbox_self_healing ( "ff_lunchbox_self_healing", "0", FCVAR_NOTIFY 
 ConVar ff_new_weapon_switch_speed ( "ff_new_weapon_switch_speed", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "0.5s weapon switch time instead of 0.67s." );
 ConVar ff_old_healonkill ( "ff_old_healonkill", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Restore the ability to overheal when gaining health on a kill." );
 ConVar ff_allow_taunt_sticky ( "ff_allow_taunt_sticky", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Allow Demoman to detonate stickies while taunting." );
+ConVar ff_disable_dropped_weapon ( "ff_disable_dropped_weapon", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Fallen ammo packs are replaced with weapons." );
 
 #ifndef GAME_DLL
 extern ConVar cl_burninggibs;

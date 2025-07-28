@@ -294,6 +294,7 @@ extern ConVar tf_rocketpack_impact_push_min;
 extern ConVar tf_rocketpack_impact_push_max;
 
 extern ConVar ff_old_healonkill;
+extern ConVar ff_disable_dropped_weapon;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
@@ -13221,17 +13222,20 @@ void CTFPlayer::DropAmmoPack( const CTakeDamageInfo &info, bool bEmpty, bool bDi
 	if( !CalculateAmmoPackPositionAndAngles( pWeapon, vecPackOrigin, vecPackAngles ) )
 		return;
 
-	CEconItemView *pItem = pDropWeaponProps->GetAttributeContainer()->GetItem();
 	bool bIsSuicide = info.GetAttacker() ? info.GetAttacker()->GetTeamNumber() == GetTeamNumber() : false;
-
-	CTFDroppedWeapon *pDroppedWeapon = CTFDroppedWeapon::Create( this, vecPackOrigin, vecPackAngles, pszWorldModel, pItem );
-	if ( pDroppedWeapon )
+	if ( !ff_disable_dropped_weapon.GetBool())
 	{
-		pDroppedWeapon->InitDroppedWeapon( this, pDropWeaponProps, false, bIsSuicide );
+		CEconItemView *pItem = pDropWeaponProps->GetAttributeContainer()->GetItem();
+
+		CTFDroppedWeapon *pDroppedWeapon = CTFDroppedWeapon::Create( this, vecPackOrigin, vecPackAngles, pszWorldModel, pItem );
+		if ( pDroppedWeapon )
+		{
+			pDroppedWeapon->InitDroppedWeapon( this, pDropWeaponProps, false, bIsSuicide );
+		}
 	}
 
 	// Create the ammo pack.
-	CTFAmmoPack *pAmmoPack = CTFAmmoPack::Create( vecPackOrigin, vecPackAngles, this, "models/items/ammopack_medium.mdl" );
+	CTFAmmoPack *pAmmoPack = CTFAmmoPack::Create( vecPackOrigin, vecPackAngles, this, ff_disable_dropped_weapon.GetBool() ? pszWorldModel : "models/items/ammopack_medium.mdl" );
 	Assert( pAmmoPack );
 	if ( pAmmoPack )
 	{
