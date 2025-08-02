@@ -391,7 +391,7 @@ void CTFPlayerModelPanel::ClearScene( void )
 	m_pScene = NULL;
 	m_flSceneTime = 0;
 	m_flSceneEndTime = 0;
-	m_flLastTickTime = 0;
+	m_flLastTickTime = -1.0; // setting to -1 to indicate pending update
 	m_bLoopScene = true;
 	//memset( m_flexWeight, 0, sizeof( m_flexWeight ) );
 }
@@ -506,6 +506,24 @@ void CTFPlayerModelPanel::FireEvent( const char *pszEventName, const char *pszEv
 		{
 			m_aMergeMDLs[nWeaponIndex].m_bDisabled = false;
 		}
+	}
+	else if ( V_strcmp(pszEventName, "AE_CL_PLAYSOUND") == 0 )
+	{
+		if (m_bDisableSpeakEvent)
+			return;
+
+		soundlevel_t iSoundlevel = SNDLVL_TALKING;
+
+		EmitSound_t es;
+		es.m_nChannel = CHAN_VOICE;
+		es.m_flVolume = 1;
+		es.m_SoundLevel = iSoundlevel;
+		es.m_flSoundTime = gpGlobals->curtime;
+		es.m_bEmitCloseCaption = false;
+		es.m_pSoundName = pszEventOptions;
+
+		C_RecipientFilter filter;
+		C_BaseEntity::EmitSound(filter, SOUND_FROM_UI_PANEL, es);
 	}
 }
 
@@ -997,6 +1015,7 @@ void CTFPlayerModelPanel::EquipItem( CEconItemView *pItem )
 			if ( iSequence != ACT_INVALID )
 			{
 				SetSequence( iSequence, true );
+				m_flLastTickTime = -1.0f;
 			}
 		}
 	}
@@ -1315,6 +1334,20 @@ Vector CTFPlayerModelPanel::GetZoomOffset()
 {
 	const Vector vecOffset( 100, 0, ClassZoomZ[m_iCurrentClassIndex] );
 	return m_bZoomedToHead ? -vecOffset : vecOffset;
+}
+
+void CTFPlayerModelPanel::SetMDL(MDLHandle_t handle, void* pProxyData)
+{
+	BaseClass::SetMDL(handle, pProxyData);
+
+	m_flLastTickTime = -1.0f;
+}
+
+void CTFPlayerModelPanel::SetMDL(const char* pMDLName, void* pProxyData)
+{
+	BaseClass::SetMDL(pMDLName, pProxyData);
+
+	m_flLastTickTime = -1.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -2255,10 +2288,22 @@ void CTFPlayerModelPanel::SetupFlexWeights( void )
 
 	LocalFlexController_t i;
 
-	// Decay to neutral
-	for ( i = LocalFlexController_t(0); i < GetNumFlexControllers(); i++)
+	// a bit hackish, but this will let us know if we're entering a new scene.
+	if (m_flLastTickTime < FLT_EPSILON)
 	{
-		SetFlexWeight( i, GetFlexWeight( i ) * 0.95 );
+		// reset flex weights
+		for (i = LocalFlexController_t(0); i < GetNumFlexControllers(); i++)
+		{
+			SetFlexWeight(i, 0.0f);
+		}
+	}
+	else
+	{
+		// Decay to neutral
+		for (i = LocalFlexController_t(0); i < GetNumFlexControllers(); i++)
+		{
+			SetFlexWeight(i, GetFlexWeight(i) * 0.95f);
+		}
 	}
 
 	// Run scene
@@ -2291,11 +2336,27 @@ void CTFPlayerModelPanel::SetupFlexWeights( void )
 		// Advance time
 		if ( m_flLastTickTime < FLT_EPSILON )
 		{
-			m_flLastTickTime = m_RootMDL.m_MDL.m_flTime - 0.1;
+			if (m_RootMDL.m_MDL.m_flTime > 0.1f)
+			{
+				// a bit hackish, but we need to hold this frame until after our model update goes through on the next frame.
+				if (m_flLastTickTime < 0)
+				{
+					m_flLastTickTime = 0;
+				}
+				else
+				{
+					m_flLastTickTime = m_RootMDL.m_MDL.m_flTime - 0.1f;
+				}
+			}
 		}
 
-		m_flSceneTime += (m_RootMDL.m_MDL.m_flTime - m_flLastTickTime);
-		m_flLastTickTime = m_RootMDL.m_MDL.m_flTime;
+		// we're pending a model update, so don't stomp the last tick time with the old model.
+		if (m_flLastTickTime > 0)
+		{
+			m_flSceneTime += (m_RootMDL.m_MDL.m_flTime - m_flLastTickTime);
+			m_flLastTickTime = m_RootMDL.m_MDL.m_flTime;
+		}
+
 
 		if ( m_flSceneEndTime > FLT_EPSILON && m_flSceneTime > m_flSceneEndTime )
 		{
