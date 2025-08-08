@@ -4836,9 +4836,10 @@ void C_TFPlayer::UpdateTauntItem()
 	{
 		int iClass = GetPlayerClass()->GetClassIndex();
 
-		CEconItemView *pMiscItemView = Inventory() ? Inventory()->GetItemInLoadout( iClass, m_nActiveTauntSlot ) : NULL;
+		CEconItemView *pMiscItemView = Inventory() ? Inventory()->GetCacheServerItemInLoadout( iClass, m_nActiveTauntSlot ) : NULL;
 		if ( pMiscItemView )
 		{
+			DevMsg( "Using item id for taunt: %d\n", pMiscItemView->GetItemID() );
 			m_TauntEconItemView = *pMiscItemView;
 		}
 	}

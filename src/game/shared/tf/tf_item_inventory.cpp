@@ -1564,6 +1564,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 					CEconItemView* pItem = TFInventoryManager()->GetModItem(i);
 					if (pItem && pItem->GetItemDefIndex() == m_LoadoutItems[iClass][iSlot])
 					{
+						DevMsg( "Using mod item: %d\n", m_LoadoutItems[iClass][iSlot] );
 						if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
 							return pItem;
 					}
@@ -1593,6 +1594,22 @@ CEconItemView *CTFPlayerInventory::GetCacheServerItemInLoadout( int iClass, int 
 		// we need to validate their position on the server when we retrieve them.
 		if ( pItem && AreSlotsConsideredIdentical( pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot( iClass ), iSlot ) )
 			return pItem;
+
+		if (m_CachedServerLoadoutItems[iClass][iSlot] < 65536)
+		{
+			int count = TFInventoryManager()->GetModItemCount();
+			for (int i = 0; i < count; i++)
+			{
+				CEconItemView* pItem = TFInventoryManager()->GetModItem(i);
+				if (pItem && pItem->GetItemDefIndex() == m_CachedServerLoadoutItems[iClass][iSlot])
+				{
+					DevMsg( "Using cached mod item: %d\n", m_CachedServerLoadoutItems[iClass][iSlot] );
+					if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
+						return pItem;
+				}
+			}
+			return TFInventoryManager()->AddModItem( m_CachedServerLoadoutItems[iClass][iSlot] );
+		}
 	}
 
 	return TFInventoryManager()->GetBaseItemForClass( iClass, iSlot );
