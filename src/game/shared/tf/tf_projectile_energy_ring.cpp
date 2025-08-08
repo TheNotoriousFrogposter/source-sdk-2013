@@ -303,7 +303,8 @@ void CTFProjectile_EnergyRing::ProjectileTouch( CBaseEntity *pOther )
 		int iDmgType = GetDamageType();
 		if ( iNewRaygun == 2 )
 		{
-			iDmgType = DMG_SONIC;
+			iDmgType ^= DMG_BULLET ^ DMG_USEDISTANCEMOD ^ DMG_NOCLOSEDISTANCEMOD ^ DMG_PREVENT_PHYSICS_FORCE;
+			iDmgType |= DMG_SONIC;
 		}
 
 		CTakeDamageInfo info( this, pOwner, GetLauncher(), nDamage, iDmgType, TF_DMG_CUSTOM_PLASMA );
