@@ -18649,7 +18649,7 @@ void CTFGameRules::InitCustomResponseRulesDicts()
 
 			// Name.
 			V_sprintf_safe( szName, "%s_%s\n", g_aPlayerClassNames_NonLocalized[iClass], g_pszMPConcepts[iConcept] );
-			m_ResponseRules[iClass].m_ResponseSystems[iConcept] = BuildCustomResponseSystemGivenCriteria( "scripts/talker/custom.txt", szName, criteriaSet, flCriteriaScore );
+			m_ResponseRules[iClass].m_ResponseSystems[iConcept] = BuildCustomResponseSystemGivenCriteria( "scripts/talker/response_rules.txt", szName, criteriaSet, flCriteriaScore );
 		}		
 	}
 }

@@ -2872,11 +2872,7 @@ public:
 
 	virtual const char *GetScriptFile( void ) 
 	{
-#if defined( TF_DLL )
-		return "scripts/talker/custom.txt";
-#else
 		return "scripts/talker/response_rules.txt";
-#endif
 	}
 
 	// CAutoServerSystem

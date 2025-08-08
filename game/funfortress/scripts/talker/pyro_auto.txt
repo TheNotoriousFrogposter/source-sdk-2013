@@ -1,4 +1,8 @@
-#include "talker/response_rules.txt"
+//--------------------------------------------------------------------------------------------------------------
+// Pyro Response Rule File - AUTO GENERATED DO NOT EDIT BY HAND
+//--------------------------------------------------------------------------------------------------------------
+
+
 
 criterion "WeaponIsOldEqualizer" "item_name" "Vintage Equalizer" "required" weight 10
 criterion "WeaponIsOldRobotArm" "item_name" "Vintage Gunslinger" "required" weight 10
