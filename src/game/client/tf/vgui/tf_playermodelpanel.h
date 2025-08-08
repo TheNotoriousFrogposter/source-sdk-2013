@@ -14,6 +14,7 @@
 #include "basemodel_panel.h"
 #include "ichoreoeventcallback.h"
 
+class C_TFPlayer;
 class CChoreoScene;
 
 extern CMouthInfo g_ClientUIMouth;
@@ -39,6 +40,7 @@ public:
 	void	ClearCarriedItems( void );
 
 	void	PlayVCD( const char *pszVCD, const char *pszWeaponEntityRequired = NULL, bool bLoopVCD = true, bool bFileNameOnly = true );
+	void	PlayClassSelectAnimation( C_TFPlayer *pPlayer );
 
 	// Handle animation events
 	virtual void FireEvent( const char *pszEventName, const char *pszEventOptions );
@@ -55,6 +57,9 @@ public:
 	int		GetTeam( void ) { return m_iTeam; }
 
 	void	UpdatePreviewVisuals( void );
+
+	virtual void	SetMDL(MDLHandle_t handle, void* pProxyData = NULL) OVERRIDE;
+	virtual void	SetMDL(const char* pMDLName, void* pProxyData = NULL) OVERRIDE;
 
 	// From IChoreoEventCallback
 	virtual void	StartEvent( float currenttime, CChoreoScene *scene, CChoreoEvent *event );
