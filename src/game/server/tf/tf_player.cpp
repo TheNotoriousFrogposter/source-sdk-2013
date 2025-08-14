@@ -2955,6 +2955,7 @@ void CTFPlayer::PrecachePlayerModels( void )
 			PrecacheModel( pszModel );
 		}
 
+/*
 		if ( !IsX360() )
 		{
 			// Precache the hardware facial morphed models as well.
@@ -2964,6 +2965,7 @@ void CTFPlayer::PrecachePlayerModels( void )
 				PrecacheModel( pszHWMModel );
 			}
 		}
+*/
 	}
 	
 	// Always precache the silly gibs.
@@ -7274,6 +7276,40 @@ static void DebugEconItemView( const char *pszDescStr, CEconItemView *pEconItemV
 	Warning("%s: \"%s\"\n", pszDescStr, pItemDef->GetDefinitionName() );
 }
 #endif
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CTFPlayer::ShouldRunRateLimitedVoiceCommand( const CCommand &args )
+{
+	return ShouldRunRateLimitedVoiceCommand( args[0] );
+}
+
+ConVar ff_voice_command_rate_limit( "ff_voice_command_rate_limit", "0.3", FCVAR_NOTIFY, "", true, 0.05f, true, 0.3f );
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CTFPlayer::ShouldRunRateLimitedVoiceCommand( const char *pszCommand )
+{
+	const char *pcmd = pszCommand;
+
+	int i = m_RateLimitLastCommandTimes.Find( pcmd );
+	if ( i == m_RateLimitLastCommandTimes.InvalidIndex() )
+	{
+		m_RateLimitLastCommandTimes.Insert( pcmd, gpGlobals->curtime );
+		return true;
+	}
+	else if ( (gpGlobals->curtime - m_RateLimitLastCommandTimes[i]) < ff_voice_command_rate_limit.GetFloat() )
+	{
+		// Too fast.
+		return false;
+	}
+	else
+	{
+		m_RateLimitLastCommandTimes[i] = gpGlobals->curtime;
+		return true;
+	}
+}
 
 bool CTFPlayer::ClientCommand( const CCommand &args )
 {

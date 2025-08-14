@@ -1558,7 +1558,7 @@ void CMvMVictoryMannUpPanel::OnTick( void )
 	}
 }
 
-ConVar _cl_victorypanelopen( "_cl_victorypanelopen", "0", FCVAR_DEVELOPMENTONLY, "" );
+ConVar _cl_victorypanelopen( "_cl_victorypanelopen", "0", 0, "internal cvar used to tell server when victory panel is open" );
 void CMvMVictoryMannUpPanel::SetVisible( bool bState )
 {
 	BaseClass::SetVisible( bState );
