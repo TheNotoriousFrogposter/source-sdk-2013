@@ -7177,6 +7177,10 @@ void CTFPlayer::CheckInstantLoadoutRespawn( void )
 	if ( TFGameRules()->State_Get() == GR_STATE_TEAM_WIN && TFGameRules()->GetWinningTeam() != GetTeamNumber() ) 
 		return;
 
+	// don't actually do the respawn/reset if we don't do this
+	if ( !ShouldRespawnOnLoadoutChanges() )
+		return;
+
 	// Not if our current class's loadout hasn't changed
 	int iClass = GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED;
 	if ( iClass >= TF_FIRST_NORMAL_CLASS && iClass < TF_LAST_NORMAL_CLASS )
