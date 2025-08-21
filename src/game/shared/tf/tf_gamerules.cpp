@@ -16885,7 +16885,7 @@ bool CTFGameRules::PlayerMayCapturePoint( CBasePlayer *pPlayer, int iPointIndex,
 			continue;
 
 		CWeaponMedigun *pMedigun = dynamic_cast <CWeaponMedigun*>( pMedic->GetActiveTFWeapon() );
-		if ( pMedigun && pMedigun->IsReleasingCharge() && pMedigun->GetChargeType() == MEDIGUN_QUICKFIX )
+		if ( pMedigun && pMedigun->IsReleasingCharge() && pMedigun->GetMedigunType() == MEDIGUN_QUICKFIX )
 		{
 			CALL_ATTRIB_HOOK_INT_ON_OTHER ( pMedigun, iBlockCapping, obsolete );
 		}
