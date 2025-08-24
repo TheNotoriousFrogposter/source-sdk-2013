@@ -58,9 +58,6 @@ public:
 
 	void	UpdatePreviewVisuals( void );
 
-	virtual void	SetMDL(MDLHandle_t handle, void* pProxyData = NULL) OVERRIDE;
-	virtual void	SetMDL(const char* pMDLName, void* pProxyData = NULL) OVERRIDE;
-
 	// From IChoreoEventCallback
 	virtual void	StartEvent( float currenttime, CChoreoScene *scene, CChoreoEvent *event );
 	virtual void	EndEvent( float currenttime, CChoreoScene *scene, CChoreoEvent *event );

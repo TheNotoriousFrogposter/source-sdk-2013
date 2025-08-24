@@ -1097,7 +1097,6 @@ void CTFPlayerModelPanel::EquipItem( CEconItemView *pItem )
 			if ( iSequence != ACT_INVALID )
 			{
 				SetSequence( iSequence, true );
-				m_flLastTickTime = 0;
 			}
 		}
 	}
@@ -1416,18 +1415,6 @@ Vector CTFPlayerModelPanel::GetZoomOffset()
 {
 	const Vector vecOffset( 100, 0, ClassZoomZ[m_iCurrentClassIndex] );
 	return m_bZoomedToHead ? -vecOffset : vecOffset;
-}
-
-void CTFPlayerModelPanel::SetMDL(MDLHandle_t handle, void* pProxyData)
-{
-	BaseClass::SetMDL(handle, pProxyData);
-
-	m_flLastTickTime = 0;
-}
-
-void CTFPlayerModelPanel::SetMDL(const char* pMDLName, void* pProxyData)
-{
-	BaseClass::SetMDL(pMDLName, pProxyData);
 }
 
 //-----------------------------------------------------------------------------
