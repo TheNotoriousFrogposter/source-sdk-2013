@@ -2168,8 +2168,15 @@ void CL_ShowTrainingDialog( const CCommand &args )
 {
 	if ( g_pTrainingDialog.Get() == NULL )
 	{
-		IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-		g_pTrainingDialog = new CTrainingDialog( (CHudMainMenuOverride*)pMMOverride );
+		if ( CommandLine()->CheckParm( "-classic" ) )
+		{
+			g_pTrainingDialog = new CTrainingDialog(NULL);
+		}
+		else
+		{
+			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+			g_pTrainingDialog = new CTrainingDialog( (CHudMainMenuOverride*)pMMOverride );
+		}
 		g_pTrainingDialog->InvalidateLayout( true, true );
 	}
 	g_pTrainingDialog->Show();

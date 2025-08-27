@@ -383,8 +383,11 @@ void CTFMatchmakingDashboard::OnCommand( const char *command )
 		return;
 		PopStack( 100, k_eSideRight ); // All y'all
 		PushSlidePanel( GetDashboardPanel().GetTypedPanel< CMatchMakingDashboardSidePanel >( k_ePlayList ) );
-		CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-		pMMOverride->CheckTrainingStatus();
+		if ( !CommandLine()->CheckParm( "-classic" ) )
+		{
+			CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+			pMMOverride->CheckTrainingStatus();
+		}
 	}
 	else if ( FStrEq( command, "quit" ) )
 	{
@@ -394,8 +397,15 @@ void CTFMatchmakingDashboard::OnCommand( const char *command )
 		}
 		else
 		{
-			CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-			ShowConfirmDialog( "#MMenu_PromptQuit_Title", "#MMenu_PromptQuit_Body", "#TF_Coach_Yes", "#TF_Coach_No", ConfirmQuit, pMMOverride );
+			if ( CommandLine()->CheckParm( "-classic" ) )
+			{
+				ShowConfirmDialog( "#MMenu_PromptQuit_Title", "#MMenu_PromptQuit_Body", "#TF_Coach_Yes", "#TF_Coach_No", ConfirmQuit );
+			}
+			else
+			{
+				CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+				ShowConfirmDialog( "#MMenu_PromptQuit_Title", "#MMenu_PromptQuit_Body", "#TF_Coach_Yes", "#TF_Coach_No", ConfirmQuit, pMMOverride );
+			}
 		}
 	}
 	else if ( FStrEq( command, "dimmer_clicked" ) )

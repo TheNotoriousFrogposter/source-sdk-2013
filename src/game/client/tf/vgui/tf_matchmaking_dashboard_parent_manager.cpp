@@ -181,9 +181,12 @@ void CMMDashboardParentManager::AttachToTopMostPopup()
 
 	Panel *pPopup = ipanel()->GetPanel( (VPANEL)top, GetControlsModuleName());
 
-	if ( !pPopup && gViewPortInterface )
+	if ( !CommandLine()->CheckParm( "-classic" ) )
 	{
-		pPopup = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+		if ( !pPopup && gViewPortInterface )
+		{
+			pPopup = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+		}
 	}
 
 	if ( pPopup )

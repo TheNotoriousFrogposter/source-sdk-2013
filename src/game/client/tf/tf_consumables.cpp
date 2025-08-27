@@ -1495,10 +1495,13 @@ public:
 		if ( msg.BReadStr( &url ) )
 		{
 			steamapicontext->SteamFriends()->ActivateGameOverlayToWebPage( url.Get() );
-			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-			if ( pMMOverride )
+			if ( !CommandLine()->CheckParm( "-classic" ) )
 			{
-				((CHudMainMenuOverride*)pMMOverride)->UpdatePromotionalCodes();
+				IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+				if ( pMMOverride )
+				{
+					((CHudMainMenuOverride*)pMMOverride)->UpdatePromotionalCodes();
+				}
 			}
 		}
 

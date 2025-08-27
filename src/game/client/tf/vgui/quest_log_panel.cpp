@@ -916,11 +916,14 @@ void CQuestLogPanel::SetVisible( bool bState )
 	}
 	else if ( IsVisible() )
 	{
-		// Detach from the GameUI when we hide
-		IViewPortPanel *pMMOverride = gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE );
-		if ( pMMOverride )
+		if ( !CommandLine()->CheckParm( "-classic" ) )
 		{
-			((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();	
+			// Detach from the GameUI when we hide
+			IViewPortPanel *pMMOverride = gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE );
+			if ( pMMOverride )
+			{
+				((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();	
+			}
 		}
 
 		engine->ClientCmd_Unrestricted( "gameui_allowescapetoshow\n" );

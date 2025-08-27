@@ -458,10 +458,17 @@ void ClientModeTFNormal::Init()
 			pPanel->MakePopup( false );
 			m_pGameUI->SetLoadingBackgroundDialog( pPanel->GetVPanel() );
 
-			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-			if ( pMMOverride )
+			if ( CommandLine()->CheckParm( "-classic" ) )
 			{
-				((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();	
+				m_pGameUI->SetMainMenuOverride(NULL);
+			}
+			else
+			{
+				IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+				if ( pMMOverride )
+				{
+					((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();	
+				}
 			}
 		}		
 	}

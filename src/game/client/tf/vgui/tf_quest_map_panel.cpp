@@ -125,8 +125,15 @@ CQuestMapPanel* GetQuestMapPanel()
 {
 	if ( g_pQuestMapPanel == NULL )
 	{
-		CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-		g_pQuestMapPanel = new CQuestMapPanel( pMMOverride, "QuestMap" );
+		if ( CommandLine()->CheckParm( "-classic" ) )
+		{
+			g_pQuestMapPanel = new CQuestMapPanel(NULL, "QuestMap");
+		}
+		else
+		{
+			CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+			g_pQuestMapPanel = new CQuestMapPanel( pMMOverride, "QuestMap" );
+		}
 		g_pQuestMapPanel->MakeReadyForUse();
 	}
 

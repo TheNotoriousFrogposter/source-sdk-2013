@@ -1560,8 +1560,15 @@ static void CL_OpenSteamWorkshopDialog( const CCommand &args )
 {
 	if ( g_pSteamWorkshopDialog.Get() == NULL )
 	{
-		IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
-		g_pSteamWorkshopDialog = vgui::SETUP_PANEL( new CSteamWorkshopDialog( (CHudMainMenuOverride*)pMMOverride ) );
+		if ( CommandLine()->CheckParm( "-classic" ) )
+		{
+			g_pSteamWorkshopDialog = vgui::SETUP_PANEL(new CSteamWorkshopDialog(NULL));
+		}
+		else
+		{
+			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+			g_pSteamWorkshopDialog = vgui::SETUP_PANEL( new CSteamWorkshopDialog( (CHudMainMenuOverride*)pMMOverride ) );
+		}
 	}
 	engine->ExecuteClientCmd( "gameui_activate" );
 	g_pSteamWorkshopDialog->Show();

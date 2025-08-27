@@ -360,7 +360,10 @@ IViewPortPanel* TFViewport::CreatePanelByName(const char *szPanelName)
 	}
 	else if ( Q_strcmp( PANEL_MAINMENUOVERRIDE, szPanelName ) == 0 )
 	{
-		newpanel = new CHudMainMenuOverride( this );
+		if ( !CommandLine()->CheckParm( "-classic" ) )
+		{
+			newpanel = new CHudMainMenuOverride( this );
+		}
 	}
 	else
 	{
@@ -384,11 +387,14 @@ void TFViewport::CreateDefaultPanels( void )
 	AddNewPanel( CreatePanelByName( PANEL_PVE_WIN ), "PANEL_PVE_WIN" );
 	AddNewPanel( CreatePanelByName( PANEL_GIVEAWAY_ITEM ), "PANEL_GIVEAWAY_ITEM" );
 
-	CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)CreatePanelByName( PANEL_MAINMENUOVERRIDE );
-	if ( pMMOverride )
+	if ( !CommandLine()->CheckParm( "-classic" ) )
 	{
-		AddNewPanel( pMMOverride, "PANEL_MAINMENUOVERRIDE" );
-		pMMOverride->AttachToGameUI();	
+		CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)CreatePanelByName( PANEL_MAINMENUOVERRIDE );
+		if ( pMMOverride )
+		{
+			AddNewPanel( pMMOverride, "PANEL_MAINMENUOVERRIDE" );
+			pMMOverride->AttachToGameUI();	
+		}
 	}
 
 	BaseClass::CreateDefaultPanels();

@@ -795,6 +795,10 @@ void CHudMainMenuOverride::LoadMenuEntries( void )
 
 	for (KeyValues *dat = datafile->GetFirstSubKey(); dat != NULL; dat = dat->GetNextKey())
 	{
+		bool legacy = dat->GetBool("OnlyInLegacyMode");
+		if (legacy)
+			continue;
+
 		const char *label = dat->GetString("label", "<unknown>");
 		const char *cmd = dat->GetString("command", NULL);
 		const char *name = dat->GetName();
