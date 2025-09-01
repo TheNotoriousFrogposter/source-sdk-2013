@@ -63,63 +63,76 @@
 	}
 	"3"
 	{
+		"label" "#GameUI_GameMenu_CallVote"
+		"command" "engine open_vote"
+		"OnlyInGame" "1"
+		"OnlyInLegacyMode"	"1"
+	}
+	"4"
+	{
 		"label" "#GameUI_GameMenu_PlayerList"
 		"command" "OpenPlayerListDialog"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	} 
 	
-	"4"
+	"5"
 	{
 		"label" "------------------------"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"5"
+	"6"
 	{
 		"label" "#GameUI_GameMenu_CharacterSetup"
 		"command" "engine open_charinfo"
 		"OnlyInLegacyMode"	"1"
 	}
-	"6"
+	"7"
 	{
 		"label" "#GameUI_GameMenu_Achievements"
 		"command" "OpenAchievementsDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"7"
+	"8"
 	{
 		"label" "#GameUI_GameMenu_Options"
 		"command" "OpenOptionsDialog"
 		"OnlyInLegacyMode"	"1"
 	}
+	"9"
+	{
+		"label" "#GameUI_GameMenu_AdvancedOptions"
+		"command" "engine opentf2options"
+		"OnlyInLegacyMode"	"1"
+	}
 	
-	"8"
+	"10"
 	{
 		"label" "------------------------"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"9"
+	"11"
 	{
 		"label" "#GameUI_GameMenu_FindServers" 
 		"command" "OpenServerBrowser"
 		"OnlyInLegacyMode"	"1"
 	} 
-	"10"
+	"12"
 	{
 		"label" "#GameUI_GameMenu_CreateServer"
 		"command" "OpenCreateMultiplayerGameDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"11"
+	"13"
 	{
 		"label"	"#GameUI_LoadCommentary"
 		"command" "OpenLoadSingleplayerCommentaryDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"12"
+	"14"
 	{
 		"label" "#GameUI_Controller"
 		"command" "OpenControllerDialog"
@@ -127,19 +140,13 @@
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"13"
+	"15"
 	{
 		"label" "------------------------"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"14"
-	{
-		"label" "#GameUI_ReportBug"
-		"command" "engine bug"
-		"OnlyInLegacyMode"	"1"
-	}
-	"15"
+	"16"
 	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"

@@ -137,6 +137,16 @@ void PromptOrFireCommand( const char* pszCommand )
 	}
 }
 
+static void CallVoteCMD()
+{
+	GetClientModeTFNormal()->GameUI()->SendMainMenuCommand("engine callvote");
+	if (GetClientModeTFNormal()->GameUI())
+	{
+		GetClientModeTFNormal()->GameUI()->SendMainMenuCommand("ResumeGame");
+	}
+}
+static ConCommand open_vote("open_vote", CallVoteCMD, "", FCVAR_HIDDEN);
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
