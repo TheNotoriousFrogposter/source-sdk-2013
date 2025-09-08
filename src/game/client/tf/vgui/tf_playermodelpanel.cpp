@@ -511,7 +511,7 @@ void CTFPlayerModelPanel::FireEvent( const char *pszEventName, const char *pszEv
 	else if ( V_strcmp( pszEventName, "AE_CL_PLAYSOUND" ) == 0 || V_strcmp( pszEventName, "CL_EVENT_SOUND" )
 			|| V_strcmp( pszEventName, "CL_EVENT_FOOTSTEP_LEFT" ) || V_strcmp( pszEventName, "CL_EVENT_FOOTSTEP_RIGHT" ) )
 	{
-		if ( !_cl_classmenuopen.GetBool() )
+		if ( !engine->IsInGame() || !_cl_classmenuopen.GetBool() )
 			return;
 
 		soundlevel_t iSoundlevel = SNDLVL_NONE;
