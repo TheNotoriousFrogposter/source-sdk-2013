@@ -116,6 +116,7 @@ ConVar	spec_freeze_distance_max( "spec_freeze_distance_max", "200", FCVAR_CHEAT,
 #endif
 
 static ConVar	cl_first_person_uses_world_model ( "cl_first_person_uses_world_model", "0", FCVAR_NONE, "Causes the third person model to be drawn instead of the view model" );
+static ConVar	ff_use_fp_legs("ff_use_fp_legs", "0", FCVAR_ARCHIVE, "Displays the player's legs when in firstperson mode.");
 
 ConVar demo_fov_override( "demo_fov_override", "0", FCVAR_CLIENTDLL | FCVAR_DONTRECORD, "If nonzero, this value will be used to override FOV during demo playback." );
 
@@ -1950,6 +1951,13 @@ void C_BasePlayer::ThirdPersonSwitch( bool bThirdperson )
 {
 	if ( !UseVR() )
 	{
+#ifdef TF_CLIENT_DLL
+		C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+		if ( pLocalPlayer && pLocalPlayer->IsTaunting() && pLocalPlayer->ShouldDrawFirstPersonLegs() )
+		{
+			return true;
+		}
+#endif
 		return !LocalPlayerInFirstPersonView() || cl_first_person_uses_world_model.GetBool();
 	}
 
@@ -1992,7 +2000,7 @@ bool C_BasePlayer::ShouldDrawThisPlayer()
 	{
 		return true;
 	}
-	if ( !UseVR() && cl_first_person_uses_world_model.GetBool() )
+	if ( !UseVR() && ( cl_first_person_uses_world_model.GetBool() || ff_use_fp_legs.GetBool() ) )
 	{
 		return true;
 	}
@@ -2007,6 +2015,17 @@ bool C_BasePlayer::ShouldDrawThisPlayer()
 	return false;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Accessor used for determing showing our FP legs.
+//          This should display when the player is in firstperson and not showing another model already.
+//-----------------------------------------------------------------------------
+bool C_BasePlayer::ShouldDrawFirstPersonLegs()
+{
+	if (ff_use_fp_legs.GetBool())
+		return ( ShouldDrawThisPlayer() && InFirstPersonView() && DrawingMainView() );
+	
+	return false;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -3024,6 +3043,79 @@ void C_BasePlayer::BuildFirstPersonMeathookTransformations( CStudioHdr *hdr, Vec
 		matrix3x4_t  &transformhelmet = GetBoneForWrite( iHelm );
 		MatrixScaleByZero( transformhelmet );
 	}
+#ifdef TF_CLIENT_DLL
+	bool bLegOnlyTransform = ShouldDrawFirstPersonLegs();
+	C_TFPlayer *pLocalTFPlayer = C_TFPlayer::GetLocalTFPlayer();
+	// Leg only transformations also need additional steps.
+	if ( bLegOnlyTransform && GetModelPtr() && !pLocalTFPlayer->IsTaunting() )
+	{
+		// Hide every bone that isn't the pelvis, hip, knee, foot, or toe.
+		
+		// This is suffering.
+		int iUpperArmL = LookupBone( "bip_upperArm_L" );
+		int iUpperArmR = LookupBone( "bip_upperArm_R" );
+		int iLowerArmL = LookupBone( "bip_lowerArm_L" );
+		int iLowerArmR = LookupBone( "bip_lowerArm_R" );
+		int iHandL = LookupBone( "bip_hand_L" );
+		int iHandR = LookupBone( "bip_hand_R" );
+		int iThumb0R = LookupBone( "bip_thumb_0_R" );
+		int iThumb1R = LookupBone( "bip_thumb_1_R" );
+		int iThumb2R = LookupBone( "bip_thumb_2_R" );
+		int iIndex0R = LookupBone( "bip_index_0_R" );
+		int iIndex1R = LookupBone( "bip_index_1_R" );
+		int iIndex2R = LookupBone( "bip_index_2_R" );
+		int iMiddle0R = LookupBone( "bip_middle_0_R" );
+		int iMiddle1R = LookupBone( "bip_middle_1_R" );
+		int iMiddle2R = LookupBone( "bip_middle_2_R" );
+		int iRing0R = LookupBone( "bip_ring_0_R" );
+		int iRing1R = LookupBone( "bip_ring_1_R" );
+		int iRing2R = LookupBone( "bip_ring_2_R" );
+		int iPinky0R = LookupBone( "bip_pinky_0_R" );
+		int iPinky1R = LookupBone( "bip_pinky_1_R" );
+		int iPinky2R = LookupBone( "bip_pinky_2_R" );
+		int iThumb0L = LookupBone( "bip_thumb_0_L" );
+		int iThumb1L = LookupBone( "bip_thumb_1_L" );
+		int iThumb2L = LookupBone( "bip_thumb_2_L" );
+		int iIndex0L = LookupBone( "bip_index_0_L" );
+		int iIndex1L = LookupBone( "bip_index_1_L" );
+		int iIndex2L = LookupBone( "bip_index_2_L" );
+		int iMiddle0L = LookupBone( "bip_middle_0_L" );
+		int iMiddle1L = LookupBone( "bip_middle_1_L" );
+		int iMiddle2L = LookupBone( "bip_middle_2_L" );
+		int iRing0L = LookupBone( "bip_ring_0_L" );
+		int iRing1L = LookupBone( "bip_ring_1_L" );
+		int iRing2L = LookupBone( "bip_ring_2_L" );
+		int iPinky0L = LookupBone( "bip_pinky_0_L" );
+		int iPinky1L = LookupBone( "bip_pinky_1_L" );
+		int iPinky2L = LookupBone( "bip_pinky_2_L" );
+		int iHlpForearmL = LookupBone( "hlp_forearm_L" );
+		int iHlpForearmR = LookupBone( "hlp_forearm_R" );
+		int iWristInnerL = LookupBone( "prp_wristInner_L" );
+		int iWristInnerR = LookupBone( "prp_wristInner_R" );
+		int iWristOuterL = LookupBone( "prp_wristOuter_L" );
+		int iWristOuterR = LookupBone( "prp_wristOuter_R" );
+		int iWeaponTarge = LookupBone( "weapon_targe" );
+		int iStarter = LookupBone( "prp_starter" );
+
+		for (int i = 0; i < GetModelPtr()->numbones()-1; i++)
+		{
+			// If we know this definitely is not a leg related item, shrink it.
+			if ( i == iUpperArmL || i == iUpperArmR || i == iLowerArmL || i == iLowerArmR || i == iHandL || i == iHandR ||
+				i == iThumb0R || i == iThumb1R || i == iThumb2R || i == iThumb0L || i == iThumb1L || i == iThumb2L || 
+				i == iIndex0R || i == iIndex1R || i == iIndex2R || i == iIndex0L || i == iIndex1L || i == iIndex2L ||
+				i == iMiddle0R || i == iMiddle1R || i == iMiddle2R || i == iMiddle0L || i == iMiddle1L || i == iMiddle2L ||
+				i == iRing0R || i == iRing1R || i == iRing2R || i == iRing0L || i == iRing1L || i == iRing2L ||
+				i == iPinky0R || i == iPinky1R || i == iPinky2R || i == iPinky0L || i == iPinky1L || i == iPinky2L ||
+				i == iHlpForearmL || i == iHlpForearmR || i == iWristInnerL || i == iWristInnerR ||
+				i == iWristOuterL || i == iWristOuterR || i == iWeaponTarge || i == iStarter )
+			{
+				matrix3x4_t  &transformnonleg = GetBoneForWrite(i);
+				MatrixScaleByZero(transformnonleg);
+				MatrixSetTranslation( vRealPivotPoint, transformnonleg );
+			}
+		}
+	}
+#endif
 }
 
 
