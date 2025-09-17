@@ -1137,7 +1137,7 @@ void CEconEntity::UpdateAttachmentModels( void )
 	{
 		bool bShouldShowAttachment = false;
 		CBasePlayer *pOwner = ToBasePlayer( GetOwnerEntity() );
-		if ( pOwner && ( !pOwner->ShouldDrawThisPlayer() || pOwner->ShouldDrawFirstPersonLegs() ) )
+		if ( pOwner && ( !pOwner->ShouldDrawThisPlayer() || ( !pOwner->ShouldDrawLocalPlayer() && pOwner->ShouldDrawFirstPersonLegs() ) ) )
 		{
 			// Drawing the viewmodel
 			bShouldShowAttachment = true;

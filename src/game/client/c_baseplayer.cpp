@@ -1953,7 +1953,7 @@ void C_BasePlayer::ThirdPersonSwitch( bool bThirdperson )
 	{
 #ifdef TF_CLIENT_DLL
 		C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
-		if ( pLocalPlayer && pLocalPlayer->IsTaunting() && pLocalPlayer->ShouldDrawFirstPersonLegs() )
+		if ( pLocalPlayer->IsTaunting() && pLocalPlayer->ShouldDrawFirstPersonLegs() )
 		{
 			return true;
 		}
@@ -2022,7 +2022,7 @@ bool C_BasePlayer::ShouldDrawThisPlayer()
 bool C_BasePlayer::ShouldDrawFirstPersonLegs()
 {
 	if (ff_use_fp_legs.GetBool())
-		return ( ShouldDrawThisPlayer() && InFirstPersonView() && DrawingMainView() );
+		return ( ShouldDrawThisPlayer() && InFirstPersonView() && DrawingMainView() && !cl_first_person_uses_world_model.GetBool() && !UseVR() );
 	
 	return false;
 }
@@ -3096,6 +3096,7 @@ void C_BasePlayer::BuildFirstPersonMeathookTransformations( CStudioHdr *hdr, Vec
 		int iWristOuterR = LookupBone( "prp_wristOuter_R" );
 		int iWeaponTarge = LookupBone( "weapon_targe" );
 		int iStarter = LookupBone( "prp_starter" );
+		int iRocket = LookupBone( "rocket_joint" );
 
 		for (int i = 0; i < GetModelPtr()->numbones()-1; i++)
 		{
@@ -3107,7 +3108,7 @@ void C_BasePlayer::BuildFirstPersonMeathookTransformations( CStudioHdr *hdr, Vec
 				i == iRing0R || i == iRing1R || i == iRing2R || i == iRing0L || i == iRing1L || i == iRing2L ||
 				i == iPinky0R || i == iPinky1R || i == iPinky2R || i == iPinky0L || i == iPinky1L || i == iPinky2L ||
 				i == iHlpForearmL || i == iHlpForearmR || i == iWristInnerL || i == iWristInnerR ||
-				i == iWristOuterL || i == iWristOuterR || i == iWeaponTarge || i == iStarter )
+				i == iWristOuterL || i == iWristOuterR || i == iWeaponTarge || i == iStarter || i == iRocket )
 			{
 				matrix3x4_t  &transformnonleg = GetBoneForWrite(i);
 				MatrixScaleByZero(transformnonleg);

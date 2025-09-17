@@ -9173,7 +9173,7 @@ ShadowType_t C_TFPlayer::ShadowCastType( void )
 	if ( m_nRenderFX == kRenderFxRagdoll )
 		return SHADOWS_NONE;
 
-	if ( !ShouldDrawThisPlayer() )
+	if ( !ShouldDrawThisPlayer() || ( !ShouldDrawLocalPlayer() && ShouldDrawFirstPersonLegs() ) )
 	{
 		// First-person with viewmodels.
 		return SHADOWS_NONE;

@@ -3064,7 +3064,8 @@ bool CTFWeaponBase::UsingViewModel()
 {
 	C_TFPlayer *pPlayerOwner = GetTFPlayerOwner();
 	bool bIsFirstPersonView = IsFirstPersonView();
-	bool bUsingViewModel = bIsFirstPersonView && ( pPlayerOwner != NULL ) && ( !pPlayerOwner->ShouldDrawThisPlayer() || pPlayerOwner->ShouldDrawFirstPersonLegs() );
+	bool bUsingViewModel = bIsFirstPersonView && ( pPlayerOwner != NULL ) && ( !pPlayerOwner->ShouldDrawThisPlayer() ||
+							( !pPlayerOwner->ShouldDrawLocalPlayer() && pPlayerOwner->ShouldDrawFirstPersonLegs() ) );
 	return bUsingViewModel;
 }
 
@@ -3375,7 +3376,7 @@ void CTFWeaponBase::UpdateModelIndex()
 	// clientside animation sequences on this model, which will be using bad sequences for the world model.
 	int iDesiredModelIndex = 0;
 	C_BasePlayer *pOwner = ToBasePlayer(GetOwner());
-	if ( !pOwner->ShouldDrawThisPlayer() || pOwner->ShouldDrawFirstPersonLegs() )
+	if ( !pOwner->ShouldDrawThisPlayer() || ( !pOwner->ShouldDrawLocalPlayer() && pOwner->ShouldDrawFirstPersonLegs() ) )
 	{
 		iDesiredModelIndex = m_iViewModelIndex;
 	}
