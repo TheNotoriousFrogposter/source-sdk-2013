@@ -3337,10 +3337,13 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 				static_attrib_t staticAttrib;
 
 				SCHEMA_INIT_SUBSTEP( staticAttrib.BInitFromKV_SingleLine( GetDefinitionName(), pKVKey, pVecErrors, false ) );
-				m_vecStaticAttributes.AddToTail( staticAttrib );
+				if ( !staticAttrib.bShouldDelete )
+				{
+					m_vecStaticAttributes.AddToTail( staticAttrib );
 
-				// Does this attribute specify a tag to apply to this item definition?
-				Assert( staticAttrib.GetAttributeDefinition() );
+					// Does this attribute specify a tag to apply to this item definition?
+					Assert( staticAttrib.GetAttributeDefinition() );
+				}
 			}
 		}
 	}
@@ -3354,10 +3357,13 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 			static_attrib_t staticAttrib;
 
 			SCHEMA_INIT_SUBSTEP( staticAttrib.BInitFromKV_MultiLine( GetDefinitionName(), pKVKey, pVecErrors ) );
-			m_vecStaticAttributes.AddToTail( staticAttrib );
+			if ( !staticAttrib.bShouldDelete )
+			{
+				m_vecStaticAttributes.AddToTail( staticAttrib );
 
-			// Does this attribute specify a tag to apply to this item definition?
-			Assert( staticAttrib.GetAttributeDefinition() );
+				// Does this attribute specify a tag to apply to this item definition?
+				Assert( staticAttrib.GetAttributeDefinition() );
+			}
 		}
 	}
 
@@ -3433,6 +3439,13 @@ bool static_attrib_t::BInitFromKV_MultiLine( const char *pszContext, KeyValues *
 		pAttrType->InitializeNewEconAttributeValue( &m_value );
 
 		const char *pszValue = pKVAttribute->GetString( "value", NULL );
+
+		// Found an attribute to delete
+		if ( strcmp(pszValue, "delete") == 0 )
+		{
+			bShouldDelete = true;
+		}
+
 		const bool bSuccessfullyLoadedValue = pAttrType->BConvertStringToEconAttributeValue( pAttrDef, pszValue, &m_value, true );
 
 		SCHEMA_INIT_CHECK(
@@ -3465,6 +3478,13 @@ bool static_attrib_t::BInitFromKV_SingleLine( const char *pszContext, KeyValues 
 		pAttrType->InitializeNewEconAttributeValue( &m_value );
 
 		const char *pszValue = pKVAttribute->GetString();
+
+		// Found an attribute to delete
+		if ( strcmp(pszValue, "delete") == 0 )
+		{
+			bShouldDelete = true;
+		}
+
 		const bool bSuccessfullyLoadedValue = pAttrType->BConvertStringToEconAttributeValue( pAttrDef, pszValue, &m_value, bEnableTerribleBackwardsCompatibilitySchemaParsingCode );
 
 		SCHEMA_INIT_CHECK(

@@ -60,6 +60,7 @@ struct static_attrib_t
 	{
 		iDefIndex = 0;
 		m_value.asBlobPointer = NULL;
+		bShouldDelete = false;
 	}
 
 	~static_attrib_t()
@@ -70,10 +71,12 @@ struct static_attrib_t
 	{
 		iDefIndex = rhs.iDefIndex;
 		m_value = rhs.m_value;
+		bShouldDelete = false;
 	}
 
 	attrib_definition_index_t	iDefIndex;
 	attribute_data_union_t m_value;
+	bool bShouldDelete;
 
 	// Parses a single subsection from a multi-line attribute block that looks like:
 	//
@@ -2613,7 +2616,7 @@ public:
 	const BaseItemDefinitionMap_t &GetBaseItemDefinitionMap() const { return m_mapBaseItems; }
 
 	typedef CUtlMap<int, CEconItemDefinition*, int>	ModItemDefinitionMap_t;
-	const ModItemDefinitionMap_t& GetSoloItemDefinitionMap() const { return m_mapModItems; }
+	const ModItemDefinitionMap_t& GetModItemDefinitionMap() const { return m_mapModItems; }
 
 	typedef CUtlDict<CEconLootListDefinition *>	LootListDefinitionMap_t;
 	const LootListDefinitionMap_t &GetLootLists() const { return m_dictLootLists; }

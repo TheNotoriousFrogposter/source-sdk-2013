@@ -2311,80 +2311,8 @@
 			"particle_suffix"	"persian_persuader"
 		}
 
-		"32030"
-		{
-			"name"			"Vintage Ali Baba's Wee Booties"
-			"first_sale_date"	"2011/03/17"
-			"item_class"		"tf_wearable"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"item_type_name" 	"#TF_Wearable_Boots"
-			"capabilities"
-			{
-				"nameable"		"1"
-				"can_craft_count"	"1"
-			}
-			"show_in_armory"	"1"
-			"moditem"	"1"
-			"item_type_name" 	"#TF_Wearable_Boots"
-			"item_name"		"#TF_Ali_Babas_Wee_Booties"
-			"min_ilevel"		"10"
-			"max_ilevel"		"10"
-			"image_inventory"	"backpack/workshop/player/items/demo/demo_booties/demo_booties"
-			"model_player"		"models/workshop/player/items/demo/demo_booties/demo_booties.mdl"
-			"item_slot"		"primary"
-			"equip_region"	"feet"
-			"anim_slot"		"FORCE_NOT_USED"
-			"item_quality"		"rarity2"
-			"propername"	"0"
-			"min_ilevel"		"10"
-			"max_ilevel"		"10"
-			"act_as_wearable" "1"
-			"drop_type"	"none"
-			"used_by_classes"
-			{
-				"demoman"	"1"
-			}
-			"attributes"
-			{
-				"mult charge turn control"
-				{
-					"attribute_class"	"charge_turn_control"
-					"value"			"3"
-				}
-				"max health additive bonus"
-				{
-					"attribute_class"	"add_maxhealth"
-					"value" "25"
-				}
-				"allowed in medieval mode"
-				{
-					"attribute_class"	"allowed_in_medieval_mode"
-					"value"	"1"
-				}
-				"kill refills meter"
-				{
-					"attribute_class"	"kill_refills_meter"
-					"value"			"0.25"
-				}
-				"move speed bonus"
-				{
-					"attribute_class"	"mult_player_movespeed"
-					"value" "1.10"
-				}
-			}
-			"visuals"
-			{
-				"player_bodygroups"
-				{
-					"shoes"			"1"
-				}
-			}
-			"mouse_pressed_sound" 	"ui/item_hat_pickup.wav"
-			"drop_sound" 			"ui/item_hat_drop.wav"
-		}
 
-		"32031"
+		"32030"
 		{
 			"name"			"Vintage Splendid Screen"
 			"first_sale_date"	"2011/03/21"
@@ -2485,7 +2413,7 @@
 			"drop_sound"		"ui/item_wood_pole_drop.wav"
 		}
 
-		"32032"
+		"32031"
 		{
 			"name"	"Vintage Quick-Fix"
 			"prefab"	"valve"
@@ -2611,7 +2539,7 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 
-		"32033"
+		"32032"
 		{
 			"name"	"Vintage Solemn Vow"
 			"prefab"	"valve weapon_melee_allclass"
@@ -2671,7 +2599,7 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 
-		"32034"
+		"32033"
 		{
 			"name"	"Vintage Liberty Launcher"
 			"first_sale_date"	"2011/03/23"
@@ -2739,7 +2667,7 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 
-		"32035"
+		"32034"
 		{
 			"name"	"Vintage Reserve Shooter"
 			"first_sale_date"	"2011/03/23"
@@ -2829,7 +2757,7 @@
 			"particle_suffix"	"reserve_shooter"
 		}
 
-		"32036"
+		"32035"
 		{
 			"name"	"Vintage Market Gardener"
 			"first_sale_date"	"2011/03/23"
@@ -2889,7 +2817,7 @@
 			"drop_sound"		"ui/item_shovel_drop.wav"
 		}
 
-		"32037"
+		"32036"
 		{
 			"name"	"Vintage Eviction Notice"
 			"first_sale_date"	"2011/04/14"
@@ -2986,7 +2914,7 @@
 			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
 
-		"32038"
+		"32037"
 		{
 			"name"	"Vintage Righteous Bison"
 			"first_sale_date"	"2011/07/13"
@@ -3071,7 +2999,7 @@
 			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
 
-		"32039"
+		"32038"
 		{
 			"name"	"Vintage Soda Popper"
 			"first_sale_date"	"2011/05/10"
@@ -3199,7 +3127,7 @@
 			"particle_suffix"	"soda_popper"
 		}
 
-		"32040"
+		"32039"
 		{
 			"name"	"Vintage Atomizer"
 			"first_sale_date"	"2011/05/10"
@@ -3276,7 +3204,7 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 
-		"32041"
+		"32040"
 		{
 			"name"	"Vintage Postal Pummeler"
 			"prefab"	"valve"
@@ -3340,7 +3268,7 @@
 			"drop_sound"		"ui/item_wood_pole_drop.wav"
 		}
 
-		"32042"
+		"32041"
 		{
 			"name"	"Vintage Enforcer"
 			"first_sale_date"	"2011/05/15"
@@ -3411,7 +3339,7 @@
 			}
 		}
 
-		"32043"
+		"32042"
 		{
 			"name"	"Vintage Wanga Prick"
 			"first_sale_date"	"2011/10/28"
@@ -3471,7 +3399,7 @@
 			}
 		}
 
-		"32044"
+		"32043"
 		{
 			"name"	"Vintage Pomson 6000"
 			"first_sale_date"	"2011/12/15"
@@ -3580,7 +3508,7 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 
-		"32045"
+		"32044"
 		{
 			"name"	"Vintage Phlogistinator"
 			"prefab"	"weapon_newflame"
@@ -3686,81 +3614,7 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 
-		"32046"
-		{
-			"name"			"Vintage Bootlegger"
-			"first_sale_date"	"2011/09/07"
-			"item_class"		"tf_wearable"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"item_type_name" 	"#TF_Wearable_Boots"
-			"capabilities"
-			{
-				"nameable"		"1"
-				"can_craft_count"	"1"
-			}
-			"show_in_armory"	"1"
-			"moditem"	"1"
-			"item_type_name" 	"#TF_Wearable_Boots"
-			"item_name"		"#TF_Bootlegger"
-			"item_description"	"#TF_Bootlegger_Desc"
-			"min_ilevel"		"10"
-			"max_ilevel"		"10"
-			"image_inventory"	"backpack/workshop/player/items/demo/pegleg/pegleg"
-			"model_player"		"models/workshop/player/items/demo/pegleg/pegleg.mdl"
-			"item_slot"		"primary"
-			"equip_region"	"feet"
-			"anim_slot"		"FORCE_NOT_USED"
-			"item_quality"		"rarity2"
-			"propername"	"1"
-			"min_ilevel"		"10"
-			"max_ilevel"		"10"
-			"act_as_wearable" "1"
-			"drop_type"	"none"
-			"used_by_classes"
-			{
-				"demoman"	"1"
-			}
-			"attributes"
-			{
-				"mult charge turn control"
-				{
-					"attribute_class"	"charge_turn_control"
-					"value"			"3"
-				}
-				"max health additive bonus"
-				{
-					"attribute_class"	"add_maxhealth"
-					"value" "25"
-				}
-				"allowed in medieval mode"
-				{
-					"attribute_class"	"allowed_in_medieval_mode"
-					"value"	"1"
-				}
-				"kill refills meter"
-				{
-					"attribute_class"	"kill_refills_meter"
-					"value"			"0.25"
-				}
-				"move speed bonus"
-				{
-					"attribute_class"	"mult_player_movespeed"
-					"value" "1.10"
-				}
-			}
-			"visuals"
-			{
-				"player_bodygroups"
-				{
-					"shoes"			"1"
-				}
-			}
-			"mouse_pressed_sound" 	"ui/item_hat_pickup.wav"
-			"drop_sound" 			"ui/item_hat_drop.wav"
-		}
-
-		"32047"
+		"32045"
 		{
 			"name"	"Vintage Spy-cicle"
 			"first_sale_date"	"2011/12/19"
@@ -3841,7 +3695,7 @@
 			}
 		}
 
-		"32048"
+		"32046"
 		{
 			"name"	"Vintage Beggar's Bazooka"
 			"first_sale_date"	"2012/06/27"
@@ -3934,7 +3788,7 @@
 			"drop_sound"			"ui/item_heavy_gun_drop.wav"
 		}
 
-		"32049"
+		"32047"
 		{
 			"name"	"Vintage Baby Face's Blaster"
 			"prefab"		"weapon_scattergun"
@@ -4000,7 +3854,7 @@
 			}
 		}
 
-		"32050"
+		"32048"
 		{
 			"name" "Vintage Pretty Boy's Pocket Pistol"
 			"capabilities"
@@ -4081,7 +3935,7 @@
 			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
 
-		"32051"
+		"32049"
 		{
 			"name"	"Vintage Flying Guillotine"
 			"first_sale_date"	"2012/08/02"
@@ -4182,7 +4036,7 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 
-		"32052"
+		"32050"
 		{
 			"name"			"Vintage Loose Cannon"
 			"prefab"		"paintkit_base"
@@ -4285,7 +4139,7 @@
 			}
 		}
 
-		"32053"
+		"32051"
 		{
 			"name"	"Vintage Rescue Ranger"
 			"prefab" "paintkit_base"
@@ -4388,7 +4242,7 @@
 			"particle_suffix"	"rescue_ranger"
 		}
 
-		"32054"
+		"32052"
 		{
 			"name"			"Vintage Tide Turner"
 			"first_sale_date"		"2014/06/18"
@@ -4473,7 +4327,7 @@
 			"drop_sound"		"ui/item_wood_pole_drop.wav"
 		}
 
-		"32055"
+		"32053"
 		{
 			"name"	"Vintage B.A.S.E. Jumper"
 			"first_sale_date"		"2014/06/18"
@@ -4530,7 +4384,7 @@
 			"drop_sound"		"ui/item_pack_drop.wav"
 		}
 
-		"32056"
+		"32054"
 		{
 			"name"	"Vintage Panic Attack Shotgun"
 			"first_sale_date"	"2014/12/23"

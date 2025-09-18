@@ -253,11 +253,14 @@ void CTFInventoryManager::GenerateBaseItems( void )
 		pItem->Init( mapItems[it]->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false );
 		m_pBaseLoadoutItems.AddToTail( pItem );
 	}
-	const CEconItemSchema::BaseItemDefinitionMap_t& mapItemsMod = GetItemSchema()->GetSoloItemDefinitionMap();
-	iStart = 0;
-	for (int it = iStart; it != mapItemsMod.InvalidIndex(); it = mapItemsMod.NextInorder(it))
+	const CEconItemSchema::BaseItemDefinitionMap_t& mapItemsMod = GetItemSchema()->GetModItemDefinitionMap();
+	if (mapItemsMod.Count() > 0)
 	{
-		AddModItem( mapItemsMod[it]->GetDefinitionIndex() );
+		iStart = 0;
+		for (int it = iStart; it != mapItemsMod.InvalidIndex(); it = mapItemsMod.NextInorder(it))
+		{
+			AddModItem( mapItemsMod[it]->GetDefinitionIndex() );
+		}
 	}
 }
 
