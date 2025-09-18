@@ -3112,7 +3112,11 @@ void C_BasePlayer::BuildFirstPersonMeathookTransformations( CStudioHdr *hdr, Vec
 			{
 				matrix3x4_t  &transformnonleg = GetBoneForWrite(i);
 				MatrixScaleByZero(transformnonleg);
-				MatrixSetTranslation( vRealPivotPoint, transformnonleg );
+				Vector vBlindSpot;
+				Vector vForward;
+				AngleVectors( MainViewAngles(), &vForward );
+				vBlindSpot = MainViewOrigin() - ( vForward * 32 );
+				MatrixSetTranslation( vBlindSpot, transformnonleg );
 			}
 		}
 	}
