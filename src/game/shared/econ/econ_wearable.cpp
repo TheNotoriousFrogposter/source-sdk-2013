@@ -353,6 +353,10 @@ CTFWearableItem::CTFWearableItem()
 //-----------------------------------------------------------------------------
 ShadowType_t CEconWearable::ShadowCastType()
 {
+	CBasePlayer *pOwner = ToBasePlayer( GetOwnerEntity() );
+	if ( pOwner && !pOwner->ShouldDrawLocalPlayer() && pOwner->ShouldDrawFirstPersonLegs() )
+		return SHADOWS_NONE;
+
 	if ( ShouldDraw() )
 	{
 		return SHADOWS_RENDER_TO_TEXTURE_DYNAMIC;
