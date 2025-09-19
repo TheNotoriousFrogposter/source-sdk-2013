@@ -41,6 +41,7 @@
 #include "fx.h"
 #include "dt_utlvector_recv.h"
 #include "cam_thirdperson.h"
+#include "viewrender.h"
 #if defined( REPLAY_ENABLED )
 #include "replay/replaycamera.h"
 #include "replay/ireplaysystem.h"
@@ -2000,6 +2001,12 @@ bool C_BasePlayer::ShouldDrawThisPlayer()
 	{
 		return true;
 	}
+
+	if ( CurrentViewID() == VIEW_REFRACTION || CurrentViewID() == VIEW_NONE )
+	{
+		return false;
+	}
+
 	if ( !UseVR() && ( cl_first_person_uses_world_model.GetBool() || ff_use_fp_legs.GetBool() ) )
 	{
 		return true;
