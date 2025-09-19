@@ -125,7 +125,7 @@ ConVar demo_fov_override( "demo_fov_override", "0", FCVAR_CLIENTDLL | FCVAR_DONT
 // Ideally we would find this vector by subtracting the neutral-pose difference between the head bone (the pivot point) and the "eyes" attachment point.
 // However, some characters don't have this attachment point, and finding the neutral pose is a pain.
 // This value is found by hand, and a good value depends more on the in-game models than on actual human shapes.
-ConVar cl_meathook_neck_pivot_ingame_up( "cl_meathook_neck_pivot_ingame_up", "19.0" );
+ConVar cl_meathook_neck_pivot_ingame_up( "cl_meathook_neck_pivot_ingame_up", "7.0" );
 ConVar cl_meathook_neck_pivot_ingame_fwd( "cl_meathook_neck_pivot_ingame_fwd", "3.0" );
 
 static ConVar	cl_clean_textures_on_death( "cl_clean_textures_on_death", "0", FCVAR_DEVELOPMENTONLY,  "If enabled, attempts to purge unused textures every time a freeze cam is shown" );
@@ -3007,8 +3007,29 @@ void C_BasePlayer::BuildFirstPersonMeathookTransformations( CStudioHdr *hdr, Vec
 		// figure out where to put the body from the aim angles
 		Vector vForward, vRight, vUp;
 		AngleVectors( MainViewAngles(), &vForward, &vRight, &vUp );
-		
-		vRealPivotPoint = MainViewOrigin() - ( vUp * cl_meathook_neck_pivot_ingame_up.GetFloat() ) - ( vForward * cl_meathook_neck_pivot_ingame_fwd.GetFloat() );		
+
+		float fUp = cl_meathook_neck_pivot_ingame_up.GetFloat();
+#ifdef TF_CLIENT_DLL
+		if ( ff_use_fp_legs.GetInt() == 1 && ShouldDrawFirstPersonLegs() )
+		{
+			C_TFPlayer *pLocalTFPlayer = C_TFPlayer::GetLocalTFPlayer();
+			CTFWeaponBase *pWeapon = pLocalTFPlayer->GetActiveTFWeapon();
+			if ( pLocalTFPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_MINIGUN )
+			{
+				fUp += 18.f;
+			}
+			else if ( pLocalTFPlayer->IsPlayerClass( TF_CLASS_SCOUT ) || pLocalTFPlayer->IsPlayerClass( TF_CLASS_SOLDIER ) || pLocalTFPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) || pLocalTFPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) ||
+				( pLocalTFPlayer->IsPlayerClass( TF_CLASS_PYRO ) && pWeapon && ( pWeapon->GetWeaponID() == TF_WEAPON_FIREAXE || pWeapon->GetWeaponID() == TF_WEAPON_BREAKABLE_SIGN ) ) )
+			{
+				fUp += 12.f;
+			}
+			else
+			{
+				fUp += 7.f;
+			}
+		}
+#endif
+		vRealPivotPoint = MainViewOrigin() - ( vUp * fUp ) - ( vForward * cl_meathook_neck_pivot_ingame_fwd.GetFloat() );		
 	}
 
 	Vector vDeltaToAdd = vRealPivotPoint - vHeadTransformTranslation;
