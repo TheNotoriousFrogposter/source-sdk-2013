@@ -5791,9 +5791,9 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 	flAdjustedDamage = RemapValClamped( flDistanceToEntity, 0, flRadius, dmgInfo->GetDamage(), dmgInfo->GetDamage() * flFalloff );
 
 	CTFWeaponBase *pWeapon = dynamic_cast<CTFWeaponBase *>(dmgInfo->GetWeapon());
-	int iNewCaber = 1;
-	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER ( pWeapon, iNewCaber, obsolete )
-	
+	int iNewGrenade = 1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER ( pWeapon, iNewGrenade, obsolete )
+
 	// Grenades & Pipebombs do less damage to ourselves.
 	if ( pEntity == dmgInfo->GetAttacker() && pWeapon )
 	{
@@ -5805,9 +5805,14 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 				flAdjustedDamage *= 0.75f;
 				break;
 			case TF_WEAPON_STICKBOMB :
-				if (iNewCaber)
+				if (iNewGrenade)
 					flAdjustedDamage *= 0.75f;
 				break;
+		}
+
+		if ( pWeapon->GetWeaponID() == TF_WEAPON_GRENADELAUNCHER && ( !iNewGrenade || !ff_use_new_grenade.GetBool() ) )
+		{
+			flAdjustedDamage *= 1.12f;
 		}
 	}
 
