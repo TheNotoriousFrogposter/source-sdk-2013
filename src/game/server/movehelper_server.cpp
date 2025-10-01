@@ -365,7 +365,9 @@ bool CMoveHelperServer::PlayerFallingDamage( void )
 		int iDamageTaken = m_pHostPlayer->TakeDamage( CTakeDamageInfo( GetContainingEntity(INDEXENT(0)), GetContainingEntity(INDEXENT(0)), flFallDamage, DMG_FALL ) ); 
 		if ( iDamageTaken > 0 )
 		{
+#ifndef TF_DLL
 			StartSound( m_pHostPlayer->GetAbsOrigin(), "Player.FallDamage" );
+#endif
 		}
 
         //=============================================================================

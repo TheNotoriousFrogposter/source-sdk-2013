@@ -10299,7 +10299,6 @@ void CTFGameRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 	// keep track of their cl_autorezoom value
 	pTFPlayer->SetAutoRezoom( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "cl_autorezoom" ) ) > 0 );
 	pTFPlayer->SetAutoReload( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "cl_autoreload" ) ) > 0 );
-	pTFPlayer->SetDisableFallDamageScream( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "ff_disable_falldamage_scream" ) ) > 0 );
 	pTFPlayer->SetRespawnOnLoadoutChanges( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "tf_respawn_on_loadoutchanges" ) ) > 0 );
 
 	// keep track of their tf_remember_lastswitched value
