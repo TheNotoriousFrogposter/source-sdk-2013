@@ -2871,6 +2871,18 @@ const char *CTFWeaponBase::GetTracerType( void )
 	return BaseClass::GetTracerType();
 }
 
+bool CTFWeaponBase::UsesForcedViewModel(void) const
+{
+	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
+
+	if (pItem->IsValid() && pItem->GetStaticData()->IsUsingViewmodels())
+	{
+		return true;
+	}
+
+	return false;
+}
+
 //=============================================================================
 //
 // TFWeaponBase functions (Server specific).

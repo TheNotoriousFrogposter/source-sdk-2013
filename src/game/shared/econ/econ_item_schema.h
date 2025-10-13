@@ -1365,6 +1365,8 @@ public:
 	const CEconItemDefinition	*GetOwningPackBundle() const	{ return m_pOwningPackBundle; }
 	const char	*GetDatabaseAuditTableName( void ) const		{ return m_pszDatabaseAuditTable; }
 
+	bool		IsUsingViewmodels() const { return m_bUseViewmodels; }
+
 	void SetIsPackItem( bool bIsPackItem ) { m_bIsPackItem = bIsPackItem; }
 
 	equip_region_mask_t GetEquipRegionMask( void ) const { return m_unEquipRegionMask; }
@@ -1559,6 +1561,8 @@ private:
 
 	// This is a weapon that sits in a wearable slot (Action)
 	bool			m_bActAsWeapon;
+
+	bool			m_bUseViewmodels;
 
 	// Is this Item a tool
 	bool			m_bIsTool;

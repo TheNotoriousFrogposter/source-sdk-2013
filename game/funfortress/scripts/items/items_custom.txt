@@ -4,6 +4,165 @@
 {
 	"items"
 	{
+		"0"
+		{
+			"model_player"	"models/weapons/w_models/w_bat.mdl"
+			"attach_to_hands"	"0"
+		}
+		"1"
+		{
+			"model_player"	"models/weapons/w_models/w_bottle.mdl"
+			"attach_to_hands"	"0"
+			"use_viewmodels"	"1"
+		}
+		"2"
+		{
+			"model_player"	"models/weapons/w_models/w_fireaxe.mdl"
+			"attach_to_hands"	"0"
+		}
+		"3"
+		{
+			"model_player"	"models/weapons/w_models/w_machete.mdl"
+			"attach_to_hands"	"0"
+		}
+		"4"
+		{
+			"model_player"	"models/weapons/w_models/w_knife.mdl"
+			"attach_to_hands"	"0"
+		}
+		"5" // Fists
+		{
+			"attach_to_hands"	"0"
+		}
+		"6"
+		{
+			"model_player"	"models/weapons/w_models/w_shovel.mdl"
+			"attach_to_hands"	"0"
+		}
+		"7"
+		{
+			"model_player"	"models/weapons/w_models/w_wrench.mdl"
+			"attach_to_hands"	"0"
+		}
+		"8"
+		{
+			"model_player"	"models/weapons/w_models/w_bonesaw.mdl"
+			"attach_to_hands"	"0"
+		}
+		"9" // Engineer's Shotgun
+		{
+			"model_player"	"models/weapons/c_models/c_shotgun/c_shotgun_baseitem.mdl"
+			"model_world"	"models/weapons/w_models/w_shotgun.mdl"
+			"use_viewmodels"	"1"
+		}
+		"10" // Soldier's Shotgun
+		{
+			"model_player"	"models/weapons/w_models/w_shotgun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"11" // Heavy's Shotgun
+		{
+			"model_player"	"models/weapons/w_models/w_shotgun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"12" // Pyro's Shotgun
+		{
+			"model_player"	"models/weapons/w_models/w_shotgun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"13"
+		{
+			"model_player"	"models/weapons/w_models/w_scattergun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"14"
+		{
+			"model_player"	"models/weapons/w_models/w_sniperrifle.mdl"
+			"attach_to_hands"	"0"
+		}
+		"15"
+		{
+			"model_player"	"models/weapons/w_models/w_minigun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"16"
+		{
+			"model_player"	"models/weapons/w_models/w_smg.mdl"
+			"attach_to_hands"	"0"
+		}
+		"17"
+		{
+			"model_player"	"models/weapons/w_models/w_syringegun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"18"
+		{
+			"model_player"	"models/weapons/w_models/w_rocketlauncher.mdl"
+			"attach_to_hands"	"0"
+		}
+		"19"
+		{
+			"model_player"	"models/weapons/w_models/w_grenadelauncher.mdl"
+			"attach_to_hands"	"0"
+			"use_viewmodels"	"1"
+		}
+		"20"
+		{
+			"model_player"	"models/weapons/w_models/w_stickybomb_launcher.mdl"
+			"attach_to_hands"	"0"
+		}
+		"21"
+		{
+			"model_player"	"models/weapons/w_models/w_flamethrower.mdl"
+			"attach_to_hands"	"0"
+			"visuals"
+			{
+				"attached_models"
+				{
+					"0"
+					{
+						"model"	"models/empty.mdl"
+					}
+				}
+			}
+		}
+		"22" // Engineer's Pistol
+		{
+			"prefab"	"valve"
+			"model_player"	"models/weapons/c_models/c_pistol/c_pistol_baseitem.mdl"
+			"model_world"	"models/weapons/w_models/w_pistol.mdl"
+			"use_viewmodels"	"1"
+		}
+		"23" // Scout's Pistol
+		{
+			"prefab"	"valve"
+			"model_player"	"models/weapons/w_models/w_pistol.mdl"
+			"attach_to_hands"	"0"
+		}
+		"24"
+		{
+			"model_player"	"models/weapons/w_models/w_revolver.mdl"
+			"attach_to_hands" "0"
+		}
+		"25"
+		{
+			"model_world"	"models/weapons/w_models/w_builder.mdl"
+		}
+		"26"
+		{
+			"model_world"	"models/weapons/w_models/w_pda_engineer.mdl"
+		}
+		"29"
+		{
+			"model_player"	"models/weapons/w_models/w_medigun.mdl"
+			"attach_to_hands"	"0"
+		}
+		"735"
+		{
+			"model_player"	"models/weapons/w_models/w_sapper.mdl"
+			"attach_to_hands"	"0"
+		}
+		
 		"9001"
 		{
 			"name"	"Valve Rocket Launcher"

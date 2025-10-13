@@ -521,6 +521,8 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	virtual bool		IsBroken( void ) const { return false; }
 	virtual void		SetBroken( bool bBroken ) {}
 
+	bool				UsesForcedViewModel(void) const;
+
 // Server specific.
 #if !defined( CLIENT_DLL )
 
@@ -759,7 +761,7 @@ public:
 
 	CNetworkVar( float, m_flObservedCritChance );
 
-	virtual bool CanInspect() const { return true; }
+	virtual bool CanInspect() const { return !UsesForcedViewModel(); }
 	void HandleInspect();
 	
 	virtual void HookAttributes( void ) {};
