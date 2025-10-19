@@ -33,6 +33,9 @@
 
 extern IPhysicsCollision *physcollision;
 
+#ifdef TF_DLL
+ConVar ff_disable_falldamage_scream( "ff_disable_falldamage_scream", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "" );
+#endif
 
 //-----------------------------------------------------------------------------
 // Implementation of the movehelper on the server
@@ -365,7 +368,9 @@ bool CMoveHelperServer::PlayerFallingDamage( void )
 		int iDamageTaken = m_pHostPlayer->TakeDamage( CTakeDamageInfo( GetContainingEntity(INDEXENT(0)), GetContainingEntity(INDEXENT(0)), flFallDamage, DMG_FALL ) ); 
 		if ( iDamageTaken > 0 )
 		{
-#ifndef TF_DLL
+#ifdef TF_DLL
+			StartSound( m_pHostPlayer->GetAbsOrigin(), ff_disable_falldamage_scream.GetBool() ? "Player.FallDamageOld" : "Player.FallDamage" );
+#else
 			StartSound( m_pHostPlayer->GetAbsOrigin(), "Player.FallDamage" );
 #endif
 		}
