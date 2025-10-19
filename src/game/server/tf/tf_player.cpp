@@ -293,10 +293,9 @@ extern ConVar tf_tournament_classchange_ready_allowed;
 extern ConVar tf_rocketpack_impact_push_min;
 extern ConVar tf_rocketpack_impact_push_max;
 
-ConVar ff_disable_falldamage_scream( "ff_disable_falldamage_scream", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "" );
-
 extern ConVar ff_old_healonkill;
 extern ConVar ff_disable_dropped_weapon;
+extern ConVar ff_disable_falldamage_scream;
 
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
@@ -15244,11 +15243,8 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 		if ( !( pGround && pGround->IsPlayer() && m_Shared.CanFallStomp() ) )
 		{
 			if ( ff_disable_falldamage_scream.GetBool() )
-			{
-				EmitSound( "Player.FallDamageOld" );
 				return;
-			}
-			EmitSound( "Player.FallDamage" );
+
 			TFPlayerClassData_t *pData = GetPlayerClass()->GetData();
 			if ( pData )
 			{
