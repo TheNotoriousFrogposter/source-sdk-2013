@@ -36,6 +36,7 @@
 
 // Client specific.
 #ifdef CLIENT_DLL
+#include "c_baseviewmodel.h"
 #include "c_tf_player.h"
 #include "c_te_effect_dispatch.h"
 #include "c_tf_fx.h"
@@ -4778,14 +4779,8 @@ static void RemoveResistParticle( CTFPlayer* pPlayer, medigun_resist_types_t nRe
 	if ( bKeep )
 		return;
 	
-	if ( pPlayer->m_Shared.GetDisplayedTeam() == TF_TEAM_RED )
-	{
-		pPlayer->RemoveOverheadEffect( s_pszRedResistOverheadEffectName[ nResistType ], true );
-	}
-	else
-	{
-		pPlayer->RemoveOverheadEffect( s_pszBlueResistOverheadEffectName[ nResistType ], true );
-	}
+	pPlayer->RemoveOverheadEffect( s_pszRedResistOverheadEffectName[ nResistType ], true );
+	pPlayer->RemoveOverheadEffect( s_pszBlueResistOverheadEffectName[ nResistType ], true );
 }
 
 //-----------------------------------------------------------------------------
@@ -10124,6 +10119,14 @@ void CTFPlayer::GetHorriblyHackedRailgunPosition( const Vector& vStart, Vector *
 	Vector vForward, vRight, vUp;
 	AngleVectors( EyeAngles(), &vForward, &vRight, &vUp );
 
+#ifdef CLIENT_DLL
+	// Flips the horizontal position.
+	if ( TeamFortress_ShouldFlipClientViewModel() )
+	{
+		vRight *= -1;
+	}
+#endif // CLIENT_DLL
+
 	*out_pvStartPos = vStart
 					+ (vForward * 60.9f)
 					+ (vRight * 13.1f)
@@ -12439,6 +12442,9 @@ bool CTFPlayer::CanPickupBuilding( CBaseObject *pPickupObject )
 
 	// If we were recently carried & placed we may still be upgrading up to our old level.
 	if ( pPickupObject->GetUpgradeLevel() != pPickupObject->GetHighestUpgradeLevel() )
+		return false;
+
+	if ( !IsAlive() )
 		return false;
 
 	if ( m_Shared.IsCarryingObject() )
