@@ -1174,14 +1174,6 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 				pItem->GetSOCData()->Equip(unClass, unSlot);
 			}
 		}
-		m_LoadoutItems[unClass][unSlot] = ulItemID;
-
-#ifdef CLIENT_DLL
-		int activePreset = m_ActivePreset[unClass];
-		m_PresetItems[activePreset][unClass][unSlot] = ulItemID;
-
-		//GTFGCClientSystem()->LocalInventoryChanged();
-#endif
 	}
 	else
 	{
