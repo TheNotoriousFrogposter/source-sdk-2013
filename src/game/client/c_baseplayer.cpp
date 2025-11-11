@@ -3038,7 +3038,7 @@ void C_BasePlayer::BuildFirstPersonMeathookTransformations( CStudioHdr *hdr, Vec
 			}
 			if ( pLocalTFPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_MINIGUN )
 			{
-				fUp += 16.f;
+				fUp += 18.f;
 			}
 			else if ( pLocalTFPlayer->IsPlayerClass( TF_CLASS_SCOUT ) || pLocalTFPlayer->IsPlayerClass( TF_CLASS_SOLDIER ) || pLocalTFPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) || pLocalTFPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) ||
 				( pLocalTFPlayer->IsPlayerClass( TF_CLASS_PYRO ) && pWeapon && ( pWeapon->GetWeaponID() == TF_WEAPON_FIREAXE || pWeapon->GetWeaponID() == TF_WEAPON_BREAKABLE_SIGN ) ) )

@@ -6637,8 +6637,8 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 		//}
 
 		// Weapon Based Damage Mod
-		int iNewCaber = 1;
-		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER ( pWeapon, iNewCaber, obsolete )
+		int iNewGrenade = 1;
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER ( pWeapon, iNewGrenade, obsolete )
 		if ( pWeapon && pAttacker && pAttacker->IsPlayer() )
 		{
 			switch ( pWeapon->GetWeaponID() )
@@ -6656,13 +6656,13 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			case TF_WEAPON_PIPEBOMBLAUNCHER :	// Stickies
 			case TF_WEAPON_GRENADELAUNCHER :
 			case TF_WEAPON_CANNON :
-				if ( !( bitsDamage & DMG_NOCLOSEDISTANCEMOD ) )
+				if ( !( bitsDamage & DMG_NOCLOSEDISTANCEMOD ) && iNewGrenade && ff_use_new_grenade.GetBool() )
 				{
 					flRandomDamage *= 0.2f;
 				}
 				break;
 			case TF_WEAPON_STICKBOMB :
-				if ( !( bitsDamage & DMG_NOCLOSEDISTANCEMOD ) && iNewCaber )
+				if ( !( bitsDamage & DMG_NOCLOSEDISTANCEMOD ) && iNewGrenade )
 				{
 					flRandomDamage *= 0.2f;
 				}
